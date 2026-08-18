@@ -1,26 +1,402 @@
 <!DOCTYPE html>
 <html lang="it">
-
 <head>
-
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <title>La Base Segreta di Nozi</title>
 
-  <title>
-    La Base Segreta di Nozi
-  </title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-  <link
-    rel="stylesheet"
-    href="styles.css"
-  >
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #e8e8f2;
+      font-family: Arial, sans-serif;
+    }
 
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* =========================
+       BASE
+    ========================== */
+
+    .base-stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .base-wrapper {
+      position: relative;
+      width: min(100vw, 150vh);
+      aspect-ratio: 3 / 2;
+    }
+
+    .base-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .hotspot-layer {
+      position: absolute;
+      inset: 0;
+
+      width: 100%;
+      height: 100%;
+
+      z-index: 10;
+    }
+
+    .hotspot {
+      fill: transparent;
+      cursor: pointer;
+      pointer-events: all;
+    }
+
+
+    /* =========================
+       PANNELLI TEST
+    ========================== */
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      background: rgba(245, 235, 230, 0.68);
+
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+
+      z-index: 100;
+    }
+
+    .overlay.aperto {
+      display: flex;
+    }
+
+    .panel {
+      width: min(520px, 82vw);
+      padding: 32px;
+
+      background: #fff8f3;
+      border: 2px solid #e8b59b;
+      border-radius: 28px;
+
+      box-shadow: 0 18px 50px rgba(70, 55, 80, 0.18);
+
+      text-align: center;
+    }
+
+    .panel h1 {
+      margin: 0 0 24px;
+
+      color: #173f7a;
+
+      font-size: clamp(28px, 4vw, 42px);
+    }
+
+    .close-button {
+      appearance: none;
+      border: 0;
+      border-radius: 18px;
+
+      padding: 14px 24px;
+
+      background: #f3c2aa;
+      color: #173f7a;
+
+      font-size: 18px;
+      font-weight: 600;
+
+      cursor: pointer;
+    }
+
+
+    /* =========================
+       ARCHIVI
+    ========================== */
+
+    .archive-screen {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      flex-direction: column;
+
+      z-index: 200;
+
+      overflow: hidden;
+    }
+
+    .archive-screen.aperto {
+      display: flex;
+    }
+
+    .archive-screen.documents {
+      background: #eaf6fb;
+    }
+
+    .archive-screen.projects {
+      background: #eef8ef;
+    }
+
+    .archive-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+
+      padding:
+        max(20px, env(safe-area-inset-top))
+        26px
+        18px;
+
+      border-bottom: 1px solid rgba(23, 63, 122, 0.10);
+    }
+
+    .archive-screen.documents .archive-header {
+      background: #d8eef7;
+    }
+
+    .archive-screen.projects .archive-header {
+      background: #dcefdc;
+    }
+
+    .archive-back,
+    .archive-add {
+      appearance: none;
+      border: 0;
+
+      width: 50px;
+      height: 50px;
+
+      border-radius: 16px;
+
+      background: rgba(255, 255, 255, 0.72);
+      color: #173f7a;
+
+      font-size: 30px;
+      line-height: 1;
+
+      cursor: pointer;
+
+      box-shadow: 0 5px 14px rgba(50, 65, 80, 0.10);
+    }
+
+    .archive-title {
+      flex: 1;
+
+      margin: 0;
+
+      color: #173f7a;
+
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+    }
+
+    .archive-content {
+      flex: 1;
+      overflow-y: auto;
+
+      padding: 30px;
+    }
+
+    .archive-empty {
+      min-height: 60%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: rgba(23, 63, 122, 0.58);
+
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .archive-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(auto-fill, minmax(190px, 1fr));
+
+      gap: 22px;
+    }
+
+
+    /* =========================
+       CARD
+    ========================== */
+
+    .archive-card {
+      position: relative;
+
+      border: 1px solid rgba(23, 63, 122, 0.10);
+      border-radius: 22px;
+
+      padding: 14px;
+
+      background: rgba(255, 255, 255, 0.78);
+
+      box-shadow:
+        0 8px 20px rgba(58, 70, 90, 0.10);
+    }
+
+    .archive-open {
+      appearance: none;
+      border: 0;
+
+      width: 100%;
+      padding: 0;
+
+      background: transparent;
+
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .archive-preview {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-bottom: 12px;
+
+      border-radius: 16px;
+
+      background: rgba(255, 255, 255, 0.95);
+
+      overflow: hidden;
+
+      color: #173f7a;
+      font-size: 42px;
+    }
+
+    .archive-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .archive-name {
+      display: block;
+
+      padding-right: 38px;
+
+      color: #173f7a;
+
+      font-size: 16px;
+      font-weight: 600;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .card-menu-button {
+      position: absolute;
+      right: 10px;
+      bottom: 8px;
+
+      appearance: none;
+      border: 0;
+
+      width: 36px;
+      height: 36px;
+
+      border-radius: 12px;
+
+      background: transparent;
+      color: #173f7a;
+
+      font-size: 24px;
+
+      cursor: pointer;
+    }
+
+    .card-menu {
+      position: absolute;
+
+      right: 10px;
+      bottom: 48px;
+
+      display: none;
+
+      min-width: 120px;
+
+      padding: 7px;
+
+      border: 1px solid rgba(23, 63, 122, 0.10);
+      border-radius: 14px;
+
+      background: #fffaf6;
+
+      box-shadow:
+        0 8px 22px rgba(50, 60, 75, 0.17);
+
+      z-index: 5;
+    }
+
+    .card-menu.aperto {
+      display: block;
+    }
+
+    .delete-button {
+      appearance: none;
+      border: 0;
+
+      width: 100%;
+
+      padding: 10px 14px;
+
+      border-radius: 10px;
+
+      background: transparent;
+      color: #8f3d3d;
+
+      font-size: 15px;
+      font-weight: 600;
+
+      text-align: left;
+
+      cursor: pointer;
+    }
+
+    .delete-button:active {
+      background: rgba(143, 61, 61, 0.08);
+    }
+
+    .file-input {
+      display: none;
+    }
+  </style>
 </head>
-
 
 <body>
 
@@ -34,18 +410,14 @@
         alt="La Base Segreta di Nozi"
       >
 
-
       <svg
         class="hotspot-layer"
         viewBox="0 0 1536 1024"
         preserveAspectRatio="none"
       >
 
-        <!-- =========================
-             LIBRERIA
-        ========================== -->
+        <!-- LIBRERIA -->
 
-        <!-- LEZIONI & MATERIALI -->
         <rect
           class="hotspot"
           data-target="overlayLessons"
@@ -55,8 +427,6 @@
           height="155"
         />
 
-
-        <!-- DOCUMENTI IMPORTANTI -->
         <rect
           class="hotspot"
           data-archive="documentsScreen"
@@ -66,8 +436,6 @@
           height="155"
         />
 
-
-        <!-- ATTIVITÀ & PROGETTI -->
         <rect
           class="hotspot"
           data-archive="projectsScreen"
@@ -77,8 +445,6 @@
           height="155"
         />
 
-
-        <!-- IDEE & ISPIRAZIONI -->
         <rect
           class="hotspot"
           data-target="overlayIdeas"
@@ -88,8 +454,6 @@
           height="145"
         />
 
-
-        <!-- STICKER DI NOZI -->
         <rect
           class="hotspot"
           data-target="overlayStickers"
@@ -100,11 +464,8 @@
         />
 
 
-        <!-- =========================
-             ZONA CENTRALE
-        ========================== -->
+        <!-- ZONA CENTRALE -->
 
-        <!-- PROGRAMMAZIONE -->
         <rect
           class="hotspot"
           data-target="overlayPlanning"
@@ -114,8 +475,6 @@
           height="195"
         />
 
-
-        <!-- ORARIO SCOLASTICO -->
         <rect
           class="hotspot"
           data-target="overlaySchedule"
@@ -125,8 +484,6 @@
           height="195"
         />
 
-
-        <!-- DA NON DIMENTICARE -->
         <rect
           class="hotspot"
           data-target="overlayRemember"
@@ -135,7 +492,6 @@
           width="235"
           height="195"
         />
-
 
         <!-- QUADERNO DELLE COSE BUFFE -->
         <rect
@@ -146,7 +502,6 @@
           width="330"
           height="245"
         />
-
 
         <!-- COMPUTER / ARGO -->
         <rect
@@ -165,55 +520,961 @@
   </main>
 
 
-  <!-- =========================
-       PANNELLI ANCORA DI TEST
-  ========================== -->
+  <!-- PANNELLI ANCORA DI TEST -->
 
-  <div
-    class="overlay"
-    id="overlayLessons"
-  >
-
+  <div class="overlay" id="overlayLessons">
     <section class="panel">
-
-      <h1>
-        Lezioni &amp; Materiali
-      </h1>
-
-      <button class="close-button">
-        Chiudi
-      </button>
-
+      <h1>Lezioni &amp; Materiali</h1>
+      <button class="close-button">Chiudi</button>
     </section>
+  </div>
 
+  <div class="overlay" id="overlayIdeas">
+    <section class="panel">
+      <h1>Idee &amp; Ispirazioni</h1>
+      <button class="close-button">Chiudi</button>
+    </section>
+  </div>
+
+  <div class="overlay" id="overlayStickers">
+    <section class="panel">
+      <h1>Sticker di Nozi</h1>
+      <button class="close-button">Chiudi</button>
+    </section>
+  </div>
+
+  <div class="overlay" id="overlayPlanning">
+    <section class="panel">
+      <h1>Programmazione</h1>
+      <button class="close-button">Chiudi</button>
+    </section>
+  </div>
+
+  <div class="overlay" id="overlaySchedule">
+    <section class="panel">
+      <h1>Orario scolastico</h1>
+      <button class="close-button">Chiudi</button>
+    </section>
+  </div>
+
+  <div class="overlay" id="overlayRemember">
+    <section class="panel">
+      <h1>Da non dimenticare</h1>
+      <button class="close-button">Chiudi</button>
+    </section>
+  </div>
+
+  <div class="overlay" id="overlayNotebook">
+    <section class="panel">
+      <h1>Quaderno delle cose buffe</h1>
+      <button class="close-button">Chiudi</button>
+    </section>
   </div>
 
 
-  <div
-    class="overlay"
-    id="overlayIdeas"
+  <!-- DOCUMENTI IMPORTANTI -->
+
+  <section
+    class="archive-screen documents"
+    id="documentsScreen"
   >
 
-    <section class="panel">
+    <header class="archive-header">
 
-      <h1>
-        Idee &amp; Ispirazioni
-      </h1>
-
-      <button class="close-button">
-        Chiudi
+      <button
+        class="archive-back"
+        data-close-archive
+        aria-label="Torna alla Base"
+      >
+        ‹
       </button>
 
-    </section>
+      <h1 class="archive-title">
+        Documenti importanti
+      </h1>
 
-  </div>
+      <button
+        class="archive-add"
+        data-file-picker="documentsInput"
+        aria-label="Aggiungi documento"
+      >
+        +
+      </button>
+
+    </header>
+
+    <div class="archive-content">
+
+      <div
+        class="archive-empty"
+        id="documentsEmpty"
+      >
+        Nessun documento ancora.
+      </div>
+
+      <div
+        class="archive-grid"
+        id="documentsGrid"
+      ></div>
+
+    </div>
+
+    <input
+      class="file-input"
+      id="documentsInput"
+      type="file"
+      multiple
+    >
+
+  </section>
 
 
-  <div
-    class="overlay"
-    id="overlayStickers"
+  <!-- ATTIVITÀ & PROGETTI -->
+
+  <section
+    class="archive-screen projects"
+    id="projectsScreen"
   >
 
-    <section class="panel">
+    <header class="archive-header">
 
-     
+      <button
+        class="archive-back"
+        data-close-archive
+        aria-label="Torna alla Base"
+      >
+        ‹
+      </button>
+
+      <h1 class="archive-title">
+        Attività &amp; Progetti
+      </h1>
+
+      <button
+        class="archive-add"
+        data-file-picker="projectsInput"
+        aria-label="Aggiungi attività o progetto"
+      >
+        +
+      </button>
+
+    </header>
+
+    <div class="archive-content">
+
+      <div
+        class="archive-empty"
+        id="projectsEmpty"
+      >
+        Nessuna attività o progetto ancora.
+      </div>
+
+      <div
+        class="archive-grid"
+        id="projectsGrid"
+      ></div>
+
+    </div>
+
+    <input
+      class="file-input"
+      id="projectsInput"
+      type="file"
+      multiple
+    >
+
+  </section>
+
+
+  <script>
+
+    /* =========================
+       INDEXEDDB
+    ========================== */
+
+    const DB_NAME =
+      "BaseSegretaNoziDB";
+
+    const DB_VERSION =
+      1;
+
+    const STORE_DOCUMENTS =
+      "documents";
+
+    const STORE_PROJECTS =
+      "projects";
+
+
+    function apriDatabase() {
+
+      return new Promise((resolve, reject) => {
+
+        const request =
+          indexedDB.open(
+            DB_NAME,
+            DB_VERSION
+          );
+
+
+        request.onupgradeneeded = () => {
+
+          const db =
+            request.result;
+
+
+          if (
+            !db.objectStoreNames.contains(
+              STORE_DOCUMENTS
+            )
+          ) {
+
+            db.createObjectStore(
+              STORE_DOCUMENTS,
+              {
+                keyPath: "id",
+                autoIncrement: true
+              }
+            );
+
+          }
+
+
+          if (
+            !db.objectStoreNames.contains(
+              STORE_PROJECTS
+            )
+          ) {
+
+            db.createObjectStore(
+              STORE_PROJECTS,
+              {
+                keyPath: "id",
+                autoIncrement: true
+              }
+            );
+
+          }
+
+        };
+
+
+        request.onsuccess = () => {
+          resolve(request.result);
+        };
+
+
+        request.onerror = () => {
+          reject(request.error);
+        };
+
+      });
+
+    }
+
+
+    async function salvaFile(
+      storeName,
+      file
+    ) {
+
+      const db =
+        await apriDatabase();
+
+
+      return new Promise((resolve, reject) => {
+
+        const transaction =
+          db.transaction(
+            storeName,
+            "readwrite"
+          );
+
+        const store =
+          transaction.objectStore(
+            storeName
+          );
+
+
+        const record = {
+
+          name: file.name,
+          type: file.type,
+          blob: file,
+          createdAt: Date.now()
+
+        };
+
+
+        const request =
+          store.add(record);
+
+
+        request.onsuccess = () => {
+          resolve(request.result);
+        };
+
+
+        request.onerror = () => {
+          reject(request.error);
+        };
+
+      });
+
+    }
+
+
+    async function leggiTutti(
+      storeName
+    ) {
+
+      const db =
+        await apriDatabase();
+
+
+      return new Promise((resolve, reject) => {
+
+        const transaction =
+          db.transaction(
+            storeName,
+            "readonly"
+          );
+
+        const store =
+          transaction.objectStore(
+            storeName
+          );
+
+
+        const request =
+          store.getAll();
+
+
+        request.onsuccess = () => {
+          resolve(request.result);
+        };
+
+
+        request.onerror = () => {
+          reject(request.error);
+        };
+
+      });
+
+    }
+
+
+    async function eliminaFile(
+      storeName,
+      id
+    ) {
+
+      const db =
+        await apriDatabase();
+
+
+      return new Promise((resolve, reject) => {
+
+        const transaction =
+          db.transaction(
+            storeName,
+            "readwrite"
+          );
+
+        const store =
+          transaction.objectStore(
+            storeName
+          );
+
+
+        const request =
+          store.delete(id);
+
+
+        request.onsuccess = () => {
+          resolve();
+        };
+
+
+        request.onerror = () => {
+          reject(request.error);
+        };
+
+      });
+
+    }
+
+
+    /* =========================
+       BASE
+    ========================== */
+
+    const hotspots =
+      document.querySelectorAll(
+        ".hotspot"
+      );
+
+    const overlays =
+      document.querySelectorAll(
+        ".overlay"
+      );
+
+    const closeButtons =
+      document.querySelectorAll(
+        ".close-button"
+      );
+
+
+    hotspots.forEach((hotspot) => {
+
+      hotspot.addEventListener(
+        "click",
+        () => {
+
+          const url =
+            hotspot.dataset.url;
+
+
+          if (url) {
+
+            window.open(
+              url,
+              "_blank",
+              "noopener,noreferrer"
+            );
+
+            return;
+
+          }
+
+
+          const archiveId =
+            hotspot.dataset.archive;
+
+
+          if (archiveId) {
+
+            document
+              .getElementById(
+                archiveId
+              )
+              .classList
+              .add("aperto");
+
+            return;
+
+          }
+
+
+          const targetId =
+            hotspot.dataset.target;
+
+
+          const targetOverlay =
+            document.getElementById(
+              targetId
+            );
+
+
+          if (targetOverlay) {
+
+            targetOverlay
+              .classList
+              .add("aperto");
+
+          }
+
+        }
+      );
+
+    });
+
+
+    /* =========================
+       PANNELLI TEST
+    ========================== */
+
+    closeButtons.forEach((button) => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          button
+            .closest(".overlay")
+            .classList
+            .remove("aperto");
+
+        }
+      );
+
+    });
+
+
+    overlays.forEach((overlay) => {
+
+      overlay.addEventListener(
+        "click",
+        (event) => {
+
+          if (
+            event.target === overlay
+          ) {
+
+            overlay
+              .classList
+              .remove("aperto");
+
+          }
+
+        }
+      );
+
+    });
+
+
+    /* =========================
+       ARCHIVI
+    ========================== */
+
+    const archiveBackButtons =
+      document.querySelectorAll(
+        "[data-close-archive]"
+      );
+
+
+    archiveBackButtons.forEach(
+      (button) => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            button
+              .closest(".archive-screen")
+              .classList
+              .remove("aperto");
+
+          }
+        );
+
+      }
+    );
+
+
+    const addButtons =
+      document.querySelectorAll(
+        "[data-file-picker]"
+      );
+
+
+    addButtons.forEach((button) => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          document
+            .getElementById(
+              button.dataset.filePicker
+            )
+            .click();
+
+        }
+      );
+
+    });
+
+
+    /* =========================
+       CARD
+    ========================== */
+
+    function creaCard(
+      record,
+      storeName,
+      refreshFunction
+    ) {
+
+      const card =
+        document.createElement("article");
+
+      card.className =
+        "archive-card";
+
+
+      const openButton =
+        document.createElement("button");
+
+      openButton.className =
+        "archive-open";
+
+
+      const preview =
+        document.createElement("div");
+
+      preview.className =
+        "archive-preview";
+
+
+      const name =
+        document.createElement("span");
+
+      name.className =
+        "archive-name";
+
+      name.textContent =
+        record.name;
+
+
+      const objectUrl =
+        URL.createObjectURL(
+          record.blob
+        );
+
+
+      if (
+        record.type &&
+        record.type.startsWith("image/")
+      ) {
+
+        const image =
+          document.createElement("img");
+
+        image.src =
+          objectUrl;
+
+        image.alt = "";
+
+        preview.appendChild(image);
+
+      } else {
+
+        preview.textContent = "📄";
+
+      }
+
+
+      openButton.appendChild(
+        preview
+      );
+
+      openButton.appendChild(
+        name
+      );
+
+
+      openButton.addEventListener(
+        "click",
+        () => {
+
+          window.open(
+            objectUrl,
+            "_blank"
+          );
+
+        }
+      );
+
+
+      const menuButton =
+        document.createElement("button");
+
+      menuButton.className =
+        "card-menu-button";
+
+      menuButton.textContent =
+        "⋯";
+
+      menuButton.setAttribute(
+        "aria-label",
+        "Azioni"
+      );
+
+
+      const menu =
+        document.createElement("div");
+
+      menu.className =
+        "card-menu";
+
+
+      const deleteButton =
+        document.createElement("button");
+
+      deleteButton.className =
+        "delete-button";
+
+      deleteButton.textContent =
+        "Elimina";
+
+
+      menu.appendChild(
+        deleteButton
+      );
+
+
+      menuButton.addEventListener(
+        "click",
+        (event) => {
+
+          event.stopPropagation();
+
+          document
+            .querySelectorAll(
+              ".card-menu.aperto"
+            )
+            .forEach(
+              (otherMenu) => {
+
+                if (
+                  otherMenu !== menu
+                ) {
+
+                  otherMenu
+                    .classList
+                    .remove("aperto");
+
+                }
+
+              }
+            );
+
+
+          menu
+            .classList
+            .toggle("aperto");
+
+        }
+      );
+
+
+      deleteButton.addEventListener(
+        "click",
+        async (event) => {
+
+          event.stopPropagation();
+
+
+          const conferma =
+            window.confirm(
+              `Eliminare "${record.name}"?`
+            );
+
+
+          if (!conferma) {
+            return;
+          }
+
+
+          await eliminaFile(
+            storeName,
+            record.id
+          );
+
+
+          await refreshFunction();
+
+        }
+      );
+
+
+      card.appendChild(
+        openButton
+      );
+
+      card.appendChild(
+        menuButton
+      );
+
+      card.appendChild(
+        menu
+      );
+
+
+      return card;
+
+    }
+
+
+    /* =========================
+       MOTORE ARCHIVIO
+    ========================== */
+
+    function collegaArchivio(
+      options
+    ) {
+
+      const {
+        storeName,
+        inputId,
+        gridId,
+        emptyId
+      } = options;
+
+
+      const input =
+        document.getElementById(
+          inputId
+        );
+
+      const grid =
+        document.getElementById(
+          gridId
+        );
+
+      const empty =
+        document.getElementById(
+          emptyId
+        );
+
+
+      async function refresh() {
+
+        const records =
+          await leggiTutti(
+            storeName
+          );
+
+
+        grid.innerHTML = "";
+
+
+        if (
+          records.length === 0
+        ) {
+
+          empty.style.display =
+            "flex";
+
+          return;
+
+        }
+
+
+        empty.style.display =
+          "none";
+
+
+        records
+          .sort(
+            (a, b) =>
+              b.createdAt -
+              a.createdAt
+          )
+          .forEach(
+            (record) => {
+
+              const card =
+                creaCard(
+                  record,
+                  storeName,
+                  refresh
+                );
+
+              grid.appendChild(
+                card
+              );
+
+            }
+          );
+
+      }
+
+
+      input.addEventListener(
+        "change",
+        async () => {
+
+          const files =
+            Array.from(
+              input.files
+            );
+
+
+          for (
+            const file of files
+          ) {
+
+            await salvaFile(
+              storeName,
+              file
+            );
+
+          }
+
+
+          input.value = "";
+
+
+          await refresh();
+
+        }
+      );
+
+
+      refresh();
+
+    }
+
+
+    collegaArchivio({
+
+      storeName:
+        STORE_DOCUMENTS,
+
+      inputId:
+        "documentsInput",
+
+      gridId:
+        "documentsGrid",
+
+      emptyId:
+        "documentsEmpty"
+
+    });
+
+
+    collegaArchivio({
+
+      storeName:
+        STORE_PROJECTS,
+
+      inputId:
+        "projectsInput",
+
+      gridId:
+        "projectsGrid",
+
+      emptyId:
+        "projectsEmpty"
+
+    });
+
+
+    /* Chiudi menu ⋯ cliccando altrove */
+
+    document.addEventListener(
+      "click",
+      () => {
+
+        document
+          .querySelectorAll(
+            ".card-menu.aperto"
+          )
+          .forEach(
+            (menu) => {
+
+              menu
+                .classList
+                .remove("aperto");
+
+            }
+          );
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
