@@ -691,17 +691,18 @@
       width: 100%;
 
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
 
-      gap: 10px;
+      gap: 12px;
     }
 
     .sticker-action {
       appearance: none;
       border: 0;
 
-      padding: 12px 18px;
+      min-width: 120px;
+
+      padding: 13px 22px;
 
       border-radius: 15px;
 
@@ -720,7 +721,171 @@
 
 
     /* =========================
-       TELEFONI / IPAD VERTICALE
+       DESTINAZIONE STICKER
+    ========================== */
+
+    .destination-overlay {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      padding:
+        max(24px, env(safe-area-inset-top))
+        max(24px, env(safe-area-inset-right))
+        max(24px, env(safe-area-inset-bottom))
+        max(24px, env(safe-area-inset-left));
+
+      background: rgba(38, 46, 67, 0.62);
+
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+
+      z-index: 500;
+    }
+
+    .destination-overlay.aperto {
+      display: flex;
+    }
+
+    .destination-card {
+      position: relative;
+
+      width: min(500px, 92vw);
+
+      padding: 30px;
+
+      border-radius: 28px;
+
+      background: #fffaf7;
+
+      box-shadow:
+        0 22px 60px rgba(30, 35, 55, 0.30);
+    }
+
+    .destination-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+
+      appearance: none;
+      border: 0;
+
+      width: 42px;
+      height: 42px;
+
+      border-radius: 14px;
+
+      background: #edf3fa;
+      color: #173f7a;
+
+      font-size: 24px;
+
+      cursor: pointer;
+    }
+
+    .destination-title {
+      margin:
+        4px
+        45px
+        24px
+        0;
+
+      color: #173f7a;
+
+      font-size: 23px;
+      line-height: 1.25;
+    }
+
+    .destination-list {
+      display: flex;
+      flex-direction: column;
+
+      gap: 10px;
+    }
+
+    .destination-button {
+      appearance: none;
+      border:
+        1px solid rgba(23, 63, 122, 0.10);
+
+      width: 100%;
+
+      padding: 15px 17px;
+
+      border-radius: 15px;
+
+      background: #f4f7fb;
+      color: #173f7a;
+
+      font-size: 16px;
+      font-weight: 600;
+
+      text-align: left;
+
+      cursor: pointer;
+    }
+
+    .destination-button:active {
+      background: #e6eff8;
+    }
+
+
+    /* =========================
+       CONFERMA INSERIMENTO
+    ========================== */
+
+    .toast {
+      position: fixed;
+
+      left: 50%;
+      bottom:
+        max(28px, env(safe-area-inset-bottom));
+
+      transform:
+        translateX(-50%)
+        translateY(20px);
+
+      max-width: min(520px, 88vw);
+
+      padding: 13px 20px;
+
+      border-radius: 16px;
+
+      background: #173f7a;
+      color: white;
+
+      font-size: 15px;
+      font-weight: 600;
+
+      text-align: center;
+
+      opacity: 0;
+      pointer-events: none;
+
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+
+      z-index: 600;
+
+      box-shadow:
+        0 10px 28px rgba(30, 40, 60, 0.22);
+    }
+
+    .toast.visibile {
+      opacity: 1;
+
+      transform:
+        translateX(-50%)
+        translateY(0);
+    }
+
+
+    /* =========================
+       IPAD / SCHERMI STRETTI
     ========================== */
 
     @media (max-width: 700px) {
@@ -743,6 +908,14 @@
 
       .stickers-subtitle {
         display: none;
+      }
+
+      .sticker-actions {
+        flex-direction: column;
+      }
+
+      .sticker-action {
+        width: 100%;
       }
 
     }
@@ -1069,7 +1242,7 @@
         </h1>
 
         <p class="stickers-subtitle">
-          Feedback positivi, correzioni e altre emergenze scolastiche 🍙
+          Feedback positivi, correzioni e altre emergenze scolastiche
         </p>
 
       </div>
@@ -1134,16 +1307,16 @@
 
         <button
           class="sticker-action"
-          id="shareStickerButton"
+          id="printStickerButton"
         >
-          Condividi
+          Stampa
         </button>
 
         <button
           class="sticker-action secondary"
-          id="openStickerButton"
+          id="insertStickerButton"
         >
-          Apri immagine
+          Inserisci
         </button>
 
       </div>
@@ -1151,6 +1324,89 @@
     </section>
 
   </div>
+
+
+  <!-- =========================
+       SCELTA DESTINAZIONE
+  ========================== -->
+
+  <div
+    class="destination-overlay"
+    id="destinationOverlay"
+  >
+
+    <section
+      class="destination-card"
+      id="destinationCard"
+    >
+
+      <button
+        class="destination-close"
+        id="destinationClose"
+        aria-label="Chiudi"
+      >
+        ×
+      </button>
+
+      <h2 class="destination-title">
+        Dove vuoi inserire questo sticker?
+      </h2>
+
+      <div class="destination-list">
+
+        <button
+          class="destination-button"
+          data-destination="programmazione"
+          data-destination-label="Programmazione"
+        >
+          Programmazione
+        </button>
+
+        <button
+          class="destination-button"
+          data-destination="quaderno"
+          data-destination-label="Quaderno delle cose buffe"
+        >
+          Quaderno delle cose buffe
+        </button>
+
+        <button
+          class="destination-button"
+          data-destination="lezioni"
+          data-destination-label="Lezioni & Materiali"
+        >
+          Lezioni &amp; Materiali
+        </button>
+
+        <button
+          class="destination-button"
+          data-destination="progetti"
+          data-destination-label="Attività & Progetti"
+        >
+          Attività &amp; Progetti
+        </button>
+
+        <button
+          class="destination-button"
+          data-destination="idee"
+          data-destination-label="Idee & Ispirazioni"
+        >
+          Idee &amp; Ispirazioni
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- CONFERMA -->
+
+  <div
+    class="toast"
+    id="toast"
+  ></div>
 
 
   <script>
@@ -1937,7 +2193,7 @@
 
 
     /* =========================
-       STICKER DI NOZI
+       STICKER
     ========================== */
 
     const STICKERS = [
@@ -2039,7 +2295,7 @@
 
       {
         file: "baozzi-milord.png",
-        label: "Baozzi Milord 🎩"
+        label: "Baozzi Milord"
       }
 
     ];
@@ -2086,18 +2342,48 @@
         "stickerViewerName"
       );
 
-    const shareStickerButton =
+    const printStickerButton =
       document.getElementById(
-        "shareStickerButton"
+        "printStickerButton"
       );
 
-    const openStickerButton =
+    const insertStickerButton =
       document.getElementById(
-        "openStickerButton"
+        "insertStickerButton"
+      );
+
+
+    const destinationOverlay =
+      document.getElementById(
+        "destinationOverlay"
+      );
+
+    const destinationCard =
+      document.getElementById(
+        "destinationCard"
+      );
+
+    const destinationClose =
+      document.getElementById(
+        "destinationClose"
+      );
+
+    const destinationButtons =
+      document.querySelectorAll(
+        ".destination-button"
+      );
+
+
+    const toast =
+      document.getElementById(
+        "toast"
       );
 
 
     let stickerSelezionato =
+      null;
+
+    let toastTimer =
       null;
 
 
@@ -2220,11 +2506,141 @@
         .classList
         .remove("aperto");
 
+      destinationOverlay
+        .classList
+        .remove("aperto");
+
       stickerSelezionato =
         null;
 
     }
 
+
+    function mostraToast(
+      messaggio
+    ) {
+
+      window.clearTimeout(
+        toastTimer
+      );
+
+
+      toast.textContent =
+        messaggio;
+
+      toast
+        .classList
+        .add("visibile");
+
+
+      toastTimer =
+        window.setTimeout(
+          () => {
+
+            toast
+              .classList
+              .remove("visibile");
+
+          },
+          2400
+        );
+
+    }
+
+
+    /* =========================
+       MEMORIA INSERIMENTI
+    ========================== */
+
+    function salvaInserimentoSticker(
+      sticker,
+      destination,
+      destinationLabel
+    ) {
+
+      const STORAGE_KEY =
+        "BaseSegretaNoziStickerInseriti";
+
+
+      let inserimenti = [];
+
+
+      try {
+
+        const salvati =
+          localStorage.getItem(
+            STORAGE_KEY
+          );
+
+
+        if (salvati) {
+
+          inserimenti =
+            JSON.parse(
+              salvati
+            );
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Impossibile leggere gli sticker inseriti:",
+          error
+        );
+
+      }
+
+
+      inserimenti.push({
+
+        id:
+          `${Date.now()}-${Math.random()
+            .toString(16)
+            .slice(2)}`,
+
+        file:
+          sticker.file,
+
+        label:
+          sticker.label,
+
+        destination:
+          destination,
+
+        destinationLabel:
+          destinationLabel,
+
+        createdAt:
+          Date.now()
+
+      });
+
+
+      try {
+
+        localStorage.setItem(
+          STORAGE_KEY,
+          JSON.stringify(
+            inserimenti
+          )
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Impossibile salvare lo sticker:",
+          error
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       NAVIGAZIONE STICKER
+    ========================== */
 
     stickersBack.addEventListener(
       "click",
@@ -2271,7 +2687,11 @@
     );
 
 
-    openStickerButton.addEventListener(
+    /* =========================
+       STAMPA
+    ========================== */
+
+    printStickerButton.addEventListener(
       "click",
       () => {
 
@@ -2282,19 +2702,104 @@
         }
 
 
-        window.open(
-          `assets/${stickerSelezionato.file}`,
-          "_blank",
-          "noopener,noreferrer"
-        );
+        const src =
+          `assets/${stickerSelezionato.file}`;
+
+
+        const printWindow =
+          window.open(
+            "",
+            "_blank"
+          );
+
+
+        if (!printWindow) {
+
+          window.open(
+            src,
+            "_blank",
+            "noopener,noreferrer"
+          );
+
+          return;
+
+        }
+
+
+        const titolo =
+          stickerSelezionato.label;
+
+
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html lang="it">
+          <head>
+            <meta charset="UTF-8">
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0"
+            >
+            <title>${titolo}</title>
+
+            <style>
+              html,
+              body {
+                margin: 0;
+                min-height: 100%;
+                background: white;
+              }
+
+              body {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 24px;
+              }
+
+              img {
+                display: block;
+                max-width: 80vw;
+                max-height: 80vh;
+                object-fit: contain;
+              }
+
+              @media print {
+                body {
+                  padding: 0;
+                }
+
+                img {
+                  max-width: 90%;
+                  max-height: 90vh;
+                }
+              }
+            </style>
+          </head>
+
+          <body>
+            <img
+              src="${src}"
+              alt="${titolo}"
+              onload="window.print();"
+            >
+          </body>
+          </html>
+        `);
+
+
+        printWindow.document.close();
 
       }
     );
 
 
-    shareStickerButton.addEventListener(
+    /* =========================
+       INSERISCI
+    ========================== */
+
+    insertStickerButton.addEventListener(
       "click",
-      async () => {
+      () => {
 
         if (
           !stickerSelezionato
@@ -2303,67 +2808,107 @@
         }
 
 
-        try {
+        destinationOverlay
+          .classList
+          .add("aperto");
 
-          const response =
-            await fetch(
-              `assets/${stickerSelezionato.file}`
-            );
-
-
-          const blob =
-            await response.blob();
+      }
+    );
 
 
-          const file =
-            new File(
-              [blob],
-              stickerSelezionato.file,
-              {
-                type:
-                  blob.type ||
-                  "image/png"
-              }
-            );
+    destinationClose.addEventListener(
+      "click",
+      () => {
+
+        destinationOverlay
+          .classList
+          .remove("aperto");
+
+      }
+    );
 
 
-          if (
-            navigator.canShare &&
-            navigator.canShare({
-              files: [file]
-            }) &&
-            navigator.share
-          ) {
+    destinationOverlay.addEventListener(
+      "click",
+      (event) => {
 
-            await navigator.share({
-              files: [file]
-            });
+        if (
+          event.target ===
+          destinationOverlay
+        ) {
 
-          } else {
-
-            window.open(
-              `assets/${stickerSelezionato.file}`,
-              "_blank",
-              "noopener,noreferrer"
-            );
-
-          }
-
-        } catch (error) {
-
-          console.error(
-            "Condivisione non disponibile:",
-            error
-          );
-
-
-          window.open(
-            `assets/${stickerSelezionato.file}`,
-            "_blank",
-            "noopener,noreferrer"
-          );
+          destinationOverlay
+            .classList
+            .remove("aperto");
 
         }
+
+      }
+    );
+
+
+    destinationCard.addEventListener(
+      "click",
+      (event) => {
+
+        event.stopPropagation();
+
+      }
+    );
+
+
+    destinationButtons.forEach(
+      (button) => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            if (
+              !stickerSelezionato
+            ) {
+              return;
+            }
+
+
+            const destination =
+              button.dataset.destination;
+
+            const destinationLabel =
+              button.dataset
+                .destinationLabel;
+
+
+            salvaInserimentoSticker(
+              stickerSelezionato,
+              destination,
+              destinationLabel
+            );
+
+
+            const nomeSticker =
+              stickerSelezionato.label;
+
+
+            destinationOverlay
+              .classList
+              .remove("aperto");
+
+            stickerViewer
+              .classList
+              .remove("aperto");
+
+
+            mostraToast(
+              `${nomeSticker} inserito in ${destinationLabel}`
+            );
+
+
+            stickerSelezionato =
+              null;
+
+          }
+        );
 
       }
     );
