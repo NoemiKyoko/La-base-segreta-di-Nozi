@@ -57,6 +57,46 @@
       -webkit-user-drag: none;
     }
 
+    /* =========================
+       NOZI
+    ========================== */
+
+    .nozi-character {
+      position: absolute;
+
+      /*
+        Prima posizione di prova:
+        Nozi vive sopra la scena senza modificare
+        l'immagine originale.
+      */
+
+      left: 32%;
+      top: 18%;
+
+      width: 12%;
+
+      height: auto;
+
+      z-index: 20;
+
+      pointer-events: none;
+
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+
+      transform-origin: center bottom;
+
+      transition:
+        opacity 0.18s ease,
+        transform 0.18s ease;
+    }
+
+    .nozi-character.cambio {
+      opacity: 0;
+      transform: scale(0.92);
+    }
+
     .hotspot-layer {
       position: absolute;
       inset: 0;
@@ -64,7 +104,7 @@
       width: 100%;
       height: 100%;
 
-      z-index: 10;
+      z-index: 30;
     }
 
     .hotspot {
@@ -410,6 +450,15 @@
         alt="La Base Segreta di Nozi"
       >
 
+      <!-- NOZI DINAMICA -->
+
+      <img
+        class="nozi-character"
+        id="noziCharacter"
+        src="assets/nozi-neutra.png"
+        alt="Nozi"
+      >
+
       <svg
         class="hotspot-layer"
         viewBox="0 0 1536 1024"
@@ -421,6 +470,7 @@
         <rect
           class="hotspot"
           data-target="overlayLessons"
+          data-nozi="nozi-lavoro.png"
           x="1235"
           y="170"
           width="270"
@@ -430,6 +480,7 @@
         <rect
           class="hotspot"
           data-archive="documentsScreen"
+          data-nozi="nozi-documenti.png"
           x="1235"
           y="335"
           width="270"
@@ -439,6 +490,7 @@
         <rect
           class="hotspot"
           data-archive="projectsScreen"
+          data-nozi="nozi-lavoro.png"
           x="1235"
           y="500"
           width="270"
@@ -448,6 +500,7 @@
         <rect
           class="hotspot"
           data-target="overlayIdeas"
+          data-nozi="nozi-orgogliosa.png"
           x="1235"
           y="665"
           width="270"
@@ -457,6 +510,7 @@
         <rect
           class="hotspot"
           data-target="overlayStickers"
+          data-nozi="nozi-orgogliosa.png"
           x="1235"
           y="810"
           width="270"
@@ -469,6 +523,7 @@
         <rect
           class="hotspot"
           data-target="overlayPlanning"
+          data-nozi="nozi-programmazione.png"
           x="425"
           y="290"
           width="235"
@@ -478,6 +533,7 @@
         <rect
           class="hotspot"
           data-target="overlaySchedule"
+          data-nozi="nozi-calcolatrice.png"
           x="670"
           y="290"
           width="230"
@@ -487,6 +543,7 @@
         <rect
           class="hotspot"
           data-target="overlayRemember"
+          data-nozi="nozi-scadenze.png"
           x="915"
           y="290"
           width="235"
@@ -494,9 +551,11 @@
         />
 
         <!-- QUADERNO DELLE COSE BUFFE -->
+
         <rect
           class="hotspot"
           data-target="overlayNotebook"
+          data-nozi="nozi-neutra.png"
           x="790"
           y="580"
           width="330"
@@ -504,6 +563,7 @@
         />
 
         <!-- COMPUTER / ARGO -->
+
         <rect
           class="hotspot"
           data-url="https://www.portaleargo.it/"
@@ -905,6 +965,72 @@
 
 
     /* =========================
+       NOZI
+    ========================== */
+
+    const noziCharacter =
+      document.getElementById(
+        "noziCharacter"
+      );
+
+
+    function cambiaNozi(
+      fileName
+    ) {
+
+      if (
+        !noziCharacter ||
+        !fileName
+      ) {
+        return;
+      }
+
+
+      const nuovoSrc =
+        `assets/${fileName}`;
+
+
+      if (
+        noziCharacter
+          .getAttribute("src") ===
+        nuovoSrc
+      ) {
+        return;
+      }
+
+
+      noziCharacter
+        .classList
+        .add("cambio");
+
+
+      window.setTimeout(
+        () => {
+
+          noziCharacter.src =
+            nuovoSrc;
+
+          noziCharacter
+            .classList
+            .remove("cambio");
+
+        },
+        150
+      );
+
+    }
+
+
+    function noziNeutra() {
+
+      cambiaNozi(
+        "nozi-neutra.png"
+      );
+
+    }
+
+
+    /* =========================
        BASE
     ========================== */
 
@@ -943,6 +1069,19 @@
             );
 
             return;
+
+          }
+
+
+          const noziFile =
+            hotspot.dataset.nozi;
+
+
+          if (noziFile) {
+
+            cambiaNozi(
+              noziFile
+            );
 
           }
 
@@ -1004,6 +1143,8 @@
             .classList
             .remove("aperto");
 
+          noziNeutra();
+
         }
       );
 
@@ -1023,6 +1164,8 @@
             overlay
               .classList
               .remove("aperto");
+
+            noziNeutra();
 
           }
 
@@ -1053,6 +1196,8 @@
               .closest(".archive-screen")
               .classList
               .remove("aperto");
+
+            noziNeutra();
 
           }
         );
