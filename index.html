@@ -237,25 +237,25 @@
           height="195"
         />
 
-        <!-- QUADERNO SULLA SCRIVANIA -->
-<rect
-  class="hotspot"
-  data-target="overlayRegister"
-  x="535"
-  y="690"
-  width="230"
-  height="175"
-/>
+        <!-- QUADERNO DELLE COSE BUFFE -->
+        <rect
+          class="hotspot"
+          data-target="overlayNotebook"
+          x="790"
+          y="580"
+          width="330"
+          height="245"
+        />
 
-<!-- COMPUTER / REGISTRO -->
-<rect
-  class="hotspot"
-  data-target="overlayNotebook"
-  x="790"
-  y="580"
-  width="330"
-  height="245"
-/>
+        <!-- COMPUTER / REGISTRO ELETTRONICO -->
+        <rect
+          class="hotspot"
+          data-url="https://www.portaleargo.it/"
+          x="535"
+          y="690"
+          width="230"
+          height="175"
+        />
 
       </svg>
 
@@ -305,7 +305,7 @@
 
 
   <!-- =========================
-       NUOVI PANNELLI
+       PANNELLI CENTRALI
   ========================== -->
 
   <div class="overlay" id="overlayPlanning">
@@ -336,13 +336,6 @@
     </section>
   </div>
 
-  <div class="overlay" id="overlayRegister">
-    <section class="panel">
-      <h1>Registro elettronico</h1>
-      <button class="close-button">Chiudi</button>
-    </section>
-  </div>
-
 
   <script>
 
@@ -360,13 +353,41 @@
 
       hotspot.addEventListener("click", () => {
 
+        /*
+          Se l'hotspot contiene un URL,
+          apre il sito esterno.
+          Nessuna credenziale viene salvata nella Base.
+        */
+
+        const url =
+          hotspot.dataset.url;
+
+        if (url) {
+
+          window.open(
+            url,
+            "_blank",
+            "noopener,noreferrer"
+          );
+
+          return;
+        }
+
+
+        /*
+          Altrimenti apre normalmente
+          il pannello associato all'hotspot.
+        */
+
         const targetId =
           hotspot.dataset.target;
 
         const targetOverlay =
           document.getElementById(targetId);
 
-        targetOverlay.classList.add("aperto");
+        if (targetOverlay) {
+          targetOverlay.classList.add("aperto");
+        }
 
       });
 
