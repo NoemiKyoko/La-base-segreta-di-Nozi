@@ -27,13 +27,16 @@
       justify-content: center;
     }
 
-    .base {
+    /* Questo contenitore ha SEMPRE le stesse proporzioni
+       dell'immagine della Base: 3:2 */
+    .base-stage {
       position: relative;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+
+      width: min(100vw, 150vh);
+      aspect-ratio: 3 / 2;
+
+      max-width: 100vw;
+      max-height: 100vh;
     }
 
     .base-image {
@@ -41,25 +44,22 @@
       width: 100%;
       height: 100%;
       object-fit: contain;
+
       user-select: none;
       -webkit-user-select: none;
       -webkit-user-drag: none;
     }
 
-    /* AREA CLICCABILE INVISIBILE:
-       Lezioni & Materiali */
+    /* LEZIONI & MATERIALI
+       Ora queste coordinate sono riferite ALL'IMMAGINE,
+       non all'intera schermata. */
     .hotspot-lessons {
       position: absolute;
 
-      /*
-        Coordinate percentuali riferite
-        all'intera area della Base.
-        Per ora sono una prima stima.
-      */
-      left: 84%;
-      top: 18%;
-      width: 14%;
-      height: 16%;
+      left: 79.5%;
+      top: 16%;
+      width: 18%;
+      height: 15%;
 
       cursor: pointer;
       background: transparent;
@@ -67,7 +67,6 @@
       padding: 0;
     }
 
-    /* Overlay */
     .overlay {
       position: fixed;
       inset: 0;
@@ -126,7 +125,7 @@
 
 <body>
 
-  <main class="base">
+  <main class="base-stage">
 
     <img
       class="base-image"
