@@ -37,10 +37,6 @@
       justify-content: center;
     }
 
-    /*
-      Immagine + hotspot vivono nello stesso contenitore.
-      Il contenitore mantiene ESATTAMENTE il rapporto 3:2.
-    */
     .base-wrapper {
       position: relative;
 
@@ -58,13 +54,6 @@
       -webkit-user-drag: none;
     }
 
-    /*
-      L'SVG ha lo stesso sistema di coordinate
-      dell'immagine originale: 1536 × 1024.
-
-      Quindi gli hotspot rimangono attaccati
-      agli oggetti anche ruotando l'iPad.
-    */
     .hotspot-layer {
       position: absolute;
       inset: 0;
@@ -157,15 +146,24 @@
         class="hotspot-layer"
         viewBox="0 0 1536 1024"
         preserveAspectRatio="none"
-        aria-hidden="true"
       >
 
         <!-- LEZIONI & MATERIALI -->
         <rect
-          id="hotspotLessons"
           class="hotspot"
+          data-target="overlayLessons"
           x="1235"
           y="170"
+          width="270"
+          height="155"
+        />
+
+        <!-- DOCUMENTI IMPORTANTI -->
+        <rect
+          class="hotspot"
+          data-target="overlayDocuments"
+          x="1235"
+          y="335"
           width="270"
           height="155"
         />
@@ -176,6 +174,9 @@
 
   </main>
 
+
+  <!-- LEZIONI & MATERIALI -->
+
   <div
     class="overlay"
     id="overlayLessons"
@@ -185,10 +186,7 @@
 
       <h1>Lezioni &amp; Materiali</h1>
 
-      <button
-        class="close-button"
-        id="closeLessons"
-      >
+      <button class="close-button">
         Chiudi
       </button>
 
@@ -196,29 +194,81 @@
 
   </div>
 
+
+  <!-- DOCUMENTI IMPORTANTI -->
+
+  <div
+    class="overlay"
+    id="overlayDocuments"
+  >
+
+    <section class="panel">
+
+      <h1>Documenti importanti</h1>
+
+      <button class="close-button">
+        Chiudi
+      </button>
+
+    </section>
+
+  </div>
+
+
   <script>
-    const hotspotLessons =
-      document.getElementById("hotspotLessons");
 
-    const overlayLessons =
-      document.getElementById("overlayLessons");
+    const hotspots =
+      document.querySelectorAll(".hotspot");
 
-    const closeLessons =
-      document.getElementById("closeLessons");
+    const overlays =
+      document.querySelectorAll(".overlay");
 
-    hotspotLessons.addEventListener("click", () => {
-      overlayLessons.classList.add("aperto");
+    const closeButtons =
+      document.querySelectorAll(".close-button");
+
+
+    hotspots.forEach((hotspot) => {
+
+      hotspot.addEventListener("click", () => {
+
+        const targetId =
+          hotspot.dataset.target;
+
+        const targetOverlay =
+          document.getElementById(targetId);
+
+        targetOverlay.classList.add("aperto");
+
+      });
+
     });
 
-    closeLessons.addEventListener("click", () => {
-      overlayLessons.classList.remove("aperto");
+
+    closeButtons.forEach((button) => {
+
+      button.addEventListener("click", () => {
+
+        button
+          .closest(".overlay")
+          .classList.remove("aperto");
+
+      });
+
     });
 
-    overlayLessons.addEventListener("click", (event) => {
-      if (event.target === overlayLessons) {
-        overlayLessons.classList.remove("aperto");
-      }
+
+    overlays.forEach((overlay) => {
+
+      overlay.addEventListener("click", (event) => {
+
+        if (event.target === overlay) {
+          overlay.classList.remove("aperto");
+        }
+
+      });
+
     });
+
   </script>
 
 </body>
