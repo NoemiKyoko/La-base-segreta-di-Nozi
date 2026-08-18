@@ -27,6 +27,10 @@
       justify-content: center;
     }
 
+    /* =========================
+       BASE
+    ========================== */
+
     .base-stage {
       position: relative;
       width: 100vw;
@@ -39,7 +43,6 @@
 
     .base-wrapper {
       position: relative;
-
       width: min(100vw, 150vh);
       aspect-ratio: 3 / 2;
     }
@@ -69,6 +72,7 @@
       cursor: pointer;
       pointer-events: all;
     }
+
 
     /* =========================
        PANNELLI TEST
@@ -117,7 +121,6 @@
 
     .close-button {
       appearance: none;
-
       border: 0;
       border-radius: 18px;
 
@@ -134,7 +137,7 @@
 
 
     /* =========================
-       SCHERMATE ARCHIVIO
+       ARCHIVI
     ========================== */
 
     .archive-screen {
@@ -243,8 +246,13 @@
       gap: 22px;
     }
 
+
+    /* =========================
+       CARD
+    ========================== */
+
     .archive-card {
-      appearance: none;
+      position: relative;
 
       border: 1px solid rgba(23, 63, 122, 0.10);
       border-radius: 22px;
@@ -255,6 +263,16 @@
 
       box-shadow:
         0 8px 20px rgba(58, 70, 90, 0.10);
+    }
+
+    .archive-open {
+      appearance: none;
+      border: 0;
+
+      width: 100%;
+      padding: 0;
+
+      background: transparent;
 
       text-align: left;
       cursor: pointer;
@@ -289,6 +307,8 @@
     .archive-name {
       display: block;
 
+      padding-right: 38px;
+
       color: #173f7a;
 
       font-size: 16px;
@@ -297,6 +317,79 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .card-menu-button {
+      position: absolute;
+      right: 10px;
+      bottom: 8px;
+
+      appearance: none;
+      border: 0;
+
+      width: 36px;
+      height: 36px;
+
+      border-radius: 12px;
+
+      background: transparent;
+      color: #173f7a;
+
+      font-size: 24px;
+
+      cursor: pointer;
+    }
+
+    .card-menu {
+      position: absolute;
+
+      right: 10px;
+      bottom: 48px;
+
+      display: none;
+
+      min-width: 120px;
+
+      padding: 7px;
+
+      border: 1px solid rgba(23, 63, 122, 0.10);
+      border-radius: 14px;
+
+      background: #fffaf6;
+
+      box-shadow:
+        0 8px 22px rgba(50, 60, 75, 0.17);
+
+      z-index: 5;
+    }
+
+    .card-menu.aperto {
+      display: block;
+    }
+
+    .delete-button {
+      appearance: none;
+      border: 0;
+
+      width: 100%;
+
+      padding: 10px 14px;
+
+      border-radius: 10px;
+
+      background: transparent;
+      color: #8f3d3d;
+
+      font-size: 15px;
+      font-weight: 600;
+
+      text-align: left;
+
+      cursor: pointer;
+    }
+
+    .delete-button:active {
+      background: rgba(143, 61, 61, 0.08);
     }
 
     .file-input {
@@ -323,11 +416,8 @@
         preserveAspectRatio="none"
       >
 
-        <!-- =========================
-             LIBRERIA DESTRA
-        ========================== -->
+        <!-- LIBRERIA -->
 
-        <!-- LEZIONI & MATERIALI -->
         <rect
           class="hotspot"
           data-target="overlayLessons"
@@ -337,7 +427,6 @@
           height="155"
         />
 
-        <!-- DOCUMENTI IMPORTANTI -->
         <rect
           class="hotspot"
           data-archive="documentsScreen"
@@ -347,7 +436,6 @@
           height="155"
         />
 
-        <!-- ATTIVITÀ & PROGETTI -->
         <rect
           class="hotspot"
           data-archive="projectsScreen"
@@ -357,7 +445,6 @@
           height="155"
         />
 
-        <!-- IDEE & ISPIRAZIONI -->
         <rect
           class="hotspot"
           data-target="overlayIdeas"
@@ -367,7 +454,6 @@
           height="145"
         />
 
-        <!-- STICKER DI NOZI -->
         <rect
           class="hotspot"
           data-target="overlayStickers"
@@ -378,11 +464,8 @@
         />
 
 
-        <!-- =========================
-             ZONA CENTRALE
-        ========================== -->
+        <!-- ZONA CENTRALE -->
 
-        <!-- PROGRAMMAZIONE -->
         <rect
           class="hotspot"
           data-target="overlayPlanning"
@@ -392,7 +475,6 @@
           height="195"
         />
 
-        <!-- ORARIO SCOLASTICO -->
         <rect
           class="hotspot"
           data-target="overlaySchedule"
@@ -402,7 +484,6 @@
           height="195"
         />
 
-        <!-- DA NON DIMENTICARE -->
         <rect
           class="hotspot"
           data-target="overlayRemember"
@@ -422,7 +503,7 @@
           height="245"
         />
 
-        <!-- COMPUTER / REGISTRO -->
+        <!-- COMPUTER / ARGO -->
         <rect
           class="hotspot"
           data-url="https://www.portaleargo.it/"
@@ -439,9 +520,7 @@
   </main>
 
 
-  <!-- =========================
-       PANNELLI TEST
-  ========================== -->
+  <!-- PANNELLI ANCORA DI TEST -->
 
   <div class="overlay" id="overlayLessons">
     <section class="panel">
@@ -493,9 +572,7 @@
   </div>
 
 
-  <!-- =========================
-       DOCUMENTI IMPORTANTI
-  ========================== -->
+  <!-- DOCUMENTI IMPORTANTI -->
 
   <section
     class="archive-screen documents"
@@ -552,9 +629,7 @@
   </section>
 
 
-  <!-- =========================
-       ATTIVITÀ & PROGETTI
-  ========================== -->
+  <!-- ATTIVITÀ & PROGETTI -->
 
   <section
     class="archive-screen projects"
@@ -614,99 +689,351 @@
   <script>
 
     /* =========================
-       HOTSPOT DELLA BASE
+       INDEXEDDB
+    ========================== */
+
+    const DB_NAME =
+      "BaseSegretaNoziDB";
+
+    const DB_VERSION =
+      1;
+
+    const STORE_DOCUMENTS =
+      "documents";
+
+    const STORE_PROJECTS =
+      "projects";
+
+
+    function apriDatabase() {
+
+      return new Promise((resolve, reject) => {
+
+        const request =
+          indexedDB.open(
+            DB_NAME,
+            DB_VERSION
+          );
+
+
+        request.onupgradeneeded = () => {
+
+          const db =
+            request.result;
+
+
+          if (
+            !db.objectStoreNames.contains(
+              STORE_DOCUMENTS
+            )
+          ) {
+
+            db.createObjectStore(
+              STORE_DOCUMENTS,
+              {
+                keyPath: "id",
+                autoIncrement: true
+              }
+            );
+
+          }
+
+
+          if (
+            !db.objectStoreNames.contains(
+              STORE_PROJECTS
+            )
+          ) {
+
+            db.createObjectStore(
+              STORE_PROJECTS,
+              {
+                keyPath: "id",
+                autoIncrement: true
+              }
+            );
+
+          }
+
+        };
+
+
+        request.onsuccess = () => {
+          resolve(request.result);
+        };
+
+
+        request.onerror = () => {
+          reject(request.error);
+        };
+
+      });
+
+    }
+
+
+    async function salvaFile(
+      storeName,
+      file
+    ) {
+
+      const db =
+        await apriDatabase();
+
+
+      return new Promise((resolve, reject) => {
+
+        const transaction =
+          db.transaction(
+            storeName,
+            "readwrite"
+          );
+
+        const store =
+          transaction.objectStore(
+            storeName
+          );
+
+
+        const record = {
+
+          name: file.name,
+          type: file.type,
+          blob: file,
+          createdAt: Date.now()
+
+        };
+
+
+        const request =
+          store.add(record);
+
+
+        request.onsuccess = () => {
+          resolve(request.result);
+        };
+
+
+        request.onerror = () => {
+          reject(request.error);
+        };
+
+      });
+
+    }
+
+
+    async function leggiTutti(
+      storeName
+    ) {
+
+      const db =
+        await apriDatabase();
+
+
+      return new Promise((resolve, reject) => {
+
+        const transaction =
+          db.transaction(
+            storeName,
+            "readonly"
+          );
+
+        const store =
+          transaction.objectStore(
+            storeName
+          );
+
+
+        const request =
+          store.getAll();
+
+
+        request.onsuccess = () => {
+          resolve(request.result);
+        };
+
+
+        request.onerror = () => {
+          reject(request.error);
+        };
+
+      });
+
+    }
+
+
+    async function eliminaFile(
+      storeName,
+      id
+    ) {
+
+      const db =
+        await apriDatabase();
+
+
+      return new Promise((resolve, reject) => {
+
+        const transaction =
+          db.transaction(
+            storeName,
+            "readwrite"
+          );
+
+        const store =
+          transaction.objectStore(
+            storeName
+          );
+
+
+        const request =
+          store.delete(id);
+
+
+        request.onsuccess = () => {
+          resolve();
+        };
+
+
+        request.onerror = () => {
+          reject(request.error);
+        };
+
+      });
+
+    }
+
+
+    /* =========================
+       BASE
     ========================== */
 
     const hotspots =
-      document.querySelectorAll(".hotspot");
+      document.querySelectorAll(
+        ".hotspot"
+      );
 
     const overlays =
-      document.querySelectorAll(".overlay");
+      document.querySelectorAll(
+        ".overlay"
+      );
 
     const closeButtons =
-      document.querySelectorAll(".close-button");
+      document.querySelectorAll(
+        ".close-button"
+      );
 
 
     hotspots.forEach((hotspot) => {
 
-      hotspot.addEventListener("click", () => {
+      hotspot.addEventListener(
+        "click",
+        () => {
 
-        const url =
-          hotspot.dataset.url;
+          const url =
+            hotspot.dataset.url;
 
-        if (url) {
 
-          window.open(
-            url,
-            "_blank",
-            "noopener,noreferrer"
-          );
+          if (url) {
 
-          return;
+            window.open(
+              url,
+              "_blank",
+              "noopener,noreferrer"
+            );
+
+            return;
+
+          }
+
+
+          const archiveId =
+            hotspot.dataset.archive;
+
+
+          if (archiveId) {
+
+            document
+              .getElementById(
+                archiveId
+              )
+              .classList
+              .add("aperto");
+
+            return;
+
+          }
+
+
+          const targetId =
+            hotspot.dataset.target;
+
+
+          const targetOverlay =
+            document.getElementById(
+              targetId
+            );
+
+
+          if (targetOverlay) {
+
+            targetOverlay
+              .classList
+              .add("aperto");
+
+          }
+
         }
-
-
-        const archiveId =
-          hotspot.dataset.archive;
-
-        if (archiveId) {
-
-          const archive =
-            document.getElementById(archiveId);
-
-          archive.classList.add("aperto");
-
-          return;
-        }
-
-
-        const targetId =
-          hotspot.dataset.target;
-
-        const targetOverlay =
-          document.getElementById(targetId);
-
-        if (targetOverlay) {
-          targetOverlay.classList.add("aperto");
-        }
-
-      });
+      );
 
     });
 
 
     /* =========================
-       CHIUSURA PANNELLI TEST
+       PANNELLI TEST
     ========================== */
 
     closeButtons.forEach((button) => {
 
-      button.addEventListener("click", () => {
+      button.addEventListener(
+        "click",
+        () => {
 
-        button
-          .closest(".overlay")
-          .classList.remove("aperto");
+          button
+            .closest(".overlay")
+            .classList
+            .remove("aperto");
 
-      });
+        }
+      );
 
     });
 
 
     overlays.forEach((overlay) => {
 
-      overlay.addEventListener("click", (event) => {
+      overlay.addEventListener(
+        "click",
+        (event) => {
 
-        if (event.target === overlay) {
-          overlay.classList.remove("aperto");
+          if (
+            event.target === overlay
+          ) {
+
+            overlay
+              .classList
+              .remove("aperto");
+
+          }
+
         }
-
-      });
+      );
 
     });
 
 
     /* =========================
-       CHIUSURA ARCHIVI
+       ARCHIVI
     ========================== */
 
     const archiveBackButtons =
@@ -714,169 +1041,437 @@
         "[data-close-archive]"
       );
 
-    archiveBackButtons.forEach((button) => {
 
-      button.addEventListener("click", () => {
+    archiveBackButtons.forEach(
+      (button) => {
 
-        button
-          .closest(".archive-screen")
-          .classList.remove("aperto");
+        button.addEventListener(
+          "click",
+          () => {
 
-      });
+            button
+              .closest(".archive-screen")
+              .classList
+              .remove("aperto");
 
-    });
+          }
+        );
 
+      }
+    );
 
-    /* =========================
-       APERTURA FILE PICKER
-    ========================== */
 
     const addButtons =
       document.querySelectorAll(
         "[data-file-picker]"
       );
 
+
     addButtons.forEach((button) => {
 
-      button.addEventListener("click", () => {
+      button.addEventListener(
+        "click",
+        () => {
 
-        const inputId =
-          button.dataset.filePicker;
+          document
+            .getElementById(
+              button.dataset.filePicker
+            )
+            .click();
 
-        document
-          .getElementById(inputId)
-          .click();
-
-      });
+        }
+      );
 
     });
 
 
     /* =========================
-       CREA CARD ARCHIVIO
+       CARD
     ========================== */
 
-    function creaCard(file) {
+    function creaCard(
+      record,
+      storeName,
+      refreshFunction
+    ) {
 
       const card =
+        document.createElement("article");
+
+      card.className =
+        "archive-card";
+
+
+      const openButton =
         document.createElement("button");
 
-      card.className = "archive-card";
+      openButton.className =
+        "archive-open";
 
 
       const preview =
         document.createElement("div");
 
-      preview.className = "archive-preview";
+      preview.className =
+        "archive-preview";
 
 
       const name =
         document.createElement("span");
 
-      name.className = "archive-name";
-      name.textContent = file.name;
+      name.className =
+        "archive-name";
+
+      name.textContent =
+        record.name;
 
 
-      if (file.type.startsWith("image/")) {
+      const objectUrl =
+        URL.createObjectURL(
+          record.blob
+        );
+
+
+      if (
+        record.type &&
+        record.type.startsWith("image/")
+      ) {
 
         const image =
           document.createElement("img");
 
-        const objectUrl =
-          URL.createObjectURL(file);
+        image.src =
+          objectUrl;
 
-        image.src = objectUrl;
         image.alt = "";
 
         preview.appendChild(image);
-
-        card.addEventListener("click", () => {
-          window.open(objectUrl, "_blank");
-        });
 
       } else {
 
         preview.textContent = "📄";
 
-        const objectUrl =
-          URL.createObjectURL(file);
-
-        card.addEventListener("click", () => {
-          window.open(objectUrl, "_blank");
-        });
-
       }
 
 
-      card.appendChild(preview);
-      card.appendChild(name);
+      openButton.appendChild(
+        preview
+      );
+
+      openButton.appendChild(
+        name
+      );
+
+
+      openButton.addEventListener(
+        "click",
+        () => {
+
+          window.open(
+            objectUrl,
+            "_blank"
+          );
+
+        }
+      );
+
+
+      const menuButton =
+        document.createElement("button");
+
+      menuButton.className =
+        "card-menu-button";
+
+      menuButton.textContent =
+        "⋯";
+
+      menuButton.setAttribute(
+        "aria-label",
+        "Azioni"
+      );
+
+
+      const menu =
+        document.createElement("div");
+
+      menu.className =
+        "card-menu";
+
+
+      const deleteButton =
+        document.createElement("button");
+
+      deleteButton.className =
+        "delete-button";
+
+      deleteButton.textContent =
+        "Elimina";
+
+
+      menu.appendChild(
+        deleteButton
+      );
+
+
+      menuButton.addEventListener(
+        "click",
+        (event) => {
+
+          event.stopPropagation();
+
+          document
+            .querySelectorAll(
+              ".card-menu.aperto"
+            )
+            .forEach(
+              (otherMenu) => {
+
+                if (
+                  otherMenu !== menu
+                ) {
+
+                  otherMenu
+                    .classList
+                    .remove("aperto");
+
+                }
+
+              }
+            );
+
+
+          menu
+            .classList
+            .toggle("aperto");
+
+        }
+      );
+
+
+      deleteButton.addEventListener(
+        "click",
+        async (event) => {
+
+          event.stopPropagation();
+
+
+          const conferma =
+            window.confirm(
+              `Eliminare "${record.name}"?`
+            );
+
+
+          if (!conferma) {
+            return;
+          }
+
+
+          await eliminaFile(
+            storeName,
+            record.id
+          );
+
+
+          await refreshFunction();
+
+        }
+      );
+
+
+      card.appendChild(
+        openButton
+      );
+
+      card.appendChild(
+        menuButton
+      );
+
+      card.appendChild(
+        menu
+      );
+
 
       return card;
+
     }
 
 
     /* =========================
-       GESTIONE ARCHIVIO
+       MOTORE ARCHIVIO
     ========================== */
 
     function collegaArchivio(
-      inputId,
-      gridId,
-      emptyId
+      options
     ) {
 
+      const {
+        storeName,
+        inputId,
+        gridId,
+        emptyId
+      } = options;
+
+
       const input =
-        document.getElementById(inputId);
+        document.getElementById(
+          inputId
+        );
 
       const grid =
-        document.getElementById(gridId);
+        document.getElementById(
+          gridId
+        );
 
       const empty =
-        document.getElementById(emptyId);
+        document.getElementById(
+          emptyId
+        );
 
 
-      input.addEventListener("change", () => {
+      async function refresh() {
 
-        const files =
-          Array.from(input.files);
+        const records =
+          await leggiTutti(
+            storeName
+          );
 
 
-        if (files.length === 0) {
+        grid.innerHTML = "";
+
+
+        if (
+          records.length === 0
+        ) {
+
+          empty.style.display =
+            "flex";
+
           return;
+
         }
 
 
-        empty.style.display = "none";
+        empty.style.display =
+          "none";
 
 
-        files.forEach((file) => {
+        records
+          .sort(
+            (a, b) =>
+              b.createdAt -
+              a.createdAt
+          )
+          .forEach(
+            (record) => {
 
-          const card =
-            creaCard(file);
+              const card =
+                creaCard(
+                  record,
+                  storeName,
+                  refresh
+                );
 
-          grid.appendChild(card);
+              grid.appendChild(
+                card
+              );
 
-        });
+            }
+          );
+
+      }
 
 
-        input.value = "";
+      input.addEventListener(
+        "change",
+        async () => {
 
-      });
+          const files =
+            Array.from(
+              input.files
+            );
+
+
+          for (
+            const file of files
+          ) {
+
+            await salvaFile(
+              storeName,
+              file
+            );
+
+          }
+
+
+          input.value = "";
+
+
+          await refresh();
+
+        }
+      );
+
+
+      refresh();
 
     }
 
 
-    collegaArchivio(
-      "documentsInput",
-      "documentsGrid",
-      "documentsEmpty"
-    );
+    collegaArchivio({
+
+      storeName:
+        STORE_DOCUMENTS,
+
+      inputId:
+        "documentsInput",
+
+      gridId:
+        "documentsGrid",
+
+      emptyId:
+        "documentsEmpty"
+
+    });
 
 
-    collegaArchivio(
-      "projectsInput",
-      "projectsGrid",
-      "projectsEmpty"
+    collegaArchivio({
+
+      storeName:
+        STORE_PROJECTS,
+
+      inputId:
+        "projectsInput",
+
+      gridId:
+        "projectsGrid",
+
+      emptyId:
+        "projectsEmpty"
+
+    });
+
+
+    /* Chiudi menu ⋯ cliccando altrove */
+
+    document.addEventListener(
+      "click",
+      () => {
+
+        document
+          .querySelectorAll(
+            ".card-menu.aperto"
+          )
+          .forEach(
+            (menu) => {
+
+              menu
+                .classList
+                .remove("aperto");
+
+            }
+          );
+
+      }
     );
 
   </script>
