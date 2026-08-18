@@ -27,6 +27,7 @@
       justify-content: center;
     }
 
+
     /* =========================
        BASE
     ========================== */
@@ -57,46 +58,6 @@
       -webkit-user-drag: none;
     }
 
-    /* =========================
-       NOZI
-    ========================== */
-
-    .nozi-character {
-      position: absolute;
-
-      /*
-        Prima posizione di prova:
-        Nozi vive sopra la scena senza modificare
-        l'immagine originale.
-      */
-
-      left: 32%;
-      top: 18%;
-
-      width: 12%;
-
-      height: auto;
-
-      z-index: 20;
-
-      pointer-events: none;
-
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-user-drag: none;
-
-      transform-origin: center bottom;
-
-      transition:
-        opacity 0.18s ease,
-        transform 0.18s ease;
-    }
-
-    .nozi-character.cambio {
-      opacity: 0;
-      transform: scale(0.92);
-    }
-
     .hotspot-layer {
       position: absolute;
       inset: 0;
@@ -104,7 +65,7 @@
       width: 100%;
       height: 100%;
 
-      z-index: 30;
+      z-index: 10;
     }
 
     .hotspot {
@@ -288,7 +249,7 @@
 
 
     /* =========================
-       CARD
+       CARD ARCHIVI
     ========================== */
 
     .archive-card {
@@ -435,6 +396,357 @@
     .file-input {
       display: none;
     }
+
+
+    /* =========================
+       GALLERIA STICKER
+    ========================== */
+
+    .stickers-screen {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      flex-direction: column;
+
+      z-index: 250;
+
+      overflow: hidden;
+
+      background:
+        linear-gradient(
+          180deg,
+          #e7f3fb 0%,
+          #f4f0fb 100%
+        );
+    }
+
+    .stickers-screen.aperto {
+      display: flex;
+    }
+
+    .stickers-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+
+      padding:
+        max(20px, env(safe-area-inset-top))
+        26px
+        18px;
+
+      background: #dcecf8;
+
+      border-bottom:
+        1px solid rgba(23, 63, 122, 0.10);
+    }
+
+    .stickers-back {
+      appearance: none;
+      border: 0;
+
+      width: 50px;
+      height: 50px;
+
+      flex: 0 0 50px;
+
+      border-radius: 16px;
+
+      background: rgba(255, 255, 255, 0.76);
+      color: #173f7a;
+
+      font-size: 30px;
+      line-height: 1;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 5px 14px rgba(50, 65, 80, 0.10);
+    }
+
+    .stickers-heading {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .stickers-title {
+      margin: 0;
+
+      color: #173f7a;
+
+      font-size: clamp(25px, 4vw, 40px);
+      font-weight: 700;
+    }
+
+    .stickers-subtitle {
+      margin: 5px 0 0;
+
+      color: rgba(23, 63, 122, 0.62);
+
+      font-size: 14px;
+    }
+
+    .stickers-content {
+      flex: 1;
+
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+
+      padding:
+        28px
+        max(22px, env(safe-area-inset-right))
+        max(30px, env(safe-area-inset-bottom))
+        max(22px, env(safe-area-inset-left));
+    }
+
+    .stickers-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(auto-fill, minmax(150px, 1fr));
+
+      gap: 20px;
+
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .sticker-card {
+      appearance: none;
+      border: 1px solid rgba(23, 63, 122, 0.10);
+
+      width: 100%;
+
+      padding: 12px;
+
+      border-radius: 24px;
+
+      background: rgba(255, 255, 255, 0.76);
+
+      box-shadow:
+        0 8px 20px rgba(58, 70, 90, 0.09);
+
+      cursor: pointer;
+
+      text-align: center;
+    }
+
+    .sticker-card:active {
+      transform: scale(0.98);
+    }
+
+    .sticker-image-box {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 8px;
+
+      border-radius: 18px;
+
+      background: rgba(255, 255, 255, 0.64);
+
+      overflow: hidden;
+    }
+
+    .sticker-image {
+      display: block;
+
+      max-width: 100%;
+      max-height: 100%;
+
+      object-fit: contain;
+
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .sticker-label {
+      display: block;
+
+      margin-top: 10px;
+
+      color: #173f7a;
+
+      font-size: 14px;
+      font-weight: 600;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+
+    /* =========================
+       ANTEPRIMA STICKER
+    ========================== */
+
+    .sticker-viewer {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      padding:
+        max(24px, env(safe-area-inset-top))
+        max(24px, env(safe-area-inset-right))
+        max(24px, env(safe-area-inset-bottom))
+        max(24px, env(safe-area-inset-left));
+
+      background: rgba(38, 46, 67, 0.58);
+
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+
+      z-index: 400;
+    }
+
+    .sticker-viewer.aperto {
+      display: flex;
+    }
+
+    .sticker-viewer-card {
+      position: relative;
+
+      width: min(560px, 92vw);
+      max-height: 90vh;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      padding: 24px;
+
+      border-radius: 30px;
+
+      background: #fffaf7;
+
+      box-shadow:
+        0 22px 60px rgba(30, 35, 55, 0.28);
+    }
+
+    .sticker-viewer-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+
+      appearance: none;
+      border: 0;
+
+      width: 42px;
+      height: 42px;
+
+      border-radius: 14px;
+
+      background: #edf3fa;
+      color: #173f7a;
+
+      font-size: 24px;
+
+      cursor: pointer;
+    }
+
+    .sticker-viewer-image-box {
+      width: min(380px, 70vw);
+      height: min(380px, 55vh);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-top: 18px;
+    }
+
+    .sticker-viewer-image {
+      display: block;
+
+      max-width: 100%;
+      max-height: 100%;
+
+      object-fit: contain;
+
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .sticker-viewer-name {
+      margin: 14px 0 18px;
+
+      color: #173f7a;
+
+      font-size: 18px;
+      font-weight: 700;
+
+      text-align: center;
+    }
+
+    .sticker-actions {
+      width: 100%;
+
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+
+      gap: 10px;
+    }
+
+    .sticker-action {
+      appearance: none;
+      border: 0;
+
+      padding: 12px 18px;
+
+      border-radius: 15px;
+
+      background: #dcecf8;
+      color: #173f7a;
+
+      font-size: 16px;
+      font-weight: 600;
+
+      cursor: pointer;
+    }
+
+    .sticker-action.secondary {
+      background: #f3ddd2;
+    }
+
+
+    /* =========================
+       TELEFONI / IPAD VERTICALE
+    ========================== */
+
+    @media (max-width: 700px) {
+
+      .stickers-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+
+        gap: 14px;
+      }
+
+      .stickers-content {
+        padding: 18px;
+      }
+
+      .stickers-header {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .stickers-subtitle {
+        display: none;
+      }
+
+    }
+
   </style>
 </head>
 
@@ -450,15 +762,6 @@
         alt="La Base Segreta di Nozi"
       >
 
-      <!-- NOZI DINAMICA -->
-
-      <img
-        class="nozi-character"
-        id="noziCharacter"
-        src="assets/nozi-neutra.png"
-        alt="Nozi"
-      >
-
       <svg
         class="hotspot-layer"
         viewBox="0 0 1536 1024"
@@ -470,7 +773,6 @@
         <rect
           class="hotspot"
           data-target="overlayLessons"
-          data-nozi="nozi-lavoro.png"
           x="1235"
           y="170"
           width="270"
@@ -480,7 +782,6 @@
         <rect
           class="hotspot"
           data-archive="documentsScreen"
-          data-nozi="nozi-documenti.png"
           x="1235"
           y="335"
           width="270"
@@ -490,7 +791,6 @@
         <rect
           class="hotspot"
           data-archive="projectsScreen"
-          data-nozi="nozi-lavoro.png"
           x="1235"
           y="500"
           width="270"
@@ -500,17 +800,17 @@
         <rect
           class="hotspot"
           data-target="overlayIdeas"
-          data-nozi="nozi-orgogliosa.png"
           x="1235"
           y="665"
           width="270"
           height="145"
         />
 
+        <!-- STICKER DI NOZI -->
+
         <rect
           class="hotspot"
-          data-target="overlayStickers"
-          data-nozi="nozi-orgogliosa.png"
+          data-stickers="stickersScreen"
           x="1235"
           y="810"
           width="270"
@@ -523,7 +823,6 @@
         <rect
           class="hotspot"
           data-target="overlayPlanning"
-          data-nozi="nozi-programmazione.png"
           x="425"
           y="290"
           width="235"
@@ -533,7 +832,6 @@
         <rect
           class="hotspot"
           data-target="overlaySchedule"
-          data-nozi="nozi-calcolatrice.png"
           x="670"
           y="290"
           width="230"
@@ -543,24 +841,24 @@
         <rect
           class="hotspot"
           data-target="overlayRemember"
-          data-nozi="nozi-scadenze.png"
           x="915"
           y="290"
           width="235"
           height="195"
         />
 
+
         <!-- QUADERNO DELLE COSE BUFFE -->
 
         <rect
           class="hotspot"
           data-target="overlayNotebook"
-          data-nozi="nozi-neutra.png"
           x="790"
           y="580"
           width="330"
           height="245"
         />
+
 
         <!-- COMPUTER / ARGO -->
 
@@ -580,7 +878,9 @@
   </main>
 
 
-  <!-- PANNELLI ANCORA DI TEST -->
+  <!-- =========================
+       PANNELLI ANCORA DI TEST
+  ========================== -->
 
   <div class="overlay" id="overlayLessons">
     <section class="panel">
@@ -592,13 +892,6 @@
   <div class="overlay" id="overlayIdeas">
     <section class="panel">
       <h1>Idee &amp; Ispirazioni</h1>
-      <button class="close-button">Chiudi</button>
-    </section>
-  </div>
-
-  <div class="overlay" id="overlayStickers">
-    <section class="panel">
-      <h1>Sticker di Nozi</h1>
       <button class="close-button">Chiudi</button>
     </section>
   </div>
@@ -632,7 +925,9 @@
   </div>
 
 
-  <!-- DOCUMENTI IMPORTANTI -->
+  <!-- =========================
+       DOCUMENTI IMPORTANTI
+  ========================== -->
 
   <section
     class="archive-screen documents"
@@ -689,7 +984,9 @@
   </section>
 
 
-  <!-- ATTIVITÀ & PROGETTI -->
+  <!-- =========================
+       ATTIVITÀ & PROGETTI
+  ========================== -->
 
   <section
     class="archive-screen projects"
@@ -744,6 +1041,116 @@
     >
 
   </section>
+
+
+  <!-- =========================
+       GALLERIA STICKER
+  ========================== -->
+
+  <section
+    class="stickers-screen"
+    id="stickersScreen"
+  >
+
+    <header class="stickers-header">
+
+      <button
+        class="stickers-back"
+        id="stickersBack"
+        aria-label="Torna alla Base"
+      >
+        ‹
+      </button>
+
+      <div class="stickers-heading">
+
+        <h1 class="stickers-title">
+          Sticker di Nozi
+        </h1>
+
+        <p class="stickers-subtitle">
+          Feedback positivi, correzioni e altre emergenze scolastiche 🍙
+        </p>
+
+      </div>
+
+    </header>
+
+
+    <div class="stickers-content">
+
+      <div
+        class="stickers-grid"
+        id="stickersGrid"
+      ></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       ANTEPRIMA STICKER
+  ========================== -->
+
+  <div
+    class="sticker-viewer"
+    id="stickerViewer"
+  >
+
+    <section
+      class="sticker-viewer-card"
+      id="stickerViewerCard"
+    >
+
+      <button
+        class="sticker-viewer-close"
+        id="stickerViewerClose"
+        aria-label="Chiudi"
+      >
+        ×
+      </button>
+
+
+      <div class="sticker-viewer-image-box">
+
+        <img
+          class="sticker-viewer-image"
+          id="stickerViewerImage"
+          src=""
+          alt=""
+        >
+
+      </div>
+
+
+      <div
+        class="sticker-viewer-name"
+        id="stickerViewerName"
+      ></div>
+
+
+      <div class="sticker-actions">
+
+        <button
+          class="sticker-action"
+          id="shareStickerButton"
+        >
+          Condividi
+        </button>
+
+        <button
+          class="sticker-action secondary"
+          id="openStickerButton"
+        >
+          Apri immagine
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
 
 
   <script>
@@ -965,72 +1372,6 @@
 
 
     /* =========================
-       NOZI
-    ========================== */
-
-    const noziCharacter =
-      document.getElementById(
-        "noziCharacter"
-      );
-
-
-    function cambiaNozi(
-      fileName
-    ) {
-
-      if (
-        !noziCharacter ||
-        !fileName
-      ) {
-        return;
-      }
-
-
-      const nuovoSrc =
-        `assets/${fileName}`;
-
-
-      if (
-        noziCharacter
-          .getAttribute("src") ===
-        nuovoSrc
-      ) {
-        return;
-      }
-
-
-      noziCharacter
-        .classList
-        .add("cambio");
-
-
-      window.setTimeout(
-        () => {
-
-          noziCharacter.src =
-            nuovoSrc;
-
-          noziCharacter
-            .classList
-            .remove("cambio");
-
-        },
-        150
-      );
-
-    }
-
-
-    function noziNeutra() {
-
-      cambiaNozi(
-        "nozi-neutra.png"
-      );
-
-    }
-
-
-    /* =========================
        BASE
     ========================== */
 
@@ -1073,15 +1414,20 @@
           }
 
 
-          const noziFile =
-            hotspot.dataset.nozi;
+          const stickersId =
+            hotspot.dataset.stickers;
 
 
-          if (noziFile) {
+          if (stickersId) {
 
-            cambiaNozi(
-              noziFile
-            );
+            document
+              .getElementById(
+                stickersId
+              )
+              .classList
+              .add("aperto");
+
+            return;
 
           }
 
@@ -1143,8 +1489,6 @@
             .classList
             .remove("aperto");
 
-          noziNeutra();
-
         }
       );
 
@@ -1164,8 +1508,6 @@
             overlay
               .classList
               .remove("aperto");
-
-            noziNeutra();
 
           }
 
@@ -1196,8 +1538,6 @@
               .closest(".archive-screen")
               .classList
               .remove("aperto");
-
-            noziNeutra();
 
           }
         );
@@ -1231,7 +1571,7 @@
 
 
     /* =========================
-       CARD
+       CARD ARCHIVI
     ========================== */
 
     function creaCard(
@@ -1596,7 +1936,445 @@
     });
 
 
-    /* Chiudi menu ⋯ cliccando altrove */
+    /* =========================
+       STICKER DI NOZI
+    ========================== */
+
+    const STICKERS = [
+
+      {
+        file: "nozi-calcolatrice.png",
+        label: "Calcolatrice"
+      },
+
+      {
+        file: "nozi-collegio.png",
+        label: "Collegio"
+      },
+
+      {
+        file: "nozi-colloquio.png",
+        label: "Colloquio"
+      },
+
+      {
+        file: "nozi-depressa.png",
+        label: "Depressa"
+      },
+
+      {
+        file: "nozi-documenti.png",
+        label: "Documenti"
+      },
+
+      {
+        file: "nozi-ferie.png",
+        label: "Ferie"
+      },
+
+      {
+        file: "nozi-fine-scuola.png",
+        label: "Fine scuola"
+      },
+
+      {
+        file: "nozi-formazione.png",
+        label: "Formazione"
+      },
+
+      {
+        file: "nozi-gita.png",
+        label: "Gita"
+      },
+
+      {
+        file: "nozi-incitamento.png",
+        label: "Incitamento"
+      },
+
+      {
+        file: "nozi-lavoro.png",
+        label: "Lavoro"
+      },
+
+      {
+        file: "nozi-neutra.png",
+        label: "Neutra"
+      },
+
+      {
+        file: "nozi-orgogliosa.png",
+        label: "Orgogliosa"
+      },
+
+      {
+        file: "nozi-panico.png",
+        label: "Panico"
+      },
+
+      {
+        file: "nozi-perplessa.png",
+        label: "Perplessa"
+      },
+
+      {
+        file: "nozi-programmazione.png",
+        label: "Programmazione"
+      },
+
+      {
+        file: "nozi-sailor.png",
+        label: "Sailor Nozi"
+      },
+
+      {
+        file: "nozi-scadenze.png",
+        label: "Scadenze"
+      },
+
+      {
+        file: "nozi-tristina.png",
+        label: "Tristina"
+      },
+
+      {
+        file: "baozzi-milord.png",
+        label: "Baozzi Milord 🎩"
+      }
+
+    ];
+
+
+    const stickersScreen =
+      document.getElementById(
+        "stickersScreen"
+      );
+
+    const stickersBack =
+      document.getElementById(
+        "stickersBack"
+      );
+
+    const stickersGrid =
+      document.getElementById(
+        "stickersGrid"
+      );
+
+
+    const stickerViewer =
+      document.getElementById(
+        "stickerViewer"
+      );
+
+    const stickerViewerCard =
+      document.getElementById(
+        "stickerViewerCard"
+      );
+
+    const stickerViewerClose =
+      document.getElementById(
+        "stickerViewerClose"
+      );
+
+    const stickerViewerImage =
+      document.getElementById(
+        "stickerViewerImage"
+      );
+
+    const stickerViewerName =
+      document.getElementById(
+        "stickerViewerName"
+      );
+
+    const shareStickerButton =
+      document.getElementById(
+        "shareStickerButton"
+      );
+
+    const openStickerButton =
+      document.getElementById(
+        "openStickerButton"
+      );
+
+
+    let stickerSelezionato =
+      null;
+
+
+    function creaGalleriaSticker() {
+
+      stickersGrid.innerHTML = "";
+
+
+      STICKERS.forEach(
+        (sticker) => {
+
+          const card =
+            document.createElement(
+              "button"
+            );
+
+          card.className =
+            "sticker-card";
+
+
+          const imageBox =
+            document.createElement(
+              "div"
+            );
+
+          imageBox.className =
+            "sticker-image-box";
+
+
+          const image =
+            document.createElement(
+              "img"
+            );
+
+          image.className =
+            "sticker-image";
+
+          image.src =
+            `assets/${sticker.file}`;
+
+          image.alt =
+            sticker.label;
+
+
+          const label =
+            document.createElement(
+              "span"
+            );
+
+          label.className =
+            "sticker-label";
+
+          label.textContent =
+            sticker.label;
+
+
+          imageBox.appendChild(
+            image
+          );
+
+          card.appendChild(
+            imageBox
+          );
+
+          card.appendChild(
+            label
+          );
+
+
+          card.addEventListener(
+            "click",
+            () => {
+
+              apriSticker(
+                sticker
+              );
+
+            }
+          );
+
+
+          stickersGrid.appendChild(
+            card
+          );
+
+        }
+      );
+
+    }
+
+
+    function apriSticker(
+      sticker
+    ) {
+
+      stickerSelezionato =
+        sticker;
+
+
+      stickerViewerImage.src =
+        `assets/${sticker.file}`;
+
+      stickerViewerImage.alt =
+        sticker.label;
+
+      stickerViewerName.textContent =
+        sticker.label;
+
+
+      stickerViewer
+        .classList
+        .add("aperto");
+
+    }
+
+
+    function chiudiSticker() {
+
+      stickerViewer
+        .classList
+        .remove("aperto");
+
+      stickerSelezionato =
+        null;
+
+    }
+
+
+    stickersBack.addEventListener(
+      "click",
+      () => {
+
+        stickersScreen
+          .classList
+          .remove("aperto");
+
+      }
+    );
+
+
+    stickerViewerClose.addEventListener(
+      "click",
+      chiudiSticker
+    );
+
+
+    stickerViewer.addEventListener(
+      "click",
+      (event) => {
+
+        if (
+          event.target ===
+          stickerViewer
+        ) {
+
+          chiudiSticker();
+
+        }
+
+      }
+    );
+
+
+    stickerViewerCard.addEventListener(
+      "click",
+      (event) => {
+
+        event.stopPropagation();
+
+      }
+    );
+
+
+    openStickerButton.addEventListener(
+      "click",
+      () => {
+
+        if (
+          !stickerSelezionato
+        ) {
+          return;
+        }
+
+
+        window.open(
+          `assets/${stickerSelezionato.file}`,
+          "_blank",
+          "noopener,noreferrer"
+        );
+
+      }
+    );
+
+
+    shareStickerButton.addEventListener(
+      "click",
+      async () => {
+
+        if (
+          !stickerSelezionato
+        ) {
+          return;
+        }
+
+
+        try {
+
+          const response =
+            await fetch(
+              `assets/${stickerSelezionato.file}`
+            );
+
+
+          const blob =
+            await response.blob();
+
+
+          const file =
+            new File(
+              [blob],
+              stickerSelezionato.file,
+              {
+                type:
+                  blob.type ||
+                  "image/png"
+              }
+            );
+
+
+          if (
+            navigator.canShare &&
+            navigator.canShare({
+              files: [file]
+            }) &&
+            navigator.share
+          ) {
+
+            await navigator.share({
+              files: [file]
+            });
+
+          } else {
+
+            window.open(
+              `assets/${stickerSelezionato.file}`,
+              "_blank",
+              "noopener,noreferrer"
+            );
+
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Condivisione non disponibile:",
+            error
+          );
+
+
+          window.open(
+            `assets/${stickerSelezionato.file}`,
+            "_blank",
+            "noopener,noreferrer"
+          );
+
+        }
+
+      }
+    );
+
+
+    creaGalleriaSticker();
+
+
+    /* =========================
+       CHIUDI MENU ⋯
+    ========================== */
 
     document.addEventListener(
       "click",
