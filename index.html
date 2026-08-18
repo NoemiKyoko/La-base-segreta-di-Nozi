@@ -632,7 +632,9 @@
     }
 
 
-    /* Sticker appoggiati sulla pagina */
+    /* =========================
+       STICKER SULLA PAGINA
+    ========================== */
 
     .idea-sticker-layer {
       position: absolute;
@@ -640,26 +642,47 @@
 
       z-index: 2;
 
-      display: flex;
-      flex-wrap: wrap;
-
-      align-content: flex-end;
-      justify-content: flex-end;
-
-      gap: 9px;
-
-      padding: 28px;
-
       pointer-events: none;
+    }
+
+    .idea-sticker-object {
+      position: absolute;
+
+      pointer-events: auto;
+
+      touch-action: none;
+
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+
+      cursor: grab;
+
+      border:
+        2px solid transparent;
+
+      border-radius: 14px;
+    }
+
+    .idea-sticker-object:active {
+      cursor: grabbing;
+    }
+
+    .idea-sticker-object.selected {
+      border-color:
+        rgba(76, 66, 116, 0.60);
+
+      background:
+        rgba(255, 255, 255, 0.18);
     }
 
     .idea-page-sticker {
       display: block;
 
-      width: clamp(72px, 11vw, 125px);
-      height: clamp(72px, 11vw, 125px);
+      width: 100%;
+      height: auto;
 
-      object-fit: contain;
+      pointer-events: none;
 
       filter:
         drop-shadow(
@@ -670,6 +693,66 @@
       user-select: none;
       -webkit-user-select: none;
       -webkit-user-drag: none;
+    }
+
+    .idea-sticker-remove,
+    .idea-sticker-resize {
+      position: absolute;
+
+      display: none;
+
+      align-items: center;
+      justify-content: center;
+
+      appearance: none;
+      border: 0;
+
+      width: 28px;
+      height: 28px;
+
+      border-radius: 50%;
+
+      color: white;
+
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1;
+
+      box-shadow:
+        0 3px 9px
+        rgba(45, 40, 60, 0.22);
+
+      pointer-events: auto;
+
+      touch-action: none;
+    }
+
+    .idea-sticker-object.selected
+    .idea-sticker-remove,
+
+    .idea-sticker-object.selected
+    .idea-sticker-resize {
+      display: flex;
+    }
+
+    .idea-sticker-remove {
+      top: -14px;
+      right: -14px;
+
+      background: #9f5964;
+
+      cursor: pointer;
+    }
+
+    .idea-sticker-resize {
+      right: -14px;
+      bottom: -14px;
+
+      background: #66568c;
+
+      cursor: nwse-resize;
+
+      font-size: 16px;
     }
 
 
@@ -1195,14 +1278,10 @@
         font-size: 18px;
       }
 
-      .idea-sticker-layer {
-        padding: 18px;
-        gap: 6px;
-      }
-
-      .idea-page-sticker {
-        width: 82px;
-        height: 82px;
+      .idea-sticker-remove,
+      .idea-sticker-resize {
+        width: 30px;
+        height: 30px;
       }
 
     }
@@ -1232,8 +1311,6 @@
         preserveAspectRatio="none"
       >
 
-        <!-- LEZIONI & MATERIALI -->
-
         <rect
           class="hotspot"
           data-target="overlayLessons"
@@ -1242,9 +1319,6 @@
           width="270"
           height="155"
         />
-
-
-        <!-- DOCUMENTI IMPORTANTI -->
 
         <rect
           class="hotspot"
@@ -1255,9 +1329,6 @@
           height="155"
         />
 
-
-        <!-- ATTIVITÀ & PROGETTI -->
-
         <rect
           class="hotspot"
           data-archive="projectsScreen"
@@ -1266,9 +1337,6 @@
           width="270"
           height="155"
         />
-
-
-        <!-- IDEE & ISPIRAZIONI -->
 
         <rect
           class="hotspot"
@@ -1279,9 +1347,6 @@
           height="145"
         />
 
-
-        <!-- STICKER DI NOZI -->
-
         <rect
           class="hotspot"
           data-stickers="stickersScreen"
@@ -1290,9 +1355,6 @@
           width="270"
           height="170"
         />
-
-
-        <!-- PROGRAMMAZIONE -->
 
         <rect
           class="hotspot"
@@ -1303,9 +1365,6 @@
           height="195"
         />
 
-
-        <!-- ORARIO -->
-
         <rect
           class="hotspot"
           data-target="overlaySchedule"
@@ -1314,9 +1373,6 @@
           width="230"
           height="195"
         />
-
-
-        <!-- DA NON DIMENTICARE -->
 
         <rect
           class="hotspot"
@@ -1327,9 +1383,6 @@
           height="195"
         />
 
-
-        <!-- QUADERNO DELLE COSE BUFFE -->
-
         <rect
           class="hotspot"
           data-target="overlayNotebook"
@@ -1338,9 +1391,6 @@
           width="330"
           height="245"
         />
-
-
-        <!-- COMPUTER / ARGO -->
 
         <rect
           class="hotspot"
@@ -1359,7 +1409,7 @@
 
 
   <!-- =========================
-       PANNELLI ANCORA DI TEST
+       PANNELLI TEST
   ========================== -->
 
   <div class="overlay" id="overlayLessons">
@@ -1596,7 +1646,10 @@
         </div>
 
 
-        <div class="idea-page-wrap">
+        <div
+          class="idea-page-wrap"
+          id="ideaPageWrap"
+        >
 
           <textarea
             class="idea-textarea"
@@ -2268,9 +2321,9 @@
 
 
     /*
-      Se esiste qualche vecchio test
-      "Idee & Ispirazioni" senza pageId,
-      lo assegniamo alla pagina attualmente aperta.
+      Migrazione dei vecchi sticker:
+      - assegna pageId se manca
+      - assegna posizione/dimensione se mancano
     */
 
     function migraVecchiStickerIdee() {
@@ -2282,20 +2335,84 @@
       let modificato =
         false;
 
+      let numeroIdee =
+        0;
+
 
       inserimenti.forEach(
         (item) => {
 
           if (
-            item.destination === "idee" &&
-            !item.pageId
+            item.destination ===
+            "idee"
           ) {
 
-            item.pageId =
-              ideaPages[ideaIndex].id;
+            if (!item.pageId) {
 
-            modificato =
-              true;
+              item.pageId =
+                ideaPages[ideaIndex].id;
+
+              modificato =
+                true;
+
+            }
+
+
+            if (
+              typeof item.x !==
+              "number"
+            ) {
+
+              item.x =
+                Math.max(
+                  8,
+                  70 -
+                  (
+                    numeroIdee % 3
+                  ) * 18
+                );
+
+              modificato =
+                true;
+
+            }
+
+
+            if (
+              typeof item.y !==
+              "number"
+            ) {
+
+              item.y =
+                Math.max(
+                  8,
+                  68 -
+                  Math.floor(
+                    numeroIdee / 3
+                  ) * 20
+                );
+
+              modificato =
+                true;
+
+            }
+
+
+            if (
+              typeof item.width !==
+              "number"
+            ) {
+
+              item.width =
+                18;
+
+              modificato =
+                true;
+
+            }
+
+
+            numeroIdee++;
 
           }
 
@@ -2366,6 +2483,15 @@
         "ideaStickerLayer"
       );
 
+    const ideaPageWrap =
+      document.getElementById(
+        "ideaPageWrap"
+      );
+
+
+    let stickerIdeaSelezionato =
+      null;
+
 
     function salvaTestoPaginaCorrente() {
 
@@ -2388,10 +2514,127 @@
     }
 
 
+    function aggiornaInserimentoSticker(
+      id,
+      modifiche
+    ) {
+
+      const inserimenti =
+        leggiInserimentiSticker();
+
+
+      const item =
+        inserimenti.find(
+          (elemento) =>
+            elemento.id === id
+        );
+
+
+      if (!item) {
+        return;
+      }
+
+
+      Object.assign(
+        item,
+        modifiche
+      );
+
+
+      scriviInserimentiSticker(
+        inserimenti
+      );
+
+    }
+
+
+    function rimuoviInserimentoSticker(
+      id
+    ) {
+
+      const inserimenti =
+        leggiInserimentiSticker();
+
+
+      const filtrati =
+        inserimenti.filter(
+          (elemento) =>
+            elemento.id !== id
+        );
+
+
+      scriviInserimentiSticker(
+        filtrati
+      );
+
+    }
+
+
+    function deselezionaStickerIdea() {
+
+      stickerIdeaSelezionato =
+        null;
+
+
+      document
+        .querySelectorAll(
+          ".idea-sticker-object.selected"
+        )
+        .forEach(
+          (elemento) => {
+
+            elemento.classList
+              .remove("selected");
+
+          }
+        );
+
+    }
+
+
+    function selezionaStickerIdea(
+      elemento,
+      id
+    ) {
+
+      deselezionaStickerIdea();
+
+
+      elemento.classList
+        .add("selected");
+
+
+      stickerIdeaSelezionato =
+        id;
+
+    }
+
+
+    function limita(
+      numero,
+      minimo,
+      massimo
+    ) {
+
+      return Math.min(
+        massimo,
+        Math.max(
+          minimo,
+          numero
+        )
+      );
+
+    }
+
+
     function renderIdeaStickers() {
 
       ideaStickerLayer.innerHTML =
         "";
+
+
+      stickerIdeaSelezionato =
+        null;
 
 
       const paginaCorrente =
@@ -2420,7 +2663,72 @@
 
 
       stickerPagina.forEach(
-        (item) => {
+        (item, index) => {
+
+          /*
+            Sicurezza per eventuali vecchi dati.
+          */
+
+          if (
+            typeof item.x !==
+            "number"
+          ) {
+
+            item.x =
+              70 -
+              (index % 3) * 18;
+
+          }
+
+
+          if (
+            typeof item.y !==
+            "number"
+          ) {
+
+            item.y =
+              68 -
+              Math.floor(
+                index / 3
+              ) * 20;
+
+          }
+
+
+          if (
+            typeof item.width !==
+            "number"
+          ) {
+
+            item.width =
+              18;
+
+          }
+
+
+          const object =
+            document.createElement(
+              "div"
+            );
+
+
+          object.className =
+            "idea-sticker-object";
+
+
+          object.dataset.id =
+            item.id;
+
+
+          object.style.left =
+            `${item.x}%`;
+
+          object.style.top =
+            `${item.y}%`;
+
+          object.style.width =
+            `${item.width}%`;
+
 
           const image =
             document.createElement(
@@ -2440,9 +2748,486 @@
             item.label || "";
 
 
+          const removeButton =
+            document.createElement(
+              "button"
+            );
+
+
+          removeButton.className =
+            "idea-sticker-remove";
+
+
+          removeButton.type =
+            "button";
+
+
+          removeButton.textContent =
+            "×";
+
+
+          removeButton.setAttribute(
+            "aria-label",
+            "Rimuovi sticker"
+          );
+
+
+          const resizeHandle =
+            document.createElement(
+              "button"
+            );
+
+
+          resizeHandle.className =
+            "idea-sticker-resize";
+
+
+          resizeHandle.type =
+            "button";
+
+
+          resizeHandle.textContent =
+            "↘";
+
+
+          resizeHandle.setAttribute(
+            "aria-label",
+            "Ridimensiona sticker"
+          );
+
+
+          object.appendChild(
+            image
+          );
+
+          object.appendChild(
+            removeButton
+          );
+
+          object.appendChild(
+            resizeHandle
+          );
+
+
+          /*
+            SELEZIONE
+          */
+
+          object.addEventListener(
+            "pointerdown",
+            (event) => {
+
+              if (
+                event.target ===
+                removeButton ||
+                event.target ===
+                resizeHandle
+              ) {
+
+                return;
+
+              }
+
+
+              event.preventDefault();
+              event.stopPropagation();
+
+
+              selezionaStickerIdea(
+                object,
+                item.id
+              );
+
+
+              const pageRect =
+                ideaPageWrap
+                  .getBoundingClientRect();
+
+
+              const objectRect =
+                object
+                  .getBoundingClientRect();
+
+
+              const offsetX =
+                event.clientX -
+                objectRect.left;
+
+
+              const offsetY =
+                event.clientY -
+                objectRect.top;
+
+
+              object.setPointerCapture(
+                event.pointerId
+              );
+
+
+              function muovi(
+                moveEvent
+              ) {
+
+                let leftPx =
+                  moveEvent.clientX -
+                  pageRect.left -
+                  offsetX;
+
+
+                let topPx =
+                  moveEvent.clientY -
+                  pageRect.top -
+                  offsetY;
+
+
+                const widthPx =
+                  object.offsetWidth;
+
+
+                const heightPx =
+                  object.offsetHeight;
+
+
+                leftPx =
+                  limita(
+                    leftPx,
+                    0,
+                    Math.max(
+                      0,
+                      pageRect.width -
+                      widthPx
+                    )
+                  );
+
+
+                topPx =
+                  limita(
+                    topPx,
+                    0,
+                    Math.max(
+                      0,
+                      pageRect.height -
+                      heightPx
+                    )
+                  );
+
+
+                const xPercent =
+                  (
+                    leftPx /
+                    pageRect.width
+                  ) * 100;
+
+
+                const yPercent =
+                  (
+                    topPx /
+                    pageRect.height
+                  ) * 100;
+
+
+                object.style.left =
+                  `${xPercent}%`;
+
+
+                object.style.top =
+                  `${yPercent}%`;
+
+
+                item.x =
+                  xPercent;
+
+
+                item.y =
+                  yPercent;
+
+              }
+
+
+              function fine(
+                endEvent
+              ) {
+
+                try {
+
+                  object.releasePointerCapture(
+                    endEvent.pointerId
+                  );
+
+                } catch (error) {
+                }
+
+
+                object.removeEventListener(
+                  "pointermove",
+                  muovi
+                );
+
+
+                object.removeEventListener(
+                  "pointerup",
+                  fine
+                );
+
+
+                object.removeEventListener(
+                  "pointercancel",
+                  fine
+                );
+
+
+                aggiornaInserimentoSticker(
+                  item.id,
+                  {
+                    x:
+                      item.x,
+
+                    y:
+                      item.y
+                  }
+                );
+
+              }
+
+
+              object.addEventListener(
+                "pointermove",
+                muovi
+              );
+
+
+              object.addEventListener(
+                "pointerup",
+                fine
+              );
+
+
+              object.addEventListener(
+                "pointercancel",
+                fine
+              );
+
+            }
+          );
+
+
+          /*
+            RIDIMENSIONAMENTO
+          */
+
+          resizeHandle.addEventListener(
+            "pointerdown",
+            (event) => {
+
+              event.preventDefault();
+              event.stopPropagation();
+
+
+              selezionaStickerIdea(
+                object,
+                item.id
+              );
+
+
+              const pageRect =
+                ideaPageWrap
+                  .getBoundingClientRect();
+
+
+              const objectRect =
+                object
+                  .getBoundingClientRect();
+
+
+              const left =
+                objectRect.left -
+                pageRect.left;
+
+
+              resizeHandle
+                .setPointerCapture(
+                  event.pointerId
+                );
+
+
+              function ridimensiona(
+                moveEvent
+              ) {
+
+                let nuovaWidthPx =
+                  moveEvent.clientX -
+                  pageRect.left -
+                  left;
+
+
+                const minimoPx =
+                  pageRect.width *
+                  0.08;
+
+
+                const massimoPx =
+                  pageRect.width *
+                  0.45;
+
+
+                nuovaWidthPx =
+                  limita(
+                    nuovaWidthPx,
+                    minimoPx,
+                    massimoPx
+                  );
+
+
+                const widthPercent =
+                  (
+                    nuovaWidthPx /
+                    pageRect.width
+                  ) * 100;
+
+
+                object.style.width =
+                  `${widthPercent}%`;
+
+
+                item.width =
+                  widthPercent;
+
+
+                /*
+                  Se la nuova larghezza supera
+                  il bordo destro, riporta dentro
+                  lo sticker.
+                */
+
+                const currentX =
+                  item.x;
+
+
+                if (
+                  currentX +
+                  widthPercent >
+                  100
+                ) {
+
+                  item.x =
+                    Math.max(
+                      0,
+                      100 -
+                      widthPercent
+                    );
+
+
+                  object.style.left =
+                    `${item.x}%`;
+
+                }
+
+              }
+
+
+              function fineResize(
+                endEvent
+              ) {
+
+                try {
+
+                  resizeHandle
+                    .releasePointerCapture(
+                      endEvent.pointerId
+                    );
+
+                } catch (error) {
+                }
+
+
+                resizeHandle
+                  .removeEventListener(
+                    "pointermove",
+                    ridimensiona
+                  );
+
+
+                resizeHandle
+                  .removeEventListener(
+                    "pointerup",
+                    fineResize
+                  );
+
+
+                resizeHandle
+                  .removeEventListener(
+                    "pointercancel",
+                    fineResize
+                  );
+
+
+                aggiornaInserimentoSticker(
+                  item.id,
+                  {
+                    x:
+                      item.x,
+
+                    y:
+                      item.y,
+
+                    width:
+                      item.width
+                  }
+                );
+
+              }
+
+
+              resizeHandle
+                .addEventListener(
+                  "pointermove",
+                  ridimensiona
+                );
+
+
+              resizeHandle
+                .addEventListener(
+                  "pointerup",
+                  fineResize
+                );
+
+
+              resizeHandle
+                .addEventListener(
+                  "pointercancel",
+                  fineResize
+                );
+
+            }
+          );
+
+
+          /*
+            RIMOZIONE DALLA PAGINA
+          */
+
+          removeButton.addEventListener(
+            "pointerdown",
+            (event) => {
+
+              event.preventDefault();
+              event.stopPropagation();
+
+
+              rimuoviInserimentoSticker(
+                item.id
+              );
+
+
+              renderIdeaStickers();
+
+            }
+          );
+
+
           ideaStickerLayer
             .appendChild(
-              image
+              object
             );
 
         }
@@ -2541,6 +3326,16 @@
       );
 
     }
+
+
+    ideaTextarea.addEventListener(
+      "pointerdown",
+      () => {
+
+        deselezionaStickerIdea();
+
+      }
+    );
 
 
     ideaTextarea.addEventListener(
@@ -2699,6 +3494,8 @@
 
         salvaTestoPaginaCorrente();
 
+        deselezionaStickerIdea();
+
 
         ideasScreen
           .classList
@@ -2713,6 +3510,28 @@
     window.addEventListener(
       "pagehide",
       salvaTestoPaginaCorrente
+    );
+
+
+    window.addEventListener(
+      "resize",
+      () => {
+
+        /*
+          Poiché posizione e larghezza sono
+          percentuali, basta ridisegnare.
+        */
+
+        if (
+          ideasScreen.classList
+            .contains("aperto")
+        ) {
+
+          renderIdeaStickers();
+
+        }
+
+      }
     );
 
 
@@ -3781,19 +4600,51 @@
       };
 
 
-      /*
-        Se la destinazione è Idee,
-        lo sticker appartiene ALLA PAGINA
-        che in questo momento è selezionata.
-      */
-
       if (
         destination ===
         "idee"
       ) {
 
+        const stickerEsistenti =
+          inserimenti.filter(
+            (item) =>
+              item.destination ===
+                "idee" &&
+              item.pageId ===
+                ideaPages[ideaIndex].id
+          );
+
+
+        const numero =
+          stickerEsistenti.length;
+
+
         nuovo.pageId =
           ideaPages[ideaIndex].id;
+
+
+        nuovo.width =
+          18;
+
+
+        nuovo.x =
+          Math.max(
+            6,
+            72 -
+            (
+              numero % 3
+            ) * 20
+          );
+
+
+        nuovo.y =
+          Math.max(
+            6,
+            68 -
+            Math.floor(
+              numero / 3
+            ) * 20
+          );
 
       }
 
@@ -4081,12 +4932,6 @@
               .classList
               .remove("aperto");
 
-
-            /*
-              IDEE & ISPIRAZIONI:
-              chiudiamo anche la galleria e
-              portiamo subito al block notes.
-            */
 
             if (
               destination ===
