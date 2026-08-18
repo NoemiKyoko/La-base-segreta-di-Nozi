@@ -389,12 +389,287 @@
       cursor: pointer;
     }
 
-    .delete-button:active {
-      background: rgba(143, 61, 61, 0.08);
-    }
-
     .file-input {
       display: none;
+    }
+
+
+    /* =========================
+       IDEE & ISPIRAZIONI
+    ========================== */
+
+    .ideas-screen {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      flex-direction: column;
+
+      z-index: 240;
+
+      overflow: hidden;
+
+      background:
+        linear-gradient(
+          180deg,
+          #eee9f8 0%,
+          #f7f3fb 100%
+        );
+    }
+
+    .ideas-screen.aperto {
+      display: flex;
+    }
+
+    .ideas-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      padding:
+        max(18px, env(safe-area-inset-top))
+        max(22px, env(safe-area-inset-right))
+        16px
+        max(22px, env(safe-area-inset-left));
+
+      background: #e2daf2;
+
+      border-bottom:
+        1px solid rgba(73, 57, 112, 0.10);
+    }
+
+    .ideas-back,
+    .ideas-add,
+    .ideas-delete {
+      appearance: none;
+      border: 0;
+
+      width: 48px;
+      height: 48px;
+
+      flex: 0 0 48px;
+
+      border-radius: 16px;
+
+      background: rgba(255, 255, 255, 0.72);
+      color: #4c4274;
+
+      font-size: 28px;
+      line-height: 1;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 5px 14px rgba(65, 55, 90, 0.10);
+    }
+
+    .ideas-delete {
+      font-size: 21px;
+    }
+
+    .ideas-title {
+      flex: 1;
+
+      margin: 0;
+
+      color: #4c4274;
+
+      font-size: clamp(25px, 4vw, 40px);
+      font-weight: 700;
+    }
+
+    .ideas-workspace {
+      flex: 1;
+      min-height: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 22px;
+
+      overflow: hidden;
+    }
+
+    .notebook {
+      width: min(900px, 94vw);
+      height: min(690px, calc(100vh - 150px));
+
+      min-height: 300px;
+
+      display: flex;
+      flex-direction: column;
+
+      overflow: hidden;
+
+      border:
+        1px solid rgba(80, 65, 120, 0.12);
+
+      border-radius: 28px;
+
+      background: #faf8fd;
+
+      box-shadow:
+        0 18px 45px rgba(67, 57, 95, 0.16);
+    }
+
+    .notebook-top {
+      min-height: 58px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 10px 18px;
+
+      background: #d9cfed;
+
+      border-bottom:
+        1px solid rgba(80, 65, 120, 0.10);
+    }
+
+    .page-navigation {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      gap: 14px;
+    }
+
+    .page-arrow {
+      appearance: none;
+      border: 0;
+
+      width: 38px;
+      height: 38px;
+
+      border-radius: 12px;
+
+      background: rgba(255, 255, 255, 0.72);
+      color: #4c4274;
+
+      font-size: 25px;
+      line-height: 1;
+
+      cursor: pointer;
+    }
+
+    .page-arrow:disabled {
+      opacity: 0.30;
+      cursor: default;
+    }
+
+    .page-counter {
+      min-width: 70px;
+
+      color: #4c4274;
+
+      font-size: 15px;
+      font-weight: 700;
+
+      text-align: center;
+    }
+
+    .idea-page-wrap {
+      position: relative;
+
+      flex: 1;
+      min-height: 0;
+
+      overflow: hidden;
+
+      background-color: #fffdfd;
+
+      background-image:
+        radial-gradient(
+          circle,
+          rgba(111, 93, 150, 0.22) 1.2px,
+          transparent 1.3px
+        );
+
+      background-size:
+        24px 24px;
+
+      background-position:
+        12px 12px;
+    }
+
+    .idea-textarea {
+      position: absolute;
+      inset: 0;
+
+      z-index: 1;
+
+      width: 100%;
+      height: 100%;
+
+      resize: none;
+
+      border: 0;
+      outline: 0;
+
+      padding: 34px 38px;
+
+      background: transparent;
+
+      color: #3e3852;
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+      font-size: 19px;
+      line-height: 1.75;
+
+      caret-color: #66568c;
+    }
+
+    .idea-textarea::placeholder {
+      color: rgba(76, 66, 116, 0.36);
+    }
+
+
+    /* Sticker appoggiati sulla pagina */
+
+    .idea-sticker-layer {
+      position: absolute;
+      inset: 0;
+
+      z-index: 2;
+
+      display: flex;
+      flex-wrap: wrap;
+
+      align-content: flex-end;
+      justify-content: flex-end;
+
+      gap: 9px;
+
+      padding: 28px;
+
+      pointer-events: none;
+    }
+
+    .idea-page-sticker {
+      display: block;
+
+      width: clamp(72px, 11vw, 125px);
+      height: clamp(72px, 11vw, 125px);
+
+      object-fit: contain;
+
+      filter:
+        drop-shadow(
+          0 4px 5px
+          rgba(60, 50, 80, 0.12)
+        );
+
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
     }
 
 
@@ -513,7 +788,8 @@
 
     .sticker-card {
       appearance: none;
-      border: 1px solid rgba(23, 63, 122, 0.10);
+      border:
+        1px solid rgba(23, 63, 122, 0.10);
 
       width: 100%;
 
@@ -593,11 +869,7 @@
       align-items: center;
       justify-content: center;
 
-      padding:
-        max(24px, env(safe-area-inset-top))
-        max(24px, env(safe-area-inset-right))
-        max(24px, env(safe-area-inset-bottom))
-        max(24px, env(safe-area-inset-left));
+      padding: 24px;
 
       background: rgba(38, 46, 67, 0.58);
 
@@ -670,10 +942,6 @@
       max-height: 100%;
 
       object-fit: contain;
-
-      user-select: none;
-      -webkit-user-select: none;
-      -webkit-user-drag: none;
     }
 
     .sticker-viewer-name {
@@ -732,11 +1000,7 @@
       align-items: center;
       justify-content: center;
 
-      padding:
-        max(24px, env(safe-area-inset-top))
-        max(24px, env(safe-area-inset-right))
-        max(24px, env(safe-area-inset-bottom))
-        max(24px, env(safe-area-inset-left));
+      padding: 24px;
 
       background: rgba(38, 46, 67, 0.62);
 
@@ -787,11 +1051,7 @@
     }
 
     .destination-title {
-      margin:
-        4px
-        45px
-        24px
-        0;
+      margin: 4px 45px 24px 0;
 
       color: #173f7a;
 
@@ -828,13 +1088,9 @@
       cursor: pointer;
     }
 
-    .destination-button:active {
-      background: #e6eff8;
-    }
-
 
     /* =========================
-       CONFERMA INSERIMENTO
+       TOAST
     ========================== */
 
     .toast {
@@ -870,9 +1126,6 @@
         transform 0.2s ease;
 
       z-index: 600;
-
-      box-shadow:
-        0 10px 28px rgba(30, 40, 60, 0.22);
     }
 
     .toast.visibile {
@@ -885,7 +1138,7 @@
 
 
     /* =========================
-       IPAD / SCHERMI STRETTI
+       SCHERMI STRETTI
     ========================== */
 
     @media (max-width: 700px) {
@@ -901,15 +1154,6 @@
         padding: 18px;
       }
 
-      .stickers-header {
-        padding-left: 18px;
-        padding-right: 18px;
-      }
-
-      .stickers-subtitle {
-        display: none;
-      }
-
       .sticker-actions {
         flex-direction: column;
       }
@@ -918,12 +1162,59 @@
         width: 100%;
       }
 
+      .ideas-header {
+        gap: 9px;
+      }
+
+      .ideas-back,
+      .ideas-add,
+      .ideas-delete {
+        width: 43px;
+        height: 43px;
+        flex-basis: 43px;
+      }
+
+      .ideas-title {
+        font-size: 22px;
+      }
+
+      .ideas-workspace {
+        padding: 12px;
+      }
+
+      .notebook {
+        width: 100%;
+        height: calc(100vh - 125px);
+
+        border-radius: 22px;
+      }
+
+      .idea-textarea {
+        padding: 27px 25px;
+
+        font-size: 18px;
+      }
+
+      .idea-sticker-layer {
+        padding: 18px;
+        gap: 6px;
+      }
+
+      .idea-page-sticker {
+        width: 82px;
+        height: 82px;
+      }
+
     }
 
   </style>
 </head>
 
 <body>
+
+  <!-- =========================
+       BASE
+  ========================== -->
 
   <main class="base-stage">
 
@@ -941,7 +1232,7 @@
         preserveAspectRatio="none"
       >
 
-        <!-- LIBRERIA -->
+        <!-- LEZIONI & MATERIALI -->
 
         <rect
           class="hotspot"
@@ -952,6 +1243,9 @@
           height="155"
         />
 
+
+        <!-- DOCUMENTI IMPORTANTI -->
+
         <rect
           class="hotspot"
           data-archive="documentsScreen"
@@ -960,6 +1254,9 @@
           width="270"
           height="155"
         />
+
+
+        <!-- ATTIVITÀ & PROGETTI -->
 
         <rect
           class="hotspot"
@@ -970,14 +1267,18 @@
           height="155"
         />
 
+
+        <!-- IDEE & ISPIRAZIONI -->
+
         <rect
           class="hotspot"
-          data-target="overlayIdeas"
+          data-ideas="ideasScreen"
           x="1235"
           y="665"
           width="270"
           height="145"
         />
+
 
         <!-- STICKER DI NOZI -->
 
@@ -991,7 +1292,7 @@
         />
 
 
-        <!-- ZONA CENTRALE -->
+        <!-- PROGRAMMAZIONE -->
 
         <rect
           class="hotspot"
@@ -1002,6 +1303,9 @@
           height="195"
         />
 
+
+        <!-- ORARIO -->
+
         <rect
           class="hotspot"
           data-target="overlaySchedule"
@@ -1010,6 +1314,9 @@
           width="230"
           height="195"
         />
+
+
+        <!-- DA NON DIMENTICARE -->
 
         <rect
           class="hotspot"
@@ -1058,13 +1365,6 @@
   <div class="overlay" id="overlayLessons">
     <section class="panel">
       <h1>Lezioni &amp; Materiali</h1>
-      <button class="close-button">Chiudi</button>
-    </section>
-  </div>
-
-  <div class="overlay" id="overlayIdeas">
-    <section class="panel">
-      <h1>Idee &amp; Ispirazioni</h1>
       <button class="close-button">Chiudi</button>
     </section>
   </div>
@@ -1119,1830 +1419,4 @@
 
       <h1 class="archive-title">
         Documenti importanti
-      </h1>
-
-      <button
-        class="archive-add"
-        data-file-picker="documentsInput"
-        aria-label="Aggiungi documento"
-      >
-        +
-      </button>
-
-    </header>
-
-    <div class="archive-content">
-
-      <div
-        class="archive-empty"
-        id="documentsEmpty"
-      >
-        Nessun documento ancora.
-      </div>
-
-      <div
-        class="archive-grid"
-        id="documentsGrid"
-      ></div>
-
-    </div>
-
-    <input
-      class="file-input"
-      id="documentsInput"
-      type="file"
-      multiple
-    >
-
-  </section>
-
-
-  <!-- =========================
-       ATTIVITÀ & PROGETTI
-  ========================== -->
-
-  <section
-    class="archive-screen projects"
-    id="projectsScreen"
-  >
-
-    <header class="archive-header">
-
-      <button
-        class="archive-back"
-        data-close-archive
-        aria-label="Torna alla Base"
-      >
-        ‹
-      </button>
-
-      <h1 class="archive-title">
-        Attività &amp; Progetti
-      </h1>
-
-      <button
-        class="archive-add"
-        data-file-picker="projectsInput"
-        aria-label="Aggiungi attività o progetto"
-      >
-        +
-      </button>
-
-    </header>
-
-    <div class="archive-content">
-
-      <div
-        class="archive-empty"
-        id="projectsEmpty"
-      >
-        Nessuna attività o progetto ancora.
-      </div>
-
-      <div
-        class="archive-grid"
-        id="projectsGrid"
-      ></div>
-
-    </div>
-
-    <input
-      class="file-input"
-      id="projectsInput"
-      type="file"
-      multiple
-    >
-
-  </section>
-
-
-  <!-- =========================
-       GALLERIA STICKER
-  ========================== -->
-
-  <section
-    class="stickers-screen"
-    id="stickersScreen"
-  >
-
-    <header class="stickers-header">
-
-      <button
-        class="stickers-back"
-        id="stickersBack"
-        aria-label="Torna alla Base"
-      >
-        ‹
-      </button>
-
-      <div class="stickers-heading">
-
-        <h1 class="stickers-title">
-          Sticker di Nozi
-        </h1>
-
-        <p class="stickers-subtitle">
-          Feedback positivi, correzioni e altre emergenze scolastiche
-        </p>
-
-      </div>
-
-    </header>
-
-
-    <div class="stickers-content">
-
-      <div
-        class="stickers-grid"
-        id="stickersGrid"
-      ></div>
-
-    </div>
-
-  </section>
-
-
-  <!-- =========================
-       ANTEPRIMA STICKER
-  ========================== -->
-
-  <div
-    class="sticker-viewer"
-    id="stickerViewer"
-  >
-
-    <section
-      class="sticker-viewer-card"
-      id="stickerViewerCard"
-    >
-
-      <button
-        class="sticker-viewer-close"
-        id="stickerViewerClose"
-        aria-label="Chiudi"
-      >
-        ×
-      </button>
-
-
-      <div class="sticker-viewer-image-box">
-
-        <img
-          class="sticker-viewer-image"
-          id="stickerViewerImage"
-          src=""
-          alt=""
-        >
-
-      </div>
-
-
-      <div
-        class="sticker-viewer-name"
-        id="stickerViewerName"
-      ></div>
-
-
-      <div class="sticker-actions">
-
-        <button
-          class="sticker-action"
-          id="printStickerButton"
-        >
-          Stampa
-        </button>
-
-        <button
-          class="sticker-action secondary"
-          id="insertStickerButton"
-        >
-          Inserisci
-        </button>
-
-      </div>
-
-    </section>
-
-  </div>
-
-
-  <!-- =========================
-       SCELTA DESTINAZIONE
-  ========================== -->
-
-  <div
-    class="destination-overlay"
-    id="destinationOverlay"
-  >
-
-    <section
-      class="destination-card"
-      id="destinationCard"
-    >
-
-      <button
-        class="destination-close"
-        id="destinationClose"
-        aria-label="Chiudi"
-      >
-        ×
-      </button>
-
-      <h2 class="destination-title">
-        Dove vuoi inserire questo sticker?
-      </h2>
-
-      <div class="destination-list">
-
-        <button
-          class="destination-button"
-          data-destination="programmazione"
-          data-destination-label="Programmazione"
-        >
-          Programmazione
-        </button>
-
-        <button
-          class="destination-button"
-          data-destination="quaderno"
-          data-destination-label="Quaderno delle cose buffe"
-        >
-          Quaderno delle cose buffe
-        </button>
-
-        <button
-          class="destination-button"
-          data-destination="lezioni"
-          data-destination-label="Lezioni & Materiali"
-        >
-          Lezioni &amp; Materiali
-        </button>
-
-        <button
-          class="destination-button"
-          data-destination="progetti"
-          data-destination-label="Attività & Progetti"
-        >
-          Attività &amp; Progetti
-        </button>
-
-        <button
-          class="destination-button"
-          data-destination="idee"
-          data-destination-label="Idee & Ispirazioni"
-        >
-          Idee &amp; Ispirazioni
-        </button>
-
-      </div>
-
-    </section>
-
-  </div>
-
-
-  <!-- CONFERMA -->
-
-  <div
-    class="toast"
-    id="toast"
-  ></div>
-
-
-  <script>
-
-    /* =========================
-       INDEXEDDB
-    ========================== */
-
-    const DB_NAME =
-      "BaseSegretaNoziDB";
-
-    const DB_VERSION =
-      1;
-
-    const STORE_DOCUMENTS =
-      "documents";
-
-    const STORE_PROJECTS =
-      "projects";
-
-
-    function apriDatabase() {
-
-      return new Promise((resolve, reject) => {
-
-        const request =
-          indexedDB.open(
-            DB_NAME,
-            DB_VERSION
-          );
-
-
-        request.onupgradeneeded = () => {
-
-          const db =
-            request.result;
-
-
-          if (
-            !db.objectStoreNames.contains(
-              STORE_DOCUMENTS
-            )
-          ) {
-
-            db.createObjectStore(
-              STORE_DOCUMENTS,
-              {
-                keyPath: "id",
-                autoIncrement: true
-              }
-            );
-
-          }
-
-
-          if (
-            !db.objectStoreNames.contains(
-              STORE_PROJECTS
-            )
-          ) {
-
-            db.createObjectStore(
-              STORE_PROJECTS,
-              {
-                keyPath: "id",
-                autoIncrement: true
-              }
-            );
-
-          }
-
-        };
-
-
-        request.onsuccess = () => {
-          resolve(request.result);
-        };
-
-
-        request.onerror = () => {
-          reject(request.error);
-        };
-
-      });
-
-    }
-
-
-    async function salvaFile(
-      storeName,
-      file
-    ) {
-
-      const db =
-        await apriDatabase();
-
-
-      return new Promise((resolve, reject) => {
-
-        const transaction =
-          db.transaction(
-            storeName,
-            "readwrite"
-          );
-
-        const store =
-          transaction.objectStore(
-            storeName
-          );
-
-
-        const record = {
-
-          name: file.name,
-          type: file.type,
-          blob: file,
-          createdAt: Date.now()
-
-        };
-
-
-        const request =
-          store.add(record);
-
-
-        request.onsuccess = () => {
-          resolve(request.result);
-        };
-
-
-        request.onerror = () => {
-          reject(request.error);
-        };
-
-      });
-
-    }
-
-
-    async function leggiTutti(
-      storeName
-    ) {
-
-      const db =
-        await apriDatabase();
-
-
-      return new Promise((resolve, reject) => {
-
-        const transaction =
-          db.transaction(
-            storeName,
-            "readonly"
-          );
-
-        const store =
-          transaction.objectStore(
-            storeName
-          );
-
-
-        const request =
-          store.getAll();
-
-
-        request.onsuccess = () => {
-          resolve(request.result);
-        };
-
-
-        request.onerror = () => {
-          reject(request.error);
-        };
-
-      });
-
-    }
-
-
-    async function eliminaFile(
-      storeName,
-      id
-    ) {
-
-      const db =
-        await apriDatabase();
-
-
-      return new Promise((resolve, reject) => {
-
-        const transaction =
-          db.transaction(
-            storeName,
-            "readwrite"
-          );
-
-        const store =
-          transaction.objectStore(
-            storeName
-          );
-
-
-        const request =
-          store.delete(id);
-
-
-        request.onsuccess = () => {
-          resolve();
-        };
-
-
-        request.onerror = () => {
-          reject(request.error);
-        };
-
-      });
-
-    }
-
-
-    /* =========================
-       BASE
-    ========================== */
-
-    const hotspots =
-      document.querySelectorAll(
-        ".hotspot"
-      );
-
-    const overlays =
-      document.querySelectorAll(
-        ".overlay"
-      );
-
-    const closeButtons =
-      document.querySelectorAll(
-        ".close-button"
-      );
-
-
-    hotspots.forEach((hotspot) => {
-
-      hotspot.addEventListener(
-        "click",
-        () => {
-
-          const url =
-            hotspot.dataset.url;
-
-
-          if (url) {
-
-            window.open(
-              url,
-              "_blank",
-              "noopener,noreferrer"
-            );
-
-            return;
-
-          }
-
-
-          const stickersId =
-            hotspot.dataset.stickers;
-
-
-          if (stickersId) {
-
-            document
-              .getElementById(
-                stickersId
-              )
-              .classList
-              .add("aperto");
-
-            return;
-
-          }
-
-
-          const archiveId =
-            hotspot.dataset.archive;
-
-
-          if (archiveId) {
-
-            document
-              .getElementById(
-                archiveId
-              )
-              .classList
-              .add("aperto");
-
-            return;
-
-          }
-
-
-          const targetId =
-            hotspot.dataset.target;
-
-
-          const targetOverlay =
-            document.getElementById(
-              targetId
-            );
-
-
-          if (targetOverlay) {
-
-            targetOverlay
-              .classList
-              .add("aperto");
-
-          }
-
-        }
-      );
-
-    });
-
-
-    /* =========================
-       PANNELLI TEST
-    ========================== */
-
-    closeButtons.forEach((button) => {
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          button
-            .closest(".overlay")
-            .classList
-            .remove("aperto");
-
-        }
-      );
-
-    });
-
-
-    overlays.forEach((overlay) => {
-
-      overlay.addEventListener(
-        "click",
-        (event) => {
-
-          if (
-            event.target === overlay
-          ) {
-
-            overlay
-              .classList
-              .remove("aperto");
-
-          }
-
-        }
-      );
-
-    });
-
-
-    /* =========================
-       ARCHIVI
-    ========================== */
-
-    const archiveBackButtons =
-      document.querySelectorAll(
-        "[data-close-archive]"
-      );
-
-
-    archiveBackButtons.forEach(
-      (button) => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            button
-              .closest(".archive-screen")
-              .classList
-              .remove("aperto");
-
-          }
-        );
-
-      }
-    );
-
-
-    const addButtons =
-      document.querySelectorAll(
-        "[data-file-picker]"
-      );
-
-
-    addButtons.forEach((button) => {
-
-      button.addEventListener(
-        "click",
-        () => {
-
-          document
-            .getElementById(
-              button.dataset.filePicker
-            )
-            .click();
-
-        }
-      );
-
-    });
-
-
-    /* =========================
-       CARD ARCHIVI
-    ========================== */
-
-    function creaCard(
-      record,
-      storeName,
-      refreshFunction
-    ) {
-
-      const card =
-        document.createElement("article");
-
-      card.className =
-        "archive-card";
-
-
-      const openButton =
-        document.createElement("button");
-
-      openButton.className =
-        "archive-open";
-
-
-      const preview =
-        document.createElement("div");
-
-      preview.className =
-        "archive-preview";
-
-
-      const name =
-        document.createElement("span");
-
-      name.className =
-        "archive-name";
-
-      name.textContent =
-        record.name;
-
-
-      const objectUrl =
-        URL.createObjectURL(
-          record.blob
-        );
-
-
-      if (
-        record.type &&
-        record.type.startsWith("image/")
-      ) {
-
-        const image =
-          document.createElement("img");
-
-        image.src =
-          objectUrl;
-
-        image.alt = "";
-
-        preview.appendChild(image);
-
-      } else {
-
-        preview.textContent = "📄";
-
-      }
-
-
-      openButton.appendChild(
-        preview
-      );
-
-      openButton.appendChild(
-        name
-      );
-
-
-      openButton.addEventListener(
-        "click",
-        () => {
-
-          window.open(
-            objectUrl,
-            "_blank"
-          );
-
-        }
-      );
-
-
-      const menuButton =
-        document.createElement("button");
-
-      menuButton.className =
-        "card-menu-button";
-
-      menuButton.textContent =
-        "⋯";
-
-      menuButton.setAttribute(
-        "aria-label",
-        "Azioni"
-      );
-
-
-      const menu =
-        document.createElement("div");
-
-      menu.className =
-        "card-menu";
-
-
-      const deleteButton =
-        document.createElement("button");
-
-      deleteButton.className =
-        "delete-button";
-
-      deleteButton.textContent =
-        "Elimina";
-
-
-      menu.appendChild(
-        deleteButton
-      );
-
-
-      menuButton.addEventListener(
-        "click",
-        (event) => {
-
-          event.stopPropagation();
-
-          document
-            .querySelectorAll(
-              ".card-menu.aperto"
-            )
-            .forEach(
-              (otherMenu) => {
-
-                if (
-                  otherMenu !== menu
-                ) {
-
-                  otherMenu
-                    .classList
-                    .remove("aperto");
-
-                }
-
-              }
-            );
-
-
-          menu
-            .classList
-            .toggle("aperto");
-
-        }
-      );
-
-
-      deleteButton.addEventListener(
-        "click",
-        async (event) => {
-
-          event.stopPropagation();
-
-
-          const conferma =
-            window.confirm(
-              `Eliminare "${record.name}"?`
-            );
-
-
-          if (!conferma) {
-            return;
-          }
-
-
-          await eliminaFile(
-            storeName,
-            record.id
-          );
-
-
-          await refreshFunction();
-
-        }
-      );
-
-
-      card.appendChild(
-        openButton
-      );
-
-      card.appendChild(
-        menuButton
-      );
-
-      card.appendChild(
-        menu
-      );
-
-
-      return card;
-
-    }
-
-
-    /* =========================
-       MOTORE ARCHIVIO
-    ========================== */
-
-    function collegaArchivio(
-      options
-    ) {
-
-      const {
-        storeName,
-        inputId,
-        gridId,
-        emptyId
-      } = options;
-
-
-      const input =
-        document.getElementById(
-          inputId
-        );
-
-      const grid =
-        document.getElementById(
-          gridId
-        );
-
-      const empty =
-        document.getElementById(
-          emptyId
-        );
-
-
-      async function refresh() {
-
-        const records =
-          await leggiTutti(
-            storeName
-          );
-
-
-        grid.innerHTML = "";
-
-
-        if (
-          records.length === 0
-        ) {
-
-          empty.style.display =
-            "flex";
-
-          return;
-
-        }
-
-
-        empty.style.display =
-          "none";
-
-
-        records
-          .sort(
-            (a, b) =>
-              b.createdAt -
-              a.createdAt
-          )
-          .forEach(
-            (record) => {
-
-              const card =
-                creaCard(
-                  record,
-                  storeName,
-                  refresh
-                );
-
-              grid.appendChild(
-                card
-              );
-
-            }
-          );
-
-      }
-
-
-      input.addEventListener(
-        "change",
-        async () => {
-
-          const files =
-            Array.from(
-              input.files
-            );
-
-
-          for (
-            const file of files
-          ) {
-
-            await salvaFile(
-              storeName,
-              file
-            );
-
-          }
-
-
-          input.value = "";
-
-
-          await refresh();
-
-        }
-      );
-
-
-      refresh();
-
-    }
-
-
-    collegaArchivio({
-
-      storeName:
-        STORE_DOCUMENTS,
-
-      inputId:
-        "documentsInput",
-
-      gridId:
-        "documentsGrid",
-
-      emptyId:
-        "documentsEmpty"
-
-    });
-
-
-    collegaArchivio({
-
-      storeName:
-        STORE_PROJECTS,
-
-      inputId:
-        "projectsInput",
-
-      gridId:
-        "projectsGrid",
-
-      emptyId:
-        "projectsEmpty"
-
-    });
-
-
-    /* =========================
-       STICKER
-    ========================== */
-
-    const STICKERS = [
-
-      {
-        file: "nozi-calcolatrice.png",
-        label: "Calcolatrice"
-      },
-
-      {
-        file: "nozi-collegio.png",
-        label: "Collegio"
-      },
-
-      {
-        file: "nozi-colloquio.png",
-        label: "Colloquio"
-      },
-
-      {
-        file: "nozi-depressa.png",
-        label: "Depressa"
-      },
-
-      {
-        file: "nozi-documenti.png",
-        label: "Documenti"
-      },
-
-      {
-        file: "nozi-ferie.png",
-        label: "Ferie"
-      },
-
-      {
-        file: "nozi-fine-scuola.png",
-        label: "Fine scuola"
-      },
-
-      {
-        file: "nozi-formazione.png",
-        label: "Formazione"
-      },
-
-      {
-        file: "nozi-gita.png",
-        label: "Gita"
-      },
-
-      {
-        file: "nozi-incitamento.png",
-        label: "Incitamento"
-      },
-
-      {
-        file: "nozi-lavoro.png",
-        label: "Lavoro"
-      },
-
-      {
-        file: "nozi-neutra.png",
-        label: "Neutra"
-      },
-
-      {
-        file: "nozi-orgogliosa.png",
-        label: "Orgogliosa"
-      },
-
-      {
-        file: "nozi-panico.png",
-        label: "Panico"
-      },
-
-      {
-        file: "nozi-perplessa.png",
-        label: "Perplessa"
-      },
-
-      {
-        file: "nozi-programmazione.png",
-        label: "Programmazione"
-      },
-
-      {
-        file: "nozi-sailor.png",
-        label: "Sailor Nozi"
-      },
-
-      {
-        file: "nozi-scadenze.png",
-        label: "Scadenze"
-      },
-
-      {
-        file: "nozi-tristina.png",
-        label: "Tristina"
-      },
-
-      {
-        file: "baozzi-milord.png",
-        label: "Baozzi Milord"
-      }
-
-    ];
-
-
-    const stickersScreen =
-      document.getElementById(
-        "stickersScreen"
-      );
-
-    const stickersBack =
-      document.getElementById(
-        "stickersBack"
-      );
-
-    const stickersGrid =
-      document.getElementById(
-        "stickersGrid"
-      );
-
-
-    const stickerViewer =
-      document.getElementById(
-        "stickerViewer"
-      );
-
-    const stickerViewerCard =
-      document.getElementById(
-        "stickerViewerCard"
-      );
-
-    const stickerViewerClose =
-      document.getElementById(
-        "stickerViewerClose"
-      );
-
-    const stickerViewerImage =
-      document.getElementById(
-        "stickerViewerImage"
-      );
-
-    const stickerViewerName =
-      document.getElementById(
-        "stickerViewerName"
-      );
-
-    const printStickerButton =
-      document.getElementById(
-        "printStickerButton"
-      );
-
-    const insertStickerButton =
-      document.getElementById(
-        "insertStickerButton"
-      );
-
-
-    const destinationOverlay =
-      document.getElementById(
-        "destinationOverlay"
-      );
-
-    const destinationCard =
-      document.getElementById(
-        "destinationCard"
-      );
-
-    const destinationClose =
-      document.getElementById(
-        "destinationClose"
-      );
-
-    const destinationButtons =
-      document.querySelectorAll(
-        ".destination-button"
-      );
-
-
-    const toast =
-      document.getElementById(
-        "toast"
-      );
-
-
-    let stickerSelezionato =
-      null;
-
-    let toastTimer =
-      null;
-
-
-    function creaGalleriaSticker() {
-
-      stickersGrid.innerHTML = "";
-
-
-      STICKERS.forEach(
-        (sticker) => {
-
-          const card =
-            document.createElement(
-              "button"
-            );
-
-          card.className =
-            "sticker-card";
-
-
-          const imageBox =
-            document.createElement(
-              "div"
-            );
-
-          imageBox.className =
-            "sticker-image-box";
-
-
-          const image =
-            document.createElement(
-              "img"
-            );
-
-          image.className =
-            "sticker-image";
-
-          image.src =
-            `assets/${sticker.file}`;
-
-          image.alt =
-            sticker.label;
-
-
-          const label =
-            document.createElement(
-              "span"
-            );
-
-          label.className =
-            "sticker-label";
-
-          label.textContent =
-            sticker.label;
-
-
-          imageBox.appendChild(
-            image
-          );
-
-          card.appendChild(
-            imageBox
-          );
-
-          card.appendChild(
-            label
-          );
-
-
-          card.addEventListener(
-            "click",
-            () => {
-
-              apriSticker(
-                sticker
-              );
-
-            }
-          );
-
-
-          stickersGrid.appendChild(
-            card
-          );
-
-        }
-      );
-
-    }
-
-
-    function apriSticker(
-      sticker
-    ) {
-
-      stickerSelezionato =
-        sticker;
-
-
-      stickerViewerImage.src =
-        `assets/${sticker.file}`;
-
-      stickerViewerImage.alt =
-        sticker.label;
-
-      stickerViewerName.textContent =
-        sticker.label;
-
-
-      stickerViewer
-        .classList
-        .add("aperto");
-
-    }
-
-
-    function chiudiSticker() {
-
-      stickerViewer
-        .classList
-        .remove("aperto");
-
-      destinationOverlay
-        .classList
-        .remove("aperto");
-
-      stickerSelezionato =
-        null;
-
-    }
-
-
-    function mostraToast(
-      messaggio
-    ) {
-
-      window.clearTimeout(
-        toastTimer
-      );
-
-
-      toast.textContent =
-        messaggio;
-
-      toast
-        .classList
-        .add("visibile");
-
-
-      toastTimer =
-        window.setTimeout(
-          () => {
-
-            toast
-              .classList
-              .remove("visibile");
-
-          },
-          2400
-        );
-
-    }
-
-
-    /* =========================
-       MEMORIA INSERIMENTI
-    ========================== */
-
-    function salvaInserimentoSticker(
-      sticker,
-      destination,
-      destinationLabel
-    ) {
-
-      const STORAGE_KEY =
-        "BaseSegretaNoziStickerInseriti";
-
-
-      let inserimenti = [];
-
-
-      try {
-
-        const salvati =
-          localStorage.getItem(
-            STORAGE_KEY
-          );
-
-
-        if (salvati) {
-
-          inserimenti =
-            JSON.parse(
-              salvati
-            );
-
-        }
-
-      } catch (error) {
-
-        console.error(
-          "Impossibile leggere gli sticker inseriti:",
-          error
-        );
-
-      }
-
-
-      inserimenti.push({
-
-        id:
-          `${Date.now()}-${Math.random()
-            .toString(16)
-            .slice(2)}`,
-
-        file:
-          sticker.file,
-
-        label:
-          sticker.label,
-
-        destination:
-          destination,
-
-        destinationLabel:
-          destinationLabel,
-
-        createdAt:
-          Date.now()
-
-      });
-
-
-      try {
-
-        localStorage.setItem(
-          STORAGE_KEY,
-          JSON.stringify(
-            inserimenti
-          )
-        );
-
-      } catch (error) {
-
-        console.error(
-          "Impossibile salvare lo sticker:",
-          error
-        );
-
-      }
-
-    }
-
-
-    /* =========================
-       NAVIGAZIONE STICKER
-    ========================== */
-
-    stickersBack.addEventListener(
-      "click",
-      () => {
-
-        stickersScreen
-          .classList
-          .remove("aperto");
-
-      }
-    );
-
-
-    stickerViewerClose.addEventListener(
-      "click",
-      chiudiSticker
-    );
-
-
-    stickerViewer.addEventListener(
-      "click",
-      (event) => {
-
-        if (
-          event.target ===
-          stickerViewer
-        ) {
-
-          chiudiSticker();
-
-        }
-
-      }
-    );
-
-
-    stickerViewerCard.addEventListener(
-      "click",
-      (event) => {
-
-        event.stopPropagation();
-
-      }
-    );
-
-
-    /* =========================
-       STAMPA
-    ========================== */
-
-    printStickerButton.addEventListener(
-      "click",
-      () => {
-
-        if (
-          !stickerSelezionato
-        ) {
-          return;
-        }
-
-
-        const src =
-          `assets/${stickerSelezionato.file}`;
-
-
-        const printWindow =
-          window.open(
-            "",
-            "_blank"
-          );
-
-
-        if (!printWindow) {
-
-          window.open(
-            src,
-            "_blank",
-            "noopener,noreferrer"
-          );
-
-          return;
-
-        }
-
-
-        const titolo =
-          stickerSelezionato.label;
-
-
-        printWindow.document.write(`
-          <!DOCTYPE html>
-          <html lang="it">
-          <head>
-            <meta charset="UTF-8">
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1.0"
-            >
-            <title>${titolo}</title>
-
-            <style>
-              html,
-              body {
-                margin: 0;
-                min-height: 100%;
-                background: white;
-              }
-
-              body {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                padding: 24px;
-              }
-
-              img {
-                display: block;
-                max-width: 80vw;
-                max-height: 80vh;
-                object-fit: contain;
-              }
-
-              @media print {
-                body {
-                  padding: 0;
-                }
-
-                img {
-                  max-width: 90%;
-                  max-height: 90vh;
-                }
-              }
-            </style>
-          </head>
-
-          <body>
-            <img
-              src="${src}"
-              alt="${titolo}"
-              onload="window.print();"
-            >
-          </body>
-          </html>
-        `);
-
-
-        printWindow.document.close();
-
-      }
-    );
-
-
-    /* =========================
-       INSERISCI
-    ========================== */
-
-    insertStickerButton.addEventListener(
-      "click",
-      () => {
-
-        if (
-          !stickerSelezionato
-        ) {
-          return;
-        }
-
-
-        destinationOverlay
-          .classList
-          .add("aperto");
-
-      }
-    );
-
-
-    destinationClose.addEventListener(
-      "click",
-      () => {
-
-        destinationOverlay
-          .classList
-          .remove("aperto");
-
-      }
-    );
-
-
-    destinationOverlay.addEventListener(
-      "click",
-      (event) => {
-
-        if (
-          event.target ===
-          destinationOverlay
-        ) {
-
-          destinationOverlay
-            .classList
-            .remove("aperto");
-
-        }
-
-      }
-    );
-
-
-    destinationCard.addEventListener(
-      "click",
-      (event) => {
-
-        event.stopPropagation();
-
-      }
-    );
-
-
-    destinationButtons.forEach(
-      (button) => {
-
-        button.addEventListener(
-          "click",
-          () => {
-
-            if (
-              !stickerSelezionato
-            ) {
-              return;
-            }
-
-
-            const destination =
-              button.dataset.destination;
-
-            const destinationLabel =
-              button.dataset
-                .destinationLabel;
-
-
-            salvaInserimentoSticker(
-              stickerSelezionato,
-              destination,
-              destinationLabel
-            );
-
-
-            const nomeSticker =
-              stickerSelezionato.label;
-
-
-            destinationOverlay
-              .classList
-              .remove("aperto");
-
-            stickerViewer
-              .classList
-              .remove("aperto");
-
-
-            mostraToast(
-              `${nomeSticker} inserito in ${destinationLabel}`
-            );
-
-
-            stickerSelezionato =
-              null;
-
-          }
-        );
-
-      }
-    );
-
-
-    creaGalleriaSticker();
-
-
-    /* =========================
-       CHIUDI MENU ⋯
-    ========================== */
-
-    document.addEventListener(
-      "click",
-      () => {
-
-        document
-          .querySelectorAll(
-            ".card-menu.aperto"
-          )
-          .forEach(
-            (menu) => {
-
-              menu
-                .classList
-                .remove("aperto");
-
-            }
-          );
-
-      }
-    );
-
-  </script>
-
-</body>
-</html>
+     
