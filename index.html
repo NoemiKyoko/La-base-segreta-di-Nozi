@@ -70,6 +70,10 @@
       pointer-events: all;
     }
 
+    /* =========================
+       PANNELLI TEST
+    ========================== */
+
     .overlay {
       position: fixed;
       inset: 0;
@@ -127,6 +131,177 @@
 
       cursor: pointer;
     }
+
+
+    /* =========================
+       SCHERMATE ARCHIVIO
+    ========================== */
+
+    .archive-screen {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      flex-direction: column;
+
+      z-index: 200;
+
+      overflow: hidden;
+    }
+
+    .archive-screen.aperto {
+      display: flex;
+    }
+
+    .archive-screen.documents {
+      background: #eaf6fb;
+    }
+
+    .archive-screen.projects {
+      background: #eef8ef;
+    }
+
+    .archive-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+
+      padding:
+        max(20px, env(safe-area-inset-top))
+        26px
+        18px;
+
+      border-bottom: 1px solid rgba(23, 63, 122, 0.10);
+    }
+
+    .archive-screen.documents .archive-header {
+      background: #d8eef7;
+    }
+
+    .archive-screen.projects .archive-header {
+      background: #dcefdc;
+    }
+
+    .archive-back,
+    .archive-add {
+      appearance: none;
+      border: 0;
+
+      width: 50px;
+      height: 50px;
+
+      border-radius: 16px;
+
+      background: rgba(255, 255, 255, 0.72);
+      color: #173f7a;
+
+      font-size: 30px;
+      line-height: 1;
+
+      cursor: pointer;
+
+      box-shadow: 0 5px 14px rgba(50, 65, 80, 0.10);
+    }
+
+    .archive-title {
+      flex: 1;
+
+      margin: 0;
+
+      color: #173f7a;
+
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+    }
+
+    .archive-content {
+      flex: 1;
+      overflow-y: auto;
+
+      padding: 30px;
+    }
+
+    .archive-empty {
+      min-height: 60%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: rgba(23, 63, 122, 0.58);
+
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .archive-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(auto-fill, minmax(190px, 1fr));
+
+      gap: 22px;
+    }
+
+    .archive-card {
+      appearance: none;
+
+      border: 1px solid rgba(23, 63, 122, 0.10);
+      border-radius: 22px;
+
+      padding: 14px;
+
+      background: rgba(255, 255, 255, 0.78);
+
+      box-shadow:
+        0 8px 20px rgba(58, 70, 90, 0.10);
+
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .archive-preview {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-bottom: 12px;
+
+      border-radius: 16px;
+
+      background: rgba(255, 255, 255, 0.95);
+
+      overflow: hidden;
+
+      color: #173f7a;
+      font-size: 42px;
+    }
+
+    .archive-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .archive-name {
+      display: block;
+
+      color: #173f7a;
+
+      font-size: 16px;
+      font-weight: 600;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-input {
+      display: none;
+    }
   </style>
 </head>
 
@@ -165,7 +340,7 @@
         <!-- DOCUMENTI IMPORTANTI -->
         <rect
           class="hotspot"
-          data-target="overlayDocuments"
+          data-archive="documentsScreen"
           x="1235"
           y="335"
           width="270"
@@ -175,7 +350,7 @@
         <!-- ATTIVITÀ & PROGETTI -->
         <rect
           class="hotspot"
-          data-target="overlayProjects"
+          data-archive="projectsScreen"
           x="1235"
           y="500"
           width="270"
@@ -204,7 +379,7 @@
 
 
         <!-- =========================
-             ZONA CENTRALE / SCRIVANIA
+             ZONA CENTRALE
         ========================== -->
 
         <!-- PROGRAMMAZIONE -->
@@ -247,7 +422,7 @@
           height="245"
         />
 
-        <!-- COMPUTER / REGISTRO ELETTRONICO -->
+        <!-- COMPUTER / REGISTRO -->
         <rect
           class="hotspot"
           data-url="https://www.portaleargo.it/"
@@ -265,26 +440,12 @@
 
 
   <!-- =========================
-       PANNELLI LIBRERIA
+       PANNELLI TEST
   ========================== -->
 
   <div class="overlay" id="overlayLessons">
     <section class="panel">
       <h1>Lezioni &amp; Materiali</h1>
-      <button class="close-button">Chiudi</button>
-    </section>
-  </div>
-
-  <div class="overlay" id="overlayDocuments">
-    <section class="panel">
-      <h1>Documenti importanti</h1>
-      <button class="close-button">Chiudi</button>
-    </section>
-  </div>
-
-  <div class="overlay" id="overlayProjects">
-    <section class="panel">
-      <h1>Attività &amp; Progetti</h1>
       <button class="close-button">Chiudi</button>
     </section>
   </div>
@@ -302,11 +463,6 @@
       <button class="close-button">Chiudi</button>
     </section>
   </div>
-
-
-  <!-- =========================
-       PANNELLI CENTRALI
-  ========================== -->
 
   <div class="overlay" id="overlayPlanning">
     <section class="panel">
@@ -337,7 +493,129 @@
   </div>
 
 
+  <!-- =========================
+       DOCUMENTI IMPORTANTI
+  ========================== -->
+
+  <section
+    class="archive-screen documents"
+    id="documentsScreen"
+  >
+
+    <header class="archive-header">
+
+      <button
+        class="archive-back"
+        data-close-archive
+        aria-label="Torna alla Base"
+      >
+        ‹
+      </button>
+
+      <h1 class="archive-title">
+        Documenti importanti
+      </h1>
+
+      <button
+        class="archive-add"
+        data-file-picker="documentsInput"
+        aria-label="Aggiungi documento"
+      >
+        +
+      </button>
+
+    </header>
+
+    <div class="archive-content">
+
+      <div
+        class="archive-empty"
+        id="documentsEmpty"
+      >
+        Nessun documento ancora.
+      </div>
+
+      <div
+        class="archive-grid"
+        id="documentsGrid"
+      ></div>
+
+    </div>
+
+    <input
+      class="file-input"
+      id="documentsInput"
+      type="file"
+      multiple
+    >
+
+  </section>
+
+
+  <!-- =========================
+       ATTIVITÀ & PROGETTI
+  ========================== -->
+
+  <section
+    class="archive-screen projects"
+    id="projectsScreen"
+  >
+
+    <header class="archive-header">
+
+      <button
+        class="archive-back"
+        data-close-archive
+        aria-label="Torna alla Base"
+      >
+        ‹
+      </button>
+
+      <h1 class="archive-title">
+        Attività &amp; Progetti
+      </h1>
+
+      <button
+        class="archive-add"
+        data-file-picker="projectsInput"
+        aria-label="Aggiungi attività o progetto"
+      >
+        +
+      </button>
+
+    </header>
+
+    <div class="archive-content">
+
+      <div
+        class="archive-empty"
+        id="projectsEmpty"
+      >
+        Nessuna attività o progetto ancora.
+      </div>
+
+      <div
+        class="archive-grid"
+        id="projectsGrid"
+      ></div>
+
+    </div>
+
+    <input
+      class="file-input"
+      id="projectsInput"
+      type="file"
+      multiple
+    >
+
+  </section>
+
+
   <script>
+
+    /* =========================
+       HOTSPOT DELLA BASE
+    ========================== */
 
     const hotspots =
       document.querySelectorAll(".hotspot");
@@ -352,12 +630,6 @@
     hotspots.forEach((hotspot) => {
 
       hotspot.addEventListener("click", () => {
-
-        /*
-          Se l'hotspot contiene un URL,
-          apre il sito esterno.
-          Nessuna credenziale viene salvata nella Base.
-        */
 
         const url =
           hotspot.dataset.url;
@@ -374,10 +646,19 @@
         }
 
 
-        /*
-          Altrimenti apre normalmente
-          il pannello associato all'hotspot.
-        */
+        const archiveId =
+          hotspot.dataset.archive;
+
+        if (archiveId) {
+
+          const archive =
+            document.getElementById(archiveId);
+
+          archive.classList.add("aperto");
+
+          return;
+        }
+
 
         const targetId =
           hotspot.dataset.target;
@@ -393,6 +674,10 @@
 
     });
 
+
+    /* =========================
+       CHIUSURA PANNELLI TEST
+    ========================== */
 
     closeButtons.forEach((button) => {
 
@@ -418,6 +703,181 @@
       });
 
     });
+
+
+    /* =========================
+       CHIUSURA ARCHIVI
+    ========================== */
+
+    const archiveBackButtons =
+      document.querySelectorAll(
+        "[data-close-archive]"
+      );
+
+    archiveBackButtons.forEach((button) => {
+
+      button.addEventListener("click", () => {
+
+        button
+          .closest(".archive-screen")
+          .classList.remove("aperto");
+
+      });
+
+    });
+
+
+    /* =========================
+       APERTURA FILE PICKER
+    ========================== */
+
+    const addButtons =
+      document.querySelectorAll(
+        "[data-file-picker]"
+      );
+
+    addButtons.forEach((button) => {
+
+      button.addEventListener("click", () => {
+
+        const inputId =
+          button.dataset.filePicker;
+
+        document
+          .getElementById(inputId)
+          .click();
+
+      });
+
+    });
+
+
+    /* =========================
+       CREA CARD ARCHIVIO
+    ========================== */
+
+    function creaCard(file) {
+
+      const card =
+        document.createElement("button");
+
+      card.className = "archive-card";
+
+
+      const preview =
+        document.createElement("div");
+
+      preview.className = "archive-preview";
+
+
+      const name =
+        document.createElement("span");
+
+      name.className = "archive-name";
+      name.textContent = file.name;
+
+
+      if (file.type.startsWith("image/")) {
+
+        const image =
+          document.createElement("img");
+
+        const objectUrl =
+          URL.createObjectURL(file);
+
+        image.src = objectUrl;
+        image.alt = "";
+
+        preview.appendChild(image);
+
+        card.addEventListener("click", () => {
+          window.open(objectUrl, "_blank");
+        });
+
+      } else {
+
+        preview.textContent = "📄";
+
+        const objectUrl =
+          URL.createObjectURL(file);
+
+        card.addEventListener("click", () => {
+          window.open(objectUrl, "_blank");
+        });
+
+      }
+
+
+      card.appendChild(preview);
+      card.appendChild(name);
+
+      return card;
+    }
+
+
+    /* =========================
+       GESTIONE ARCHIVIO
+    ========================== */
+
+    function collegaArchivio(
+      inputId,
+      gridId,
+      emptyId
+    ) {
+
+      const input =
+        document.getElementById(inputId);
+
+      const grid =
+        document.getElementById(gridId);
+
+      const empty =
+        document.getElementById(emptyId);
+
+
+      input.addEventListener("change", () => {
+
+        const files =
+          Array.from(input.files);
+
+
+        if (files.length === 0) {
+          return;
+        }
+
+
+        empty.style.display = "none";
+
+
+        files.forEach((file) => {
+
+          const card =
+            creaCard(file);
+
+          grid.appendChild(card);
+
+        });
+
+
+        input.value = "";
+
+      });
+
+    }
+
+
+    collegaArchivio(
+      "documentsInput",
+      "documentsGrid",
+      "documentsEmpty"
+    );
+
+
+    collegaArchivio(
+      "projectsInput",
+      "projectsGrid",
+      "projectsEmpty"
+    );
 
   </script>
 
