@@ -75,6 +75,28 @@
     }
 
 
+
+
+    /* =========================
+       ORARIO SCOLASTICO
+    ========================== */
+
+    .schedule-screen { position: fixed; inset: 0; display: none; flex-direction: column; z-index: 230; overflow: hidden; background: #edf5ff; }
+    .schedule-screen.aperto { display: flex; }
+    .schedule-header { display:flex; align-items:center; gap:14px; padding:max(16px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) 12px max(18px, env(safe-area-inset-left)); background:#dcecf8; border-bottom:1px solid rgba(23,63,122,.10); }
+    .schedule-back, .schedule-clear { appearance:none; border:0; height:48px; border-radius:16px; background:rgba(255,255,255,.78); color:#173f7a; cursor:pointer; box-shadow:0 5px 14px rgba(50,65,80,.10); }
+    .schedule-back { width:48px; flex:0 0 48px; font-size:30px; line-height:1; }
+    .schedule-clear { padding:0 16px; font-size:15px; font-weight:700; }
+    .schedule-title { flex:1; margin:0; color:#173f7a; font-size:clamp(24px,3.5vw,38px); font-weight:700; }
+    .schedule-workspace { flex:1; min-height:0; display:flex; align-items:center; justify-content:center; padding:12px; overflow:auto; }
+    .schedule-board { position:relative; width:min(1200px,96vw); aspect-ratio:1535 / 1024; flex:0 0 auto; }
+    .schedule-image { display:block; width:100%; height:100%; object-fit:contain; user-select:none; -webkit-user-select:none; -webkit-user-drag:none; }
+    .schedule-input-grid { position:absolute; left:2.35%; right:2.67%; top:28.70%; bottom:6.05%; display:grid; grid-template-columns:repeat(6,1fr); grid-template-rows:repeat(9,1fr); }
+    .schedule-cell { width:100%; height:100%; resize:none; overflow:hidden; border:0; outline:0; background:transparent; padding:4px 6px; color:#173f7a; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; font-size:clamp(9px,1.18vw,16px); font-weight:600; line-height:1.15; text-align:center; display:block; }
+    .schedule-cell:focus { background:rgba(255,255,255,.48); box-shadow:inset 0 0 0 2px rgba(23,63,122,.16); border-radius:8px; }
+    @media (max-width:700px) { .schedule-header{gap:8px}.schedule-clear{padding:0 10px}.schedule-workspace{padding:5px}.schedule-board{width:100vw}.schedule-cell{padding:2px;font-size:8px}.schedule-title{font-size:21px} }
+
+
     /* =========================
        PANNELLI TEST
     ========================== */
@@ -1367,7 +1389,7 @@
 
         <rect
           class="hotspot"
-          data-target="overlaySchedule"
+          data-schedule="scheduleScreen"
           x="670"
           y="290"
           width="230"
@@ -1426,12 +1448,23 @@
     </section>
   </div>
 
-  <div class="overlay" id="overlaySchedule">
-    <section class="panel">
-      <h1>Orario scolastico</h1>
-      <button class="close-button">Chiudi</button>
-    </section>
-  </div>
+  <!-- =========================
+       ORARIO SCOLASTICO
+  ========================== -->
+
+  <section class="schedule-screen" id="scheduleScreen">
+    <header class="schedule-header">
+      <button class="schedule-back" id="scheduleBack" aria-label="Torna alla Base">‹</button>
+      <h1 class="schedule-title">Orario scolastico</h1>
+      <button class="schedule-clear" id="scheduleClear" type="button">Svuota</button>
+    </header>
+    <div class="schedule-workspace">
+      <div class="schedule-board">
+        <img class="schedule-image" src="assets/orario-scolastico.png" alt="Orario scolastico">
+        <div class="schedule-input-grid" id="scheduleInputGrid"></div>
+      </div>
+    </div>
+  </section>
 
   <div class="overlay" id="overlayRemember">
     <section class="panel">
@@ -3538,6 +3571,60 @@
     renderIdeaPage();
 
 
+
+
+    /* =========================
+       ORARIO SCOLASTICO
+    ========================== */
+
+    const SCHEDULE_STORAGE_KEY = "BaseSegretaNoziOrario";
+    const scheduleScreen = document.getElementById("scheduleScreen");
+    const scheduleBack = document.getElementById("scheduleBack");
+    const scheduleClear = document.getElementById("scheduleClear");
+    const scheduleInputGrid = document.getElementById("scheduleInputGrid");
+
+    function leggiOrario() {
+      try {
+        const dati = JSON.parse(localStorage.getItem(SCHEDULE_STORAGE_KEY) || "[]");
+        return Array.isArray(dati) ? dati : [];
+      } catch (error) {
+        console.error("Errore nel caricamento dell'orario:", error);
+        return [];
+      }
+    }
+
+    function salvaOrario() {
+      const dati = Array.from(scheduleInputGrid.querySelectorAll(".schedule-cell")).map((campo) => campo.value);
+      try { localStorage.setItem(SCHEDULE_STORAGE_KEY, JSON.stringify(dati)); }
+      catch (error) { console.error("Errore nel salvataggio dell'orario:", error); }
+    }
+
+    function creaGrigliaOrario() {
+      const dati = leggiOrario();
+      scheduleInputGrid.innerHTML = "";
+      const giorni = ["Orario", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì"];
+      for (let riga = 0; riga < 9; riga++) {
+        for (let colonna = 0; colonna < 6; colonna++) {
+          const campo = document.createElement("textarea");
+          campo.className = "schedule-cell";
+          campo.rows = 2;
+          campo.value = dati[riga * 6 + colonna] || "";
+          campo.setAttribute("aria-label", `${giorni[colonna]}, riga ${riga + 1}`);
+          campo.addEventListener("input", salvaOrario);
+          scheduleInputGrid.appendChild(campo);
+        }
+      }
+    }
+
+    scheduleBack.addEventListener("click", () => scheduleScreen.classList.remove("aperto"));
+    scheduleClear.addEventListener("click", () => {
+      if (!window.confirm("Vuoi svuotare tutto l'orario?")) return;
+      localStorage.removeItem(SCHEDULE_STORAGE_KEY);
+      creaGrigliaOrario();
+    });
+    creaGrigliaOrario();
+
+
     /* =========================
        BASE
     ========================== */
@@ -3576,6 +3663,22 @@
                 "_blank",
                 "noopener,noreferrer"
               );
+
+              return;
+
+            }
+
+
+            const scheduleId =
+              hotspot.dataset.schedule;
+
+
+            if (scheduleId) {
+
+              document
+                .getElementById(scheduleId)
+                .classList
+                .add("aperto");
 
               return;
 
