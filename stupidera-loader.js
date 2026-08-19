@@ -3,29 +3,23 @@
 
   const STUPIDERA_PAGES_KEY = "BaseSegretaNoziStupideraPagine";
   const STUPIDERA_INDEX_KEY = "BaseSegretaNoziStupideraPagina";
-  const STICKER_STORAGE_KEY_STUPIDERA = "BaseSegretaNoziStickerInseriti";
+  const STICKER_STORAGE_KEY = "BaseSegretaNoziStickerInseriti";
+
+  const MEDIA_DB_NAME = "BaseSegretaNoziStupideraMediaDB";
+  const MEDIA_DB_VERSION = 1;
+  const MEDIA_STORE = "media";
 
   const ASSETS = [
-    {
-      src: "assets/stupidera-copertina.png",
-      alt: "Copertina della Stupidera",
-      kind: "cover"
-    },
-    {
-      src: "assets/stupidera-intro.png",
-      alt: "Introduzione della Stupidera",
-      kind: "intro"
-    },
-    {
-      src: "assets/stupidera-pagine.png",
-      alt: "Pagine della Stupidera",
-      kind: "editor"
-    }
+    { src: "assets/stupidera-copertina.png", alt: "Copertina della Stupidera", kind: "cover" },
+    { src: "assets/stupidera-intro.png", alt: "Introduzione della Stupidera", kind: "intro" },
+    { src: "assets/stupidera-pagine.png", alt: "Pagine della Stupidera", kind: "editor" }
   ];
 
-  function uid() {
-    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
-  }
+  const uid = () =>
+    `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+
+  const limita = (n, min, max) =>
+    Math.min(max, Math.max(min, n));
 
   function nuovaPagina() {
     const oggi = new Date();
@@ -62,7 +56,6 @@
     } catch (e) {
       console.error("Stupidera: errore lettura pagine", e);
     }
-
     return [nuovaPagina()];
   }
 
@@ -75,7 +68,6 @@
         return Math.min(n, pagine.length - 1);
       }
     } catch (e) {}
-
     return 0;
   }
 
@@ -92,59 +84,45 @@
 
   function leggiSticker() {
     try {
-      const raw = localStorage.getItem(STICKER_STORAGE_KEY_STUPIDERA);
+      const raw = localStorage.getItem(STICKER_STORAGE_KEY);
       if (!raw) return [];
       const parsed = JSON.parse(raw);
       return Array.isArray(parsed) ? parsed : [];
     } catch (e) {
-      console.error("Stupidera: errore lettura sticker", e);
       return [];
     }
   }
 
   function salvaSticker(items) {
-    try {
-      localStorage.setItem(
-        STICKER_STORAGE_KEY_STUPIDERA,
-        JSON.stringify(items)
-      );
-    } catch (e) {
-      console.error("Stupidera: errore salvataggio sticker", e);
-    }
-  }
-
-  function limita(n, min, max) {
-    return Math.min(max, Math.max(min, n));
+    localStorage.setItem(STICKER_STORAGE_KEY, JSON.stringify(items));
   }
 
   function migraStickerQuadernoSenzaPagina() {
     const items = leggiSticker();
     let cambiato = false;
     let count = 0;
+    const page = pagine[indicePagina];
+    if (!page) return;
 
     items.forEach((item) => {
       if (item.destination !== "quaderno") return;
 
       if (!item.pageId) {
-        item.pageId = pagine[indicePagina].id;
+        item.pageId = page.id;
         cambiato = true;
       }
-
       if (typeof item.width !== "number") {
         item.width = 15;
         cambiato = true;
       }
-
       if (typeof item.x !== "number") {
         item.x = 62 + (count % 2) * 17;
         cambiato = true;
       }
-
       if (typeof item.y !== "number") {
-        item.y = 60 - Math.floor(count / 2) * 18;
+        item.y = 58 - Math.floor(count / 2) * 18;
         cambiato = true;
       }
-
       count++;
     });
 
@@ -160,26 +138,106 @@
   }
 
   function eliminaSticker(id) {
-    const items = leggiSticker().filter((x) => x.id !== id);
-    salvaSticker(items);
+    salvaSticker(leggiSticker().filter((x) => x.id !== id));
   }
 
   function eliminaStickerPagina(pageId) {
-    const items = leggiSticker().filter(
-      (x) => !(x.destination === "quaderno" && x.pageId === pageId)
+    salvaSticker(
+      leggiSticker().filter(
+        (x) => !(x.destination === "quaderno" && x.pageId === pageId)
+      )
     );
-    salvaSticker(items);
+  }
+
+  function apriMediaDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(MEDIA_DB_NAME, MEDIA_DB_VERSION);
+
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains(MEDIA_STORE)) {
+          db.createObjectStore(MEDIA_STORE, { keyPath: "id" });
+        }
+      };
+
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function salvaMedia(record) {
+    const db = await apriMediaDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(MEDIA_STORE, "readwrite");
+      const store = tx.objectStore(MEDIA_STORE);
+      const req = store.put(record);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function leggiMediaPagina(pageId) {
+    const db = await apriMediaDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(MEDIA_STORE, "readonly");
+      const store = tx.objectStore(MEDIA_STORE);
+      const req = store.getAll();
+      req.onsuccess = () => {
+        resolve(
+          req.result.filter(
+            (x) => x.pageId === pageId
+          )
+        );
+      };
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function aggiornaMedia(id, patch) {
+    const db = await apriMediaDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(MEDIA_STORE, "readwrite");
+      const store = tx.objectStore(MEDIA_STORE);
+      const getReq = store.get(id);
+
+      getReq.onsuccess = () => {
+        const item = getReq.result;
+        if (!item) {
+          resolve();
+          return;
+        }
+        Object.assign(item, patch);
+        const putReq = store.put(item);
+        putReq.onsuccess = () => resolve();
+        putReq.onerror = () => reject(putReq.error);
+      };
+
+      getReq.onerror = () => reject(getReq.error);
+    });
+  }
+
+  async function eliminaMedia(id) {
+    const db = await apriMediaDB();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(MEDIA_STORE, "readwrite");
+      const store = tx.objectStore(MEDIA_STORE);
+      const req = store.delete(id);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function eliminaMediaPagina(pageId) {
+    const items = await leggiMediaPagina(pageId);
+    for (const item of items) {
+      await eliminaMedia(item.id);
+    }
   }
 
   function avviaStupidera() {
     if (document.getElementById("stupideraScreen")) return;
 
-    /* =========================
-       CSS
-    ========================== */
-
     const style = document.createElement("style");
-
     style.textContent = `
       .stupidera-screen {
         position: fixed;
@@ -196,9 +254,7 @@
         z-index: 700;
       }
 
-      .stupidera-screen.aperto {
-        display: flex;
-      }
+      .stupidera-screen.aperto { display: flex; }
 
       .stupidera-stage {
         position: relative;
@@ -219,56 +275,61 @@
         -webkit-tap-highlight-color: transparent;
       }
 
-      .stupidera-clickable {
-        cursor: pointer;
-      }
+      .stupidera-clickable { cursor: pointer; }
 
-      .stupidera-back,
-      .stupidera-page-add,
-      .stupidera-page-delete {
+      .stupidera-back {
         position: fixed;
         top: max(18px, env(safe-area-inset-top));
+        left: max(18px, env(safe-area-inset-left));
         appearance: none;
         border: 0;
-        width: 52px;
-        height: 52px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 17px;
+        width: 50px;
+        height: 50px;
+        border-radius: 16px;
         background: rgba(255,255,255,.90);
         color: #4c4274;
         box-shadow: 0 5px 16px rgba(65,55,90,.14);
         font-size: 30px;
-        line-height: 1;
         cursor: pointer;
-        z-index: 20;
-        -webkit-tap-highlight-color: transparent;
+        z-index: 30;
       }
 
-      .stupidera-back {
-        left: max(18px, env(safe-area-inset-left));
-      }
-
-      .stupidera-page-add {
+      .stupidera-toolbar {
+        position: fixed;
+        top: max(18px, env(safe-area-inset-top));
         right: max(18px, env(safe-area-inset-right));
-      }
-
-      .stupidera-page-delete {
-        right:
-          calc(
-            max(18px, env(safe-area-inset-right))
-            + 64px
-          );
-        font-size: 22px;
-      }
-
-      .stupidera-page-tools {
         display: none;
+        align-items: center;
+        gap: 8px;
+        z-index: 30;
       }
 
-      .stupidera-screen.editor-mode .stupidera-page-tools {
+      .stupidera-screen.editor-mode .stupidera-toolbar {
         display: flex;
+      }
+
+      .stupidera-tool {
+        appearance: none;
+        border: 0;
+        min-height: 46px;
+        padding: 0 15px;
+        border-radius: 15px;
+        background: rgba(255,255,255,.92);
+        color: #4c4274;
+        box-shadow: 0 5px 16px rgba(65,55,90,.12);
+        font-size: 14px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .stupidera-tool.square {
+        width: 46px;
+        padding: 0;
+        font-size: 25px;
+      }
+
+      .stupidera-tool.delete {
+        color: #8f3d4d;
       }
 
       .stupidera-editor {
@@ -296,6 +357,7 @@
           -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
         border-radius: 9px;
         padding: 0 8px;
+        z-index: 5;
       }
 
       .stupidera-text {
@@ -334,12 +396,12 @@
       .stupidera-nav {
         position: absolute;
         left: 50%;
-        bottom: 3.0%;
+        bottom: 2.4%;
         transform: translateX(-50%);
         display: none;
         align-items: center;
         gap: 12px;
-        z-index: 12;
+        z-index: 20;
       }
 
       .stupidera-screen.editor-mode .stupidera-nav {
@@ -349,27 +411,26 @@
       .stupidera-nav button {
         appearance: none;
         border: 0;
-        width: 40px;
-        height: 40px;
+        width: 42px;
+        height: 42px;
         border-radius: 13px;
-        background: rgba(255,255,255,.90);
+        background: rgba(255,255,255,.92);
         color: #4c4274;
-        font-size: 25px;
-        line-height: 1;
+        font-size: 26px;
         box-shadow: 0 3px 10px rgba(65,55,90,.12);
         cursor: pointer;
       }
 
       .stupidera-nav button:disabled {
-        opacity: .35;
+        opacity: .30;
         cursor: default;
       }
 
       .stupidera-counter {
-        min-width: 68px;
-        padding: 8px 11px;
+        min-width: 72px;
+        padding: 9px 12px;
         border-radius: 12px;
-        background: rgba(255,255,255,.88);
+        background: rgba(255,255,255,.92);
         color: #4c4274;
         font-size: 14px;
         font-weight: 700;
@@ -377,14 +438,14 @@
         box-shadow: 0 3px 10px rgba(65,55,90,.10);
       }
 
-      .stupidera-sticker-layer {
+      .stupidera-object-layer {
         position: absolute;
         inset: 0;
         z-index: 8;
         pointer-events: none;
       }
 
-      .stupidera-sticker-object {
+      .stupidera-object {
         position: absolute;
         pointer-events: auto;
         touch-action: none;
@@ -396,24 +457,25 @@
         border-radius: 14px;
       }
 
-      .stupidera-sticker-object.selected {
+      .stupidera-object.selected {
         border-color: rgba(76,66,116,.60);
         background: rgba(255,255,255,.18);
       }
 
-      .stupidera-sticker-image {
+      .stupidera-object img {
         display: block;
         width: 100%;
         height: auto;
         pointer-events: none;
+        object-fit: contain;
         filter: drop-shadow(0 4px 5px rgba(60,50,80,.12));
         user-select: none;
         -webkit-user-select: none;
         -webkit-user-drag: none;
       }
 
-      .stupidera-sticker-remove,
-      .stupidera-sticker-resize {
+      .stupidera-object-remove,
+      .stupidera-object-resize {
         position: absolute;
         display: none;
         align-items: center;
@@ -432,65 +494,44 @@
         touch-action: none;
       }
 
-      .stupidera-sticker-object.selected
-      .stupidera-sticker-remove,
-      .stupidera-sticker-object.selected
-      .stupidera-sticker-resize {
+      .stupidera-object.selected .stupidera-object-remove,
+      .stupidera-object.selected .stupidera-object-resize {
         display: flex;
       }
 
-      .stupidera-sticker-remove {
+      .stupidera-object-remove {
         top: -14px;
         right: -14px;
         background: #9f5964;
       }
 
-      .stupidera-sticker-resize {
+      .stupidera-object-resize {
         right: -14px;
         bottom: -14px;
         background: #66568c;
         font-size: 16px;
       }
 
-      @media (max-width: 700px) {
-        .stupidera-back,
-        .stupidera-page-add,
-        .stupidera-page-delete {
-          width: 44px;
-          height: 44px;
+      .stupidera-file-input { display: none; }
+
+      @media (max-width: 800px) {
+        .stupidera-toolbar {
+          gap: 5px;
         }
 
-        .stupidera-page-delete {
-          right:
-            calc(
-              max(12px, env(safe-area-inset-right))
-              + 54px
-            );
+        .stupidera-tool {
+          min-height: 42px;
+          padding: 0 11px;
+          font-size: 12px;
         }
 
-        .stupidera-page-add {
-          right: max(12px, env(safe-area-inset-right));
-        }
-
-        .stupidera-date,
-        .stupidera-text {
-          font-size: 13px;
-        }
-
-        .stupidera-sticker-remove,
-        .stupidera-sticker-resize {
-          width: 30px;
-          height: 30px;
+        .stupidera-tool.square {
+          width: 42px;
+          font-size: 23px;
         }
       }
     `;
-
     document.head.appendChild(style);
-
-
-    /* =========================
-       DOM
-    ========================== */
 
     const screen = document.createElement("section");
     screen.className = "stupidera-screen";
@@ -519,13 +560,13 @@
     rightText.className = "stupidera-text stupidera-right-text";
     rightText.placeholder = "Aggiungi un'altra nota...";
 
-    const stickerLayer = document.createElement("div");
-    stickerLayer.className = "stupidera-sticker-layer";
+    const objectLayer = document.createElement("div");
+    objectLayer.className = "stupidera-object-layer";
 
     editor.appendChild(dateInput);
     editor.appendChild(leftText);
     editor.appendChild(rightText);
-    editor.appendChild(stickerLayer);
+    editor.appendChild(objectLayer);
 
     const nav = document.createElement("div");
     nav.className = "stupidera-nav";
@@ -553,17 +594,40 @@
     back.textContent = "‹";
     back.setAttribute("aria-label", "Indietro");
 
-    const pageDelete = document.createElement("button");
-    pageDelete.className = "stupidera-page-delete stupidera-page-tools";
-    pageDelete.type = "button";
-    pageDelete.textContent = "⌫";
-    pageDelete.setAttribute("aria-label", "Elimina pagina");
+    const toolbar = document.createElement("div");
+    toolbar.className = "stupidera-toolbar";
 
-    const pageAdd = document.createElement("button");
-    pageAdd.className = "stupidera-page-add stupidera-page-tools";
-    pageAdd.type = "button";
-    pageAdd.textContent = "+";
-    pageAdd.setAttribute("aria-label", "Nuova pagina");
+    const stickerBtn = document.createElement("button");
+    stickerBtn.className = "stupidera-tool";
+    stickerBtn.type = "button";
+    stickerBtn.textContent = "Sticker";
+
+    const imageBtn = document.createElement("button");
+    imageBtn.className = "stupidera-tool";
+    imageBtn.type = "button";
+    imageBtn.textContent = "Immagine";
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "stupidera-tool square delete";
+    deleteBtn.type = "button";
+    deleteBtn.textContent = "⌫";
+    deleteBtn.setAttribute("aria-label", "Elimina pagina");
+
+    const addBtn = document.createElement("button");
+    addBtn.className = "stupidera-tool square";
+    addBtn.type = "button";
+    addBtn.textContent = "+";
+    addBtn.setAttribute("aria-label", "Nuova pagina");
+
+    toolbar.appendChild(stickerBtn);
+    toolbar.appendChild(imageBtn);
+    toolbar.appendChild(deleteBtn);
+    toolbar.appendChild(addBtn);
+
+    const fileInput = document.createElement("input");
+    fileInput.className = "stupidera-file-input";
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
 
     stage.appendChild(image);
     stage.appendChild(editor);
@@ -571,18 +635,13 @@
 
     screen.appendChild(stage);
     screen.appendChild(back);
-    screen.appendChild(pageDelete);
-    screen.appendChild(pageAdd);
+    screen.appendChild(toolbar);
+    screen.appendChild(fileInput);
 
     document.body.appendChild(screen);
 
-
-    /* =========================
-       STATO
-    ========================== */
-
     let schermata = 0;
-    let stickerSelezionatoId = null;
+    let selectedId = null;
 
     function salvaPaginaCorrente() {
       if (!pagine[indicePagina]) return;
@@ -591,207 +650,260 @@
       pagine[indicePagina].leftText = leftText.value;
       pagine[indicePagina].rightText = rightText.value;
       pagine[indicePagina].updatedAt = Date.now();
-
       salvaPagine();
     }
 
-    function deselezionaSticker() {
-      stickerSelezionatoId = null;
-
-      stickerLayer
-        .querySelectorAll(".stupidera-sticker-object.selected")
+    function deselezionaOggetti() {
+      selectedId = null;
+      objectLayer
+        .querySelectorAll(".stupidera-object.selected")
         .forEach((el) => el.classList.remove("selected"));
     }
 
-    function selezionaSticker(el, id) {
-      deselezionaSticker();
+    function selezionaOggetto(el, id) {
+      deselezionaOggetti();
       el.classList.add("selected");
-      stickerSelezionatoId = id;
+      selectedId = id;
     }
 
-    function renderSticker() {
-      stickerLayer.innerHTML = "";
-      stickerSelezionatoId = null;
+    function attivaDragResize({
+      obj,
+      item,
+      remove,
+      resize,
+      onUpdate,
+      onRemove
+    }) {
+      obj.addEventListener("pointerdown", (event) => {
+        if (event.target === remove || event.target === resize) return;
 
-      if (!pagine[indicePagina]) return;
+        event.preventDefault();
+        event.stopPropagation();
 
-      const currentId = pagine[indicePagina].id;
+        selezionaOggetto(obj, item.id);
 
-      const items = leggiSticker().filter(
-        (x) => x.destination === "quaderno" && x.pageId === currentId
-      );
+        const pageRect = stage.getBoundingClientRect();
+        const objectRect = obj.getBoundingClientRect();
+        const offsetX = event.clientX - objectRect.left;
+        const offsetY = event.clientY - objectRect.top;
 
-      items.forEach((item, index) => {
-        if (typeof item.width !== "number") item.width = 15;
-        if (typeof item.x !== "number") item.x = 62 + (index % 2) * 17;
-        if (typeof item.y !== "number") item.y = 60 - Math.floor(index / 2) * 18;
+        obj.setPointerCapture(event.pointerId);
 
-        const obj = document.createElement("div");
-        obj.className = "stupidera-sticker-object";
-        obj.dataset.id = item.id;
-        obj.style.left = `${item.x}%`;
-        obj.style.top = `${item.y}%`;
-        obj.style.width = `${item.width}%`;
+        function muovi(moveEvent) {
+          let leftPx = moveEvent.clientX - pageRect.left - offsetX;
+          let topPx = moveEvent.clientY - pageRect.top - offsetY;
 
-        const img = document.createElement("img");
-        img.className = "stupidera-sticker-image";
-        img.src = `assets/${item.file}`;
-        img.alt = item.label || "";
+          leftPx = limita(
+            leftPx,
+            0,
+            Math.max(0, pageRect.width - obj.offsetWidth)
+          );
 
-        const remove = document.createElement("button");
-        remove.className = "stupidera-sticker-remove";
-        remove.type = "button";
-        remove.textContent = "×";
-        remove.setAttribute("aria-label", "Rimuovi sticker");
+          topPx = limita(
+            topPx,
+            0,
+            Math.max(0, pageRect.height - obj.offsetHeight)
+          );
 
-        const resize = document.createElement("button");
-        resize.className = "stupidera-sticker-resize";
-        resize.type = "button";
-        resize.textContent = "↘";
-        resize.setAttribute("aria-label", "Ridimensiona sticker");
+          item.x = (leftPx / pageRect.width) * 100;
+          item.y = (topPx / pageRect.height) * 100;
 
-        obj.appendChild(img);
-        obj.appendChild(remove);
-        obj.appendChild(resize);
+          obj.style.left = `${item.x}%`;
+          obj.style.top = `${item.y}%`;
+        }
 
-        obj.addEventListener("pointerdown", (event) => {
-          if (event.target === remove || event.target === resize) return;
+        function fine(endEvent) {
+          try {
+            obj.releasePointerCapture(endEvent.pointerId);
+          } catch (e) {}
 
-          event.preventDefault();
-          event.stopPropagation();
+          obj.removeEventListener("pointermove", muovi);
+          obj.removeEventListener("pointerup", fine);
+          obj.removeEventListener("pointercancel", fine);
 
-          selezionaSticker(obj, item.id);
+          onUpdate({
+            x: item.x,
+            y: item.y
+          });
+        }
 
-          const pageRect = stage.getBoundingClientRect();
-          const objectRect = obj.getBoundingClientRect();
+        obj.addEventListener("pointermove", muovi);
+        obj.addEventListener("pointerup", fine);
+        obj.addEventListener("pointercancel", fine);
+      });
 
-          const offsetX = event.clientX - objectRect.left;
-          const offsetY = event.clientY - objectRect.top;
+      resize.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
 
-          obj.setPointerCapture(event.pointerId);
+        selezionaOggetto(obj, item.id);
 
-          function muovi(moveEvent) {
-            let leftPx = moveEvent.clientX - pageRect.left - offsetX;
-            let topPx = moveEvent.clientY - pageRect.top - offsetY;
+        const pageRect = stage.getBoundingClientRect();
+        const objectRect = obj.getBoundingClientRect();
+        const left = objectRect.left - pageRect.left;
 
-            const widthPx = obj.offsetWidth;
-            const heightPx = obj.offsetHeight;
+        resize.setPointerCapture(event.pointerId);
 
-            leftPx = limita(
-              leftPx,
-              0,
-              Math.max(0, pageRect.width - widthPx)
-            );
+        function ridimensiona(moveEvent) {
+          let w =
+            moveEvent.clientX - pageRect.left - left;
 
-            topPx = limita(
-              topPx,
-              0,
-              Math.max(0, pageRect.height - heightPx)
-            );
+          w = limita(
+            w,
+            pageRect.width * 0.07,
+            pageRect.width * 0.42
+          );
 
-            item.x = (leftPx / pageRect.width) * 100;
-            item.y = (topPx / pageRect.height) * 100;
+          item.width = (w / pageRect.width) * 100;
 
+          if (item.x + item.width > 100) {
+            item.x = Math.max(0, 100 - item.width);
             obj.style.left = `${item.x}%`;
-            obj.style.top = `${item.y}%`;
           }
 
-          function fine(endEvent) {
-            try {
-              obj.releasePointerCapture(endEvent.pointerId);
-            } catch (e) {}
+          obj.style.width = `${item.width}%`;
+        }
 
-            obj.removeEventListener("pointermove", muovi);
-            obj.removeEventListener("pointerup", fine);
-            obj.removeEventListener("pointercancel", fine);
+        function fineResize(endEvent) {
+          try {
+            resize.releasePointerCapture(endEvent.pointerId);
+          } catch (e) {}
 
-            aggiornaSticker(item.id, {
-              x: item.x,
-              y: item.y
-            });
-          }
+          resize.removeEventListener("pointermove", ridimensiona);
+          resize.removeEventListener("pointerup", fineResize);
+          resize.removeEventListener("pointercancel", fineResize);
 
-          obj.addEventListener("pointermove", muovi);
-          obj.addEventListener("pointerup", fine);
-          obj.addEventListener("pointercancel", fine);
-        });
+          onUpdate({
+            x: item.x,
+            y: item.y,
+            width: item.width
+          });
+        }
 
-        resize.addEventListener("pointerdown", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
+        resize.addEventListener("pointermove", ridimensiona);
+        resize.addEventListener("pointerup", fineResize);
+        resize.addEventListener("pointercancel", fineResize);
+      });
 
-          selezionaSticker(obj, item.id);
-
-          const pageRect = stage.getBoundingClientRect();
-          const objectRect = obj.getBoundingClientRect();
-          const left = objectRect.left - pageRect.left;
-
-          resize.setPointerCapture(event.pointerId);
-
-          function ridimensiona(moveEvent) {
-            let newWidthPx =
-              moveEvent.clientX - pageRect.left - left;
-
-            newWidthPx = limita(
-              newWidthPx,
-              pageRect.width * 0.07,
-              pageRect.width * 0.40
-            );
-
-            item.width = (newWidthPx / pageRect.width) * 100;
-
-            if (item.x + item.width > 100) {
-              item.x = Math.max(0, 100 - item.width);
-              obj.style.left = `${item.x}%`;
-            }
-
-            obj.style.width = `${item.width}%`;
-          }
-
-          function fineResize(endEvent) {
-            try {
-              resize.releasePointerCapture(endEvent.pointerId);
-            } catch (e) {}
-
-            resize.removeEventListener("pointermove", ridimensiona);
-            resize.removeEventListener("pointerup", fineResize);
-            resize.removeEventListener("pointercancel", fineResize);
-
-            aggiornaSticker(item.id, {
-              x: item.x,
-              y: item.y,
-              width: item.width
-            });
-          }
-
-          resize.addEventListener("pointermove", ridimensiona);
-          resize.addEventListener("pointerup", fineResize);
-          resize.addEventListener("pointercancel", fineResize);
-        });
-
-        remove.addEventListener("pointerdown", (event) => {
-          event.preventDefault();
-          event.stopPropagation();
-
-          eliminaSticker(item.id);
-          renderSticker();
-        });
-
-        stickerLayer.appendChild(obj);
+      remove.addEventListener("pointerdown", async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        await onRemove();
+        await renderOggetti();
       });
     }
 
-    function renderPagina() {
+    function creaOggettoVisuale(item, src, type) {
+      const obj = document.createElement("div");
+      obj.className = "stupidera-object";
+      obj.dataset.id = item.id;
+      obj.dataset.type = type;
+      obj.style.left = `${item.x}%`;
+      obj.style.top = `${item.y}%`;
+      obj.style.width = `${item.width}%`;
+
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = item.label || item.name || "";
+
+      const remove = document.createElement("button");
+      remove.className = "stupidera-object-remove";
+      remove.type = "button";
+      remove.textContent = "×";
+
+      const resize = document.createElement("button");
+      resize.className = "stupidera-object-resize";
+      resize.type = "button";
+      resize.textContent = "↘";
+
+      obj.appendChild(img);
+      obj.appendChild(remove);
+      obj.appendChild(resize);
+
+      return { obj, remove, resize };
+    }
+
+    async function renderOggetti() {
+      objectLayer.innerHTML = "";
+      selectedId = null;
+
+      const page = pagine[indicePagina];
+      if (!page) return;
+
+      migraStickerQuadernoSenzaPagina();
+
+      const stickers = leggiSticker().filter(
+        (x) => x.destination === "quaderno" && x.pageId === page.id
+      );
+
+      stickers.forEach((item, index) => {
+        if (typeof item.width !== "number") item.width = 15;
+        if (typeof item.x !== "number") item.x = 62 + (index % 2) * 17;
+        if (typeof item.y !== "number") item.y = 58 - Math.floor(index / 2) * 18;
+
+        const ui = creaOggettoVisuale(
+          item,
+          `assets/${item.file}`,
+          "sticker"
+        );
+
+        attivaDragResize({
+          obj: ui.obj,
+          item,
+          remove: ui.remove,
+          resize: ui.resize,
+          onUpdate: (patch) => aggiornaSticker(item.id, patch),
+          onRemove: async () => eliminaSticker(item.id)
+        });
+
+        objectLayer.appendChild(ui.obj);
+      });
+
+      try {
+        const media = await leggiMediaPagina(page.id);
+
+        media.forEach((item, index) => {
+          if (typeof item.width !== "number") item.width = 22;
+          if (typeof item.x !== "number") item.x = 58 + (index % 2) * 18;
+          if (typeof item.y !== "number") item.y = 48 + Math.floor(index / 2) * 16;
+
+          const url = URL.createObjectURL(item.blob);
+
+          const ui = creaOggettoVisuale(
+            item,
+            url,
+            "image"
+          );
+
+          ui.obj.querySelector("img").addEventListener(
+            "load",
+            () => URL.revokeObjectURL(url),
+            { once: true }
+          );
+
+          attivaDragResize({
+            obj: ui.obj,
+            item,
+            remove: ui.remove,
+            resize: ui.resize,
+            onUpdate: (patch) => aggiornaMedia(item.id, patch),
+            onRemove: async () => eliminaMedia(item.id)
+          });
+
+          objectLayer.appendChild(ui.obj);
+        });
+      } catch (e) {
+        console.error("Stupidera: errore render immagini", e);
+      }
+    }
+
+    async function renderPagina() {
       if (!pagine.length) {
         pagine = [nuovaPagina()];
         indicePagina = 0;
       }
 
-      indicePagina = limita(
-        indicePagina,
-        0,
-        pagine.length - 1
-      );
+      indicePagina = limita(indicePagina, 0, pagine.length - 1);
 
       const pagina = pagine[indicePagina];
 
@@ -799,14 +911,11 @@
       leftText.value = pagina.leftText || "";
       rightText.value = pagina.rightText || "";
 
-      counter.textContent =
-        `${indicePagina + 1} / ${pagine.length}`;
-
+      counter.textContent = `${indicePagina + 1} / ${pagine.length}`;
       prev.disabled = indicePagina === 0;
       next.disabled = indicePagina === pagine.length - 1;
 
-      migraStickerQuadernoSenzaPagina();
-      renderSticker();
+      await renderOggetti();
       salvaPagine();
     }
 
@@ -816,49 +925,34 @@
       image.src = ASSETS[schermata].src;
       image.alt = ASSETS[schermata].alt;
 
-      const editorMode =
-        ASSETS[schermata].kind === "editor";
+      const editorMode = ASSETS[schermata].kind === "editor";
 
-      screen.classList.toggle(
-        "editor-mode",
-        editorMode
-      );
-
-      image.classList.toggle(
-        "stupidera-clickable",
-        !editorMode
-      );
+      screen.classList.toggle("editor-mode", editorMode);
+      image.classList.toggle("stupidera-clickable", !editorMode);
 
       if (editorMode) {
         renderPagina();
       } else {
-        deselezionaSticker();
+        deselezionaOggetti();
       }
     }
 
     function apriDaCopertina() {
-      schermata = 0;
       mostraSchermata(0);
       screen.classList.add("aperto");
     }
 
     function apriDirettamentePagine() {
-      schermata = 2;
       mostraSchermata(2);
       screen.classList.add("aperto");
     }
 
     function chiudi() {
       salvaPaginaCorrente();
-      deselezionaSticker();
+      deselezionaOggetti();
       screen.classList.remove("aperto");
       schermata = 0;
     }
-
-
-    /* =========================
-       EVENTI
-    ========================== */
 
     image.addEventListener("click", () => {
       if (ASSETS[schermata].kind !== "editor") {
@@ -870,9 +964,7 @@
       event.preventDefault();
       event.stopPropagation();
 
-      if (schermata === 2) {
-        salvaPaginaCorrente();
-      }
+      if (schermata === 2) salvaPaginaCorrente();
 
       if (schermata > 0) {
         mostraSchermata(schermata - 1);
@@ -885,63 +977,109 @@
     rightText.addEventListener("input", salvaPaginaCorrente);
     dateInput.addEventListener("change", salvaPaginaCorrente);
 
-    leftText.addEventListener("pointerdown", deselezionaSticker);
-    rightText.addEventListener("pointerdown", deselezionaSticker);
-    dateInput.addEventListener("pointerdown", deselezionaSticker);
+    [leftText, rightText, dateInput].forEach((el) => {
+      el.addEventListener("pointerdown", deselezionaOggetti);
+    });
 
-    prev.addEventListener("click", () => {
+    prev.addEventListener("click", async () => {
       salvaPaginaCorrente();
-
       if (indicePagina > 0) {
         indicePagina--;
-        renderPagina();
+        await renderPagina();
       }
     });
 
-    next.addEventListener("click", () => {
+    next.addEventListener("click", async () => {
       salvaPaginaCorrente();
-
       if (indicePagina < pagine.length - 1) {
         indicePagina++;
-        renderPagina();
+        await renderPagina();
       }
     });
 
-    pageAdd.addEventListener("click", () => {
+    addBtn.addEventListener("click", async () => {
       salvaPaginaCorrente();
-
       pagine.push(nuovaPagina());
       indicePagina = pagine.length - 1;
-
       salvaPagine();
-      renderPagina();
-
+      await renderPagina();
       setTimeout(() => leftText.focus(), 100);
     });
 
-    pageDelete.addEventListener("click", () => {
+    deleteBtn.addEventListener("click", async () => {
       const numero = indicePagina + 1;
 
       if (!window.confirm(`Eliminare la pagina ${numero} della Stupidera?`)) {
         return;
       }
 
-      const idEliminata = pagine[indicePagina].id;
-      eliminaStickerPagina(idEliminata);
+      const pageId = pagine[indicePagina].id;
+
+      eliminaStickerPagina(pageId);
+      await eliminaMediaPagina(pageId);
 
       if (pagine.length === 1) {
         pagine[0] = nuovaPagina();
         indicePagina = 0;
       } else {
         pagine.splice(indicePagina, 1);
-
         if (indicePagina > pagine.length - 1) {
           indicePagina = pagine.length - 1;
         }
       }
 
       salvaPagine();
-      renderPagina();
+      await renderPagina();
+    });
+
+    stickerBtn.addEventListener("click", () => {
+      salvaPaginaCorrente();
+
+      const stickersScreen = document.getElementById("stickersScreen");
+
+      if (!stickersScreen) {
+        window.alert("La galleria Sticker di Nozi non è disponibile.");
+        return;
+      }
+
+      screen.classList.remove("aperto");
+      stickersScreen.classList.add("aperto");
+    });
+
+    imageBtn.addEventListener("click", () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener("change", async () => {
+      const file = fileInput.files && fileInput.files[0];
+
+      if (!file) return;
+
+      if (!file.type.startsWith("image/")) {
+        window.alert("Scegli un'immagine.");
+        fileInput.value = "";
+        return;
+      }
+
+      const page = pagine[indicePagina];
+
+      const existing = await leggiMediaPagina(page.id);
+      const n = existing.length;
+
+      await salvaMedia({
+        id: uid(),
+        pageId: page.id,
+        name: file.name,
+        type: file.type,
+        blob: file,
+        x: 58 + (n % 2) * 18,
+        y: 48 + Math.floor(n / 2) * 16,
+        width: 22,
+        createdAt: Date.now()
+      });
+
+      fileInput.value = "";
+      await renderOggetti();
     });
 
     window.addEventListener("pagehide", salvaPaginaCorrente);
@@ -951,22 +1089,13 @@
         screen.classList.contains("aperto") &&
         screen.classList.contains("editor-mode")
       ) {
-        renderSticker();
+        renderOggetti();
       }
     });
 
-
-    /* =========================
-       HOTSPOT QUADERNO
-    ========================== */
-
     const notebookHotspot =
-      document.querySelector(
-        '.hotspot[data-target="overlayNotebook"]'
-      ) ||
-      document.querySelector(
-        '.hotspot[data-stupidera="true"]'
-      );
+      document.querySelector('.hotspot[data-target="overlayNotebook"]') ||
+      document.querySelector('.hotspot[data-stupidera="true"]');
 
     if (notebookHotspot) {
       notebookHotspot.removeAttribute("data-target");
@@ -981,17 +1110,7 @@
         },
         true
       );
-    } else {
-      console.error(
-        "Stupidera: hotspot del Quaderno delle cose buffe non trovato."
-      );
     }
-
-
-    /* =========================
-       INSERISCI → QUADERNO
-       Si aggancia al pulsante già esistente.
-    ========================== */
 
     const quadernoDestinationButton =
       document.querySelector(
@@ -999,49 +1118,22 @@
       );
 
     if (quadernoDestinationButton) {
-      quadernoDestinationButton.addEventListener(
-        "click",
-        () => {
-          /*
-            Il listener originale salva lo sticker.
-            Dopo che ha finito, assegniamo alla pagina
-            corrente gli eventuali sticker appena
-            salvati senza pageId e apriamo la Stupidera.
-          */
-          setTimeout(() => {
-            migraStickerQuadernoSenzaPagina();
+      quadernoDestinationButton.addEventListener("click", () => {
+        setTimeout(() => {
+          migraStickerQuadernoSenzaPagina();
 
-            const stickersScreen =
-              document.getElementById("stickersScreen");
+          const stickersScreen = document.getElementById("stickersScreen");
+          const viewer = document.getElementById("stickerViewer");
+          const destinationOverlay = document.getElementById("destinationOverlay");
 
-            const viewer =
-              document.getElementById("stickerViewer");
+          if (stickersScreen) stickersScreen.classList.remove("aperto");
+          if (viewer) viewer.classList.remove("aperto");
+          if (destinationOverlay) destinationOverlay.classList.remove("aperto");
 
-            const destinationOverlay =
-              document.getElementById("destinationOverlay");
-
-            if (stickersScreen) {
-              stickersScreen.classList.remove("aperto");
-            }
-
-            if (viewer) {
-              viewer.classList.remove("aperto");
-            }
-
-            if (destinationOverlay) {
-              destinationOverlay.classList.remove("aperto");
-            }
-
-            apriDirettamentePagine();
-          }, 0);
-        }
-      );
+          apriDirettamentePagine();
+        }, 0);
+      });
     }
-
-
-    /* =========================
-       PRELOAD
-    ========================== */
 
     ASSETS.forEach((item) => {
       const preload = new Image();
@@ -1049,18 +1141,11 @@
     });
 
     salvaPagine();
-
-    console.log(
-      "La Stupidera completa è pronta."
-    );
+    console.log("Stupidera v2 pronta.");
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener(
-      "DOMContentLoaded",
-      avviaStupidera,
-      { once: true }
-    );
+    document.addEventListener("DOMContentLoaded", avviaStupidera, { once: true });
   } else {
     avviaStupidera();
   }
