@@ -3,6 +3,7 @@
 
   const STORAGE_KEY = "BaseSegretaNoziProgrammazioneV1";
   const VIEW_KEY = "BaseSegretaNoziProgrammazioneVistaV1";
+  const STICKERS_KEY = "BaseSegretaNoziProgrammazioneStickerV1";
 
   const MESI = [
     "GENNAIO", "FEBBRAIO", "MARZO", "APRILE", "MAGGIO", "GIUGNO",
@@ -27,6 +28,26 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(note));
     } catch (error) {
       console.error("Programmazione: errore nel salvataggio", error);
+    }
+  }
+
+
+  function caricaSticker() {
+    try {
+      const raw = localStorage.getItem(STICKERS_KEY);
+      const parsed = raw ? JSON.parse(raw) : [];
+      return Array.isArray(parsed) ? parsed : [];
+    } catch (error) {
+      console.error("Programmazione: errore nel caricamento sticker", error);
+      return [];
+    }
+  }
+
+  function salvaSticker(items) {
+    try {
+      localStorage.setItem(STICKERS_KEY, JSON.stringify(items));
+    } catch (error) {
+      console.error("Programmazione: errore nel salvataggio sticker", error);
     }
   }
 
@@ -118,7 +139,8 @@
       }
 
       .planning-back,
-      .planning-today {
+      .planning-today,
+      .planning-sticker-button {
         appearance: none;
         border: 0;
         height: 48px;
@@ -136,7 +158,8 @@
         line-height: 1;
       }
 
-      .planning-today {
+      .planning-today,
+      .planning-sticker-button {
         padding: 0 16px;
         font-size: 15px;
         font-weight: 700;
@@ -163,8 +186,8 @@
 
       .planning-board {
         position: relative;
-        width: min(1220px, 96vw);
-        min-width: 760px;
+        width: min(1060px, 92vw);
+        min-width: 0;
         aspect-ratio: 3 / 2;
         flex: 0 0 auto;
         padding: 26px 32px 28px;
@@ -333,11 +356,84 @@
         color: transparent;
       }
 
+      .planning-day.selected-day {
+        box-shadow: inset 0 0 0 3px rgba(76, 66, 116, .18);
+      }
+
+      .planning-sticker-object {
+        position: absolute;
+        z-index: 4;
+        touch-action: none;
+        user-select: none;
+        -webkit-user-select: none;
+        cursor: grab;
+        border: 2px solid transparent;
+        border-radius: 9px;
+      }
+
+      .planning-sticker-object.selected {
+        border-color: rgba(76, 66, 116, .55);
+        background: rgba(255,255,255,.18);
+      }
+
+      .planning-sticker-object img {
+        display: block;
+        width: 100%;
+        height: auto;
+        pointer-events: none;
+        -webkit-user-drag: none;
+      }
+
+      .planning-sticker-remove,
+      .planning-sticker-resize {
+        position: absolute;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border: 0;
+        border-radius: 50%;
+        color: white;
+        font-weight: 700;
+        line-height: 1;
+        box-shadow: 0 2px 7px rgba(45,40,60,.22);
+        touch-action: none;
+      }
+
+      .planning-sticker-object.selected .planning-sticker-remove,
+      .planning-sticker-object.selected .planning-sticker-resize { display: flex; }
+      .planning-sticker-remove { top: -12px; right: -12px; background: #9f5964; font-size: 17px; }
+      .planning-sticker-resize { right: -12px; bottom: -12px; background: #66568c; font-size: 13px; }
+
+      .planning-picker {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        background: rgba(38,46,67,.58);
+        backdrop-filter: blur(5px);
+        z-index: 900;
+      }
+      .planning-picker.aperto { display: flex; }
+      .planning-picker-card { width: min(760px,92vw); max-height:82vh; overflow:auto; padding:22px; border-radius:26px; background:#fffaf7; box-shadow:0 22px 60px rgba(30,35,55,.28); }
+      .planning-picker-head { display:flex; align-items:center; gap:12px; margin-bottom:16px; }
+      .planning-picker-head h2 { flex:1; margin:0; color:#4c4274; font-size:22px; }
+      .planning-picker-close { border:0; width:40px; height:40px; border-radius:13px; background:#edf3fa; color:#4c4274; font-size:22px; }
+      .planning-picker-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:12px; }
+      .planning-picker-item { border:1px solid rgba(76,66,116,.1); border-radius:18px; background:#f8f7fb; padding:9px; color:#4c4274; font-weight:600; }
+      .planning-picker-item img { display:block; width:100%; aspect-ratio:1; object-fit:contain; margin-bottom:6px; }
+
       @media (max-width: 850px) {
         .planning-header { gap: 8px; }
         .planning-today { padding: 0 10px; }
-        .planning-workspace { justify-content: flex-start; padding: 6px; }
-        .planning-board { width: 920px; min-width: 920px; }
+        .planning-workspace { justify-content: center; padding: 6px; }
+        .planning-board { width: 94vw; min-width: 0; padding: 18px 18px 20px; border-width: 8px; }
+        .planning-month-row { min-height: 70px; }
+        .planning-weekdays { height: 40px; }
+        .planning-grid { height: calc(100% - 112px); }
         .planning-title { font-size: 21px; }
         .planning-note { font-size: 11px; }
       }
@@ -351,6 +447,7 @@
       <header class="planning-header">
         <button class="planning-back" id="planningBack" type="button" aria-label="Torna alla Base">‹</button>
         <h1 class="planning-title">Programmazione</h1>
+        <button class="planning-sticker-button" id="planningSticker" type="button">Sticker</button>
         <button class="planning-today" id="planningToday" type="button">Oggi</button>
       </header>
 
@@ -366,19 +463,35 @@
           <div class="planning-grid" id="planningGrid"></div>
         </section>
       </div>
+
+      <div class="planning-picker" id="planningPicker">
+        <div class="planning-picker-card">
+          <div class="planning-picker-head">
+            <h2>Sticker di Nozi</h2>
+            <button class="planning-picker-close" id="planningPickerClose" type="button">×</button>
+          </div>
+          <div class="planning-picker-grid" id="planningPickerGrid"></div>
+        </div>
+      </div>
     `;
     document.body.appendChild(screen);
 
     const back = screen.querySelector("#planningBack");
     const today = screen.querySelector("#planningToday");
+    const stickerButton = screen.querySelector("#planningSticker");
     const prev = screen.querySelector("#planningPrevMonth");
     const next = screen.querySelector("#planningNextMonth");
     const monthTitle = screen.querySelector("#planningMonthTitle");
     const weekdays = screen.querySelector("#planningWeekdays");
     const grid = screen.querySelector("#planningGrid");
+    const picker = screen.querySelector("#planningPicker");
+    const pickerGrid = screen.querySelector("#planningPickerGrid");
+    const pickerClose = screen.querySelector("#planningPickerClose");
 
     const note = caricaNote();
+    let stickerItems = caricaSticker();
     let vista = caricaVista();
+    let dataSelezionata = null;
 
     GIORNI.forEach(giorno => {
       const el = document.createElement("div");
@@ -386,6 +499,147 @@
       el.textContent = giorno;
       weekdays.appendChild(el);
     });
+
+    function limita(n, min, max) {
+      return Math.min(max, Math.max(min, n));
+    }
+
+    function renderStickerNellaCella(cell, key) {
+      const items = stickerItems.filter(item => item.date === key);
+
+      items.forEach(item => {
+        const box = document.createElement("div");
+        box.className = "planning-sticker-object";
+        box.style.left = `${item.x}%`;
+        box.style.top = `${item.y}%`;
+        box.style.width = `${item.width}%`;
+
+        const img = document.createElement("img");
+        img.src = `assets/${item.file}`;
+        img.alt = item.label || "";
+
+        const remove = document.createElement("button");
+        remove.className = "planning-sticker-remove";
+        remove.type = "button";
+        remove.textContent = "×";
+
+        const resize = document.createElement("button");
+        resize.className = "planning-sticker-resize";
+        resize.type = "button";
+        resize.textContent = "↘";
+
+        box.append(img, remove, resize);
+        cell.appendChild(box);
+
+        box.addEventListener("pointerdown", event => {
+          if (event.target === remove || event.target === resize) return;
+          event.preventDefault();
+          event.stopPropagation();
+          dataSelezionata = key;
+          cell.parentElement.querySelectorAll(".planning-sticker-object.selected").forEach(el => el.classList.remove("selected"));
+          box.classList.add("selected");
+
+          const rect = cell.getBoundingClientRect();
+          const boxRect = box.getBoundingClientRect();
+          const ox = event.clientX - boxRect.left;
+          const oy = event.clientY - boxRect.top;
+          box.setPointerCapture(event.pointerId);
+
+          const move = e => {
+            let left = limita(e.clientX - rect.left - ox, 0, rect.width - box.offsetWidth);
+            let top = limita(e.clientY - rect.top - oy, 0, rect.height - box.offsetHeight);
+            item.x = left / rect.width * 100;
+            item.y = top / rect.height * 100;
+            box.style.left = `${item.x}%`;
+            box.style.top = `${item.y}%`;
+          };
+
+          const end = e => {
+            try { box.releasePointerCapture(e.pointerId); } catch (_) {}
+            box.removeEventListener("pointermove", move);
+            box.removeEventListener("pointerup", end);
+            box.removeEventListener("pointercancel", end);
+            salvaSticker(stickerItems);
+          };
+
+          box.addEventListener("pointermove", move);
+          box.addEventListener("pointerup", end);
+          box.addEventListener("pointercancel", end);
+        });
+
+        resize.addEventListener("pointerdown", event => {
+          event.preventDefault();
+          event.stopPropagation();
+          const rect = cell.getBoundingClientRect();
+          const boxRect = box.getBoundingClientRect();
+          const left = boxRect.left - rect.left;
+          resize.setPointerCapture(event.pointerId);
+
+          const move = e => {
+            let w = limita(e.clientX - rect.left - left, rect.width * .22, rect.width * .88);
+            item.width = w / rect.width * 100;
+            if (item.x + item.width > 100) item.x = 100 - item.width;
+            box.style.width = `${item.width}%`;
+            box.style.left = `${item.x}%`;
+          };
+
+          const end = e => {
+            try { resize.releasePointerCapture(e.pointerId); } catch (_) {}
+            resize.removeEventListener("pointermove", move);
+            resize.removeEventListener("pointerup", end);
+            resize.removeEventListener("pointercancel", end);
+            salvaSticker(stickerItems);
+          };
+
+          resize.addEventListener("pointermove", move);
+          resize.addEventListener("pointerup", end);
+          resize.addEventListener("pointercancel", end);
+        });
+
+        remove.addEventListener("pointerdown", event => {
+          event.preventDefault();
+          event.stopPropagation();
+          stickerItems = stickerItems.filter(x => x.id !== item.id);
+          salvaSticker(stickerItems);
+          render();
+        });
+      });
+    }
+
+    function apriPickerSticker() {
+      if (!dataSelezionata) {
+        alert("Tocca prima il giorno in cui vuoi inserire lo sticker.");
+        return;
+      }
+
+      pickerGrid.innerHTML = "";
+      const lista = (typeof STICKERS !== "undefined" && Array.isArray(STICKERS)) ? STICKERS : [];
+
+      lista.forEach(sticker => {
+        const button = document.createElement("button");
+        button.className = "planning-picker-item";
+        button.type = "button";
+        button.innerHTML = `<img src="assets/${sticker.file}" alt=""><span>${sticker.label}</span>`;
+        button.addEventListener("click", () => {
+          stickerItems.push({
+            id: `${Date.now()}-${Math.random().toString(16).slice(2)}`,
+            date: dataSelezionata,
+            file: sticker.file,
+            label: sticker.label,
+            x: 56,
+            y: 42,
+            width: 34
+          });
+          salvaSticker(stickerItems);
+          picker.classList.remove("aperto");
+          render();
+        });
+        pickerGrid.appendChild(button);
+      });
+
+      if (!lista.length) pickerGrid.textContent = "Nessuno sticker disponibile.";
+      picker.classList.add("aperto");
+    }
 
     function render() {
       const year = vista.year;
@@ -429,6 +683,18 @@
         textarea.setAttribute("aria-label", `${day} ${MESI[month].toLowerCase()} ${year}`);
         textarea.placeholder = "Scrivi...";
 
+        textarea.addEventListener("pointerdown", () => {
+          dataSelezionata = key;
+          grid.querySelectorAll(".planning-day.selected-day").forEach(el => el.classList.remove("selected-day"));
+          cell.classList.add("selected-day");
+        });
+
+        textarea.addEventListener("focus", () => {
+          dataSelezionata = key;
+          grid.querySelectorAll(".planning-day.selected-day").forEach(el => el.classList.remove("selected-day"));
+          cell.classList.add("selected-day");
+        });
+
         textarea.addEventListener("input", () => {
           const value = textarea.value.trim();
 
@@ -439,6 +705,7 @@
         });
 
         cell.append(number, textarea);
+        renderStickerNellaCella(cell, key);
         grid.appendChild(cell);
       }
 
@@ -463,6 +730,9 @@
 
     prev.addEventListener("click", () => cambiaMese(-1));
     next.addEventListener("click", () => cambiaMese(1));
+    stickerButton.addEventListener("click", apriPickerSticker);
+    pickerClose.addEventListener("click", () => picker.classList.remove("aperto"));
+    picker.addEventListener("click", event => { if (event.target === picker) picker.classList.remove("aperto"); });
 
     hotspot.removeAttribute("data-target");
     hotspot.addEventListener(
@@ -477,7 +747,7 @@
     );
 
     render();
-    console.log("Programmazione pronta: calendario mensile con note giornaliere salvate.");
+    console.log("Programmazione pronta: calendario mensile ridimensionato con note e sticker salvati.");
   }
 
   if (document.readyState === "loading") {
