@@ -37,17 +37,19 @@
       .remember-list{display:flex;flex-direction:column;gap:14px}
       .remember-empty{text-align:center;padding:48px 15px;color:#6f91b3;font-size:18px;font-weight:700}
       .remember-card{display:flex;flex-direction:column;gap:16px;padding:16px;background:rgba(255,255,255,.72);border:2px solid #c8ddec;border-radius:20px}
-      .remember-top{display:grid;grid-template-columns:200px 260px 1fr 44px;column-gap:20px;align-items:end;width:100%}
-      .remember-date{width:200px}
-      .remember-time-field{width:260px}
+      .remember-top{display:flex;align-items:flex-end;gap:16px;width:100%}
+      .remember-date{flex:0 0 180px;width:180px}
+      .remember-time-field{flex:0 0 232px;width:232px}
+      .remember-time-field>label{text-align:center}
+      .remember-top-spacer{flex:1 1 auto;min-width:20px}
       .remember-note{width:100%}
       .remember-field{display:flex;flex-direction:column;gap:5px;min-width:0}
       .remember-field label{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#6d8dab}
       .remember-field input{box-sizing:border-box;width:100%;min-width:0;max-width:100%;height:44px;border:1.5px solid #b9d0e3;border-radius:12px;background:#fff;color:#285b94;padding:0 11px;font:700 16px -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;outline:none}
       .remember-field input:focus{border-color:#7daed2;box-shadow:0 0 0 3px rgba(125,174,210,.16)}
-      .remember-times{display:grid;grid-template-columns:120px 120px;gap:20px}.remember-times input{width:120px;min-width:120px;max-width:120px}
-      .remember-delete{appearance:none;border:0;width:44px;height:44px;grid-column:4;justify-self:end;border-radius:13px;background:#fff;color:#8b5f72;font-size:22px;cursor:pointer;box-shadow:0 3px 10px rgba(60,70,80,.08)}
-      @media(max-width:720px){.remember-workspace{padding:14px 8px}.remember-board{width:96vw;border-width:7px;border-radius:25px;padding:14px}.remember-top{grid-template-columns:180px 190px 1fr 44px;column-gap:10px}.remember-date{width:180px}.remember-time-field{width:190px}.remember-times{grid-template-columns:90px 90px;gap:10px}.remember-times input{width:90px;min-width:90px;max-width:90px}.remember-title{font-size:22px}.remember-add{padding:0 12px}}
+      .remember-times{display:flex;gap:12px}.remember-times input{flex:0 0 110px;width:110px;min-width:110px;max-width:110px}
+      .remember-delete{appearance:none;border:0;flex:0 0 44px;width:44px;height:44px;border-radius:13px;background:#fff;color:#8b5f72;font-size:22px;cursor:pointer;box-shadow:0 3px 10px rgba(60,70,80,.08)}
+      @media(max-width:720px){.remember-workspace{padding:14px 8px}.remember-board{width:96vw;border-width:7px;border-radius:25px;padding:14px}.remember-top{gap:10px}.remember-date{flex-basis:150px;width:150px}.remember-time-field{flex-basis:190px;width:190px}.remember-times{gap:10px}.remember-times input{flex-basis:90px;width:90px;min-width:90px;max-width:90px}.remember-top-spacer{min-width:4px}.remember-title{font-size:22px}.remember-add{padding:0 12px}}
     `;
     document.head.appendChild(style);
 
@@ -93,6 +95,7 @@
           <div class="remember-top">
             <div class="remember-field remember-date"><label>Giorno</label><input data-k="date" type="date"></div>
             <div class="remember-field remember-time-field"><label>Orario</label><div class="remember-times"><input data-k="from" type="time" aria-label="Dalle"><input data-k="to" type="time" aria-label="Alle"></div></div>
+            <div class="remember-top-spacer" aria-hidden="true"></div>
             <button class="remember-delete" type="button" aria-label="Elimina">×</button>
           </div>
           <div class="remember-field remember-note"><label>Da ricordare</label><input data-k="text" type="text" maxlength="120" placeholder="Es. Sostituzione in 3ª B"></div>`;
