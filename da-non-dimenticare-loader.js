@@ -36,16 +36,16 @@
       .remember-intro{margin:0 0 18px;text-align:center;font-size:clamp(16px,2vw,21px);font-weight:700;color:#4776a6}
       .remember-list{display:flex;flex-direction:column;gap:14px}
       .remember-empty{text-align:center;padding:48px 15px;color:#6f91b3;font-size:18px;font-weight:700}
-      .remember-card{display:grid;grid-template-columns:minmax(170px,.78fr) minmax(290px,1.35fr) 48px;column-gap:28px;row-gap:16px;align-items:end;padding:16px;background:rgba(255,255,255,.72);border:2px solid #c8ddec;border-radius:20px}
+      .remember-card{display:grid;grid-template-columns:minmax(170px,.9fr) minmax(230px,.9fr) 48px;column-gap:28px;row-gap:16px;align-items:end;padding:16px;background:rgba(255,255,255,.72);border:2px solid #c8ddec;border-radius:20px}
       .remember-note{grid-column:1/4;grid-row:2}
       .remember-delete{grid-column:3;grid-row:1}
       .remember-field{display:flex;flex-direction:column;gap:5px;min-width:0}
       .remember-field label{font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#6d8dab}
       .remember-field input{box-sizing:border-box;width:100%;height:44px;border:1.5px solid #b9d0e3;border-radius:12px;background:#fff;color:#285b94;padding:0 11px;font:700 16px -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;outline:none}
       .remember-field input:focus{border-color:#7daed2;box-shadow:0 0 0 3px rgba(125,174,210,.16)}
-      .remember-times{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}.remember-times input{min-width:0}
+      .remember-times{display:grid;grid-template-columns:110px 110px;gap:18px;justify-content:start}.remember-times input{min-width:0}
       .remember-delete{appearance:none;border:0;width:44px;height:44px;border-radius:13px;background:#fff;color:#8b5f72;font-size:22px;cursor:pointer;box-shadow:0 3px 10px rgba(60,70,80,.08)}
-      @media(max-width:720px){.remember-workspace{padding:14px 8px}.remember-board{width:96vw;border-width:7px;border-radius:25px;padding:14px}.remember-card{grid-template-columns:minmax(0,1fr) minmax(0,1.35fr) 44px;column-gap:18px;row-gap:12px}.remember-times{gap:16px}.remember-note{grid-column:1/4;grid-row:2}.remember-delete{grid-column:3;grid-row:1}.remember-title{font-size:22px}.remember-add{padding:0 12px}}
+      @media(max-width:720px){.remember-workspace{padding:14px 8px}.remember-board{width:96vw;border-width:7px;border-radius:25px;padding:14px}.remember-card{grid-template-columns:minmax(0,1fr) minmax(220px,.9fr) 44px;column-gap:18px;row-gap:12px}.remember-times{grid-template-columns:96px 96px;gap:14px}.remember-note{grid-column:1/4;grid-row:2}.remember-delete{grid-column:3;grid-row:1}.remember-title{font-size:22px}.remember-add{padding:0 12px}}
     `;
     document.head.appendChild(style);
 
