@@ -130,12 +130,14 @@
     const parti = String(iso).split("-").map(Number);
     if (parti.length !== 3 || !parti[0] || !parti[1] || !parti[2]) return iso;
     const d = new Date(parti[0], parti[1] - 1, parti[2]);
-    return new Intl.DateTimeFormat("it-IT", {
+    const partiData = new Intl.DateTimeFormat("it-IT", {
       weekday: "long",
       day: "numeric",
       month: "long",
       year: "numeric"
-    }).format(d);
+    }).formatToParts(d);
+    const valore = tipo => partiData.find(p => p.type === tipo)?.value || "";
+    return `${valore("weekday")}, ${valore("day")} ${valore("month")} ${valore("year")}`;
   }
 
   function paginaNuova(lessonId = null, startsLesson = false) {
@@ -238,9 +240,9 @@
       .lm-notebook-shell{position:relative;height:calc(100vh - 174px);min-height:0;display:flex;align-items:flex-start;justify-content:center;padding-top:4px}
       .lm-page{position:relative;height:min(760px,calc(100vh - 190px));width:auto;max-width:72vw;aspect-ratio:.76;background:#fff;box-shadow:0 10px 24px rgba(55,60,70,.18);border-radius:10px;overflow:hidden;touch-action:none}
       .lm-page-paper{position:absolute;inset:0;background-color:#fff;background-image:linear-gradient(to right,rgba(89,130,170,.13) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.13) 1px,transparent 1px);background-size:32px 32px}
-      .lm-page-date-wrap{position:absolute;z-index:7;top:20px;left:7%;height:34px;min-width:290px;display:flex;align-items:center}
+      .lm-page-date-wrap{position:absolute;z-index:2;top:20px;left:7%;height:34px;min-width:290px;display:flex;align-items:center}
       .lm-page-date-label{color:#111;background:transparent;font:500 clamp(16px,1.8vw,22px) -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;white-space:nowrap;pointer-events:none}
-            .lm-draw-canvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;touch-action:none}
+            .lm-draw-canvas{position:absolute;inset:0;z-index:4;width:100%;height:100%;touch-action:none}
       .lm-object-layer{position:absolute;inset:0;z-index:5;pointer-events:none}
       .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}.lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}.lm-page-object img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}.lm-page-object.file{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.94);box-shadow:0 2px 8px rgba(50,60,70,.14);color:#314d6a;font-weight:700}
       .lm-object-delete,.lm-object-resize{display:none;position:absolute;width:26px;height:26px;border:0;border-radius:50%;align-items:center;justify-content:center;color:#fff;font-weight:900;box-shadow:0 2px 8px rgba(0,0,0,.2)}.lm-page-object.selected .lm-object-delete,.lm-page-object.selected .lm-object-resize{display:flex}.lm-object-delete{right:-13px;top:-13px;background:#9b5f69}.lm-object-resize{right:-13px;bottom:-13px;background:#4478a5}
@@ -550,8 +552,12 @@
       quadernoCorrente=await leggiQuaderno(classeCorrente.id,materiaCorrente); notebookHistory=[];notebookFuture=[];selectedObjectId=null;notebookMode="select";
       panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><div class="lm-page-date-wrap"><span class="lm-page-date-label"></span></div><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-tools"><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="select" type="button" title="Seleziona">◌</button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div>`;
       const canvas=panel.querySelector(".lm-draw-canvas");installDrawing(canvas);
+      const tools = panel.querySelector(".lm-notebook-tools");
+      tools.addEventListener("pointerdown", event => event.stopPropagation());
       panel.querySelector(".lm-object-layer").addEventListener("pointerdown",e=>{if(e.target===e.currentTarget){selectedObjectId=null;renderNotebookPage();}});
-      panel.querySelectorAll(".lm-notebook-tools button[data-tool]").forEach(btn=>btn.addEventListener("click",async()=>{
+      panel.querySelectorAll(".lm-notebook-tools button[data-tool]").forEach(btn=>btn.addEventListener("click",async(event)=>{
+        event.preventDefault();
+        event.stopPropagation();
         const t=btn.dataset.tool;
         if(t==="pencil"||t==="select"){notebookMode=t;selectedObjectId=null;renderNotebookPage();return;}
         if(t==="plus"){plusMenu.classList.toggle("aperto");return;}
