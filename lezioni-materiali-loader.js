@@ -234,14 +234,13 @@
       .lm-screen.notebook{background:linear-gradient(180deg,color-mix(in srgb,var(--lm-soft) 78%,white) 0%,color-mix(in srgb,var(--lm-soft) 44%,#f8f3fb) 100%)}
       .lm-screen.notebook .lm-header{background:color-mix(in srgb,var(--lm-color) 25%,white)}
       .lm-screen.notebook .lm-panel{width:100%;max-width:none;padding:0;border:0;background:transparent;box-shadow:none}
-      .lm-screen.notebook .lm-workspace{padding:10px 18px 92px;overflow:auto}
-      .lm-notebook-shell{position:relative;min-height:calc(100vh - 168px);display:flex;align-items:flex-start;justify-content:center;padding-top:8px}
-      .lm-page{position:relative;width:min(660px,64vw,calc((100vh - 195px)*.76));aspect-ratio:.76;background:#fff;box-shadow:0 10px 24px rgba(55,60,70,.18);border-radius:10px;overflow:hidden;touch-action:none}
+      .lm-screen.notebook .lm-workspace{padding:14px 18px 96px;overflow:hidden}
+      .lm-notebook-shell{position:relative;height:calc(100vh - 174px);min-height:0;display:flex;align-items:flex-start;justify-content:center;padding-top:4px}
+      .lm-page{position:relative;height:min(760px,calc(100vh - 190px));width:auto;max-width:72vw;aspect-ratio:.76;background:#fff;box-shadow:0 10px 24px rgba(55,60,70,.18);border-radius:10px;overflow:hidden;touch-action:none}
       .lm-page-paper{position:absolute;inset:0;background-color:#fff;background-image:linear-gradient(to right,rgba(89,130,170,.13) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.13) 1px,transparent 1px);background-size:32px 32px}
       .lm-page-date-wrap{position:absolute;z-index:7;top:20px;left:7%;height:34px;min-width:290px;display:flex;align-items:center}
       .lm-page-date-label{color:#111;background:transparent;font:500 clamp(16px,1.8vw,22px) -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;white-space:nowrap;pointer-events:none}
-      .lm-page-date{position:absolute;inset:0;width:100%;height:100%;opacity:0;border:0;background:transparent;cursor:pointer}
-      .lm-draw-canvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;touch-action:none}
+            .lm-draw-canvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;touch-action:none}
       .lm-object-layer{position:absolute;inset:0;z-index:5;pointer-events:none}
       .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}.lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}.lm-page-object img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}.lm-page-object.file{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.94);box-shadow:0 2px 8px rgba(50,60,70,.14);color:#314d6a;font-weight:700}
       .lm-object-delete,.lm-object-resize{display:none;position:absolute;width:26px;height:26px;border:0;border-radius:50%;align-items:center;justify-content:center;color:#fff;font-weight:900;box-shadow:0 2px 8px rgba(0,0,0,.2)}.lm-page-object.selected .lm-object-delete,.lm-page-object.selected .lm-object-resize{display:flex}.lm-object-delete{right:-13px;top:-13px;background:#9b5f69}.lm-object-resize{right:-13px;bottom:-13px;background:#4478a5}
@@ -251,7 +250,7 @@
       .lm-textbar{position:fixed;z-index:910;display:none;left:50%;top:120px;transform:translateX(-50%);align-items:center;border:1px solid color-mix(in srgb,var(--lm-color) 45%,white);border-radius:20px;background:#fffaf7;box-shadow:0 8px 22px rgba(65,55,50,.15);overflow:hidden}.lm-textbar.aperto{display:flex}.lm-textbar select,.lm-textbar button,.lm-textbar input{height:46px;border:0;border-right:1px solid rgba(80,80,80,.10);background:transparent;color:var(--lm-dark);font-weight:750;padding:0 12px}.lm-textbar input[type=color]{width:48px;padding:8px}
       .lm-modal{position:fixed;inset:0;z-index:980;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(35,45,65,.52);backdrop-filter:blur(5px)}.lm-modal.aperto{display:flex}.lm-modal-card{width:min(720px,94vw);max-height:84vh;overflow:auto;padding:22px;border-radius:24px;background:#fffaf7;box-shadow:0 20px 55px rgba(20,30,50,.26);color:var(--lm-dark)}.lm-modal-card h2{margin:0 0 16px}.lm-modal-close{float:right;border:0;background:var(--lm-soft);color:var(--lm-dark);width:40px;height:40px;border-radius:12px;font-size:22px}.lm-sheet-picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}.lm-sheet-pick{border:1px solid color-mix(in srgb,var(--lm-color) 35%,white);border-radius:16px;background:white;padding:9px;text-align:left;color:var(--lm-dark);font-weight:700}.lm-sheet-pick img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;margin-bottom:7px}.lm-results button{display:block;width:100%;border:0;border-bottom:1px solid rgba(70,80,90,.08);background:transparent;padding:12px;text-align:left;color:var(--lm-dark)}
       .lm-notebook-file{display:none}
-      @media(max-width:760px){.lm-header{gap:8px}.lm-workspace{padding:14px 10px}.lm-panel{width:96vw;padding:16px;border-width:6px}.lm-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lm-class-card,.lm-subject-card{min-height:135px;padding:12px}.lm-class-folder{width:88px;height:62px;margin-bottom:12px}.lm-class-folder::before{width:42px;height:16px;top:-13px}.lm-card-label,.lm-subject-name{font-size:15px}.lm-subject-icon{font-size:34px}.lm-choice-grid{grid-template-columns:1fr;gap:14px}.lm-choice-card{min-height:180px}.lm-choice-icon{font-size:54px}.lm-search{padding:0}.lm-title{font-size:21px}.lm-add{padding:0 10px;font-size:13px}.lm-binder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lm-binder-head{align-items:flex-start;flex-direction:column}.lm-binder-card{padding:10px}.lm-screen.notebook .lm-workspace{padding-left:8px;padding-right:8px}.lm-page{width:min(92vw,calc((100vh - 185px)*.76))}.lm-notebook-tools{left:10px;bottom:10px;transform:scale(.92);transform-origin:left bottom}.lm-page-nav{bottom:10px}}
+      @media(max-width:760px){.lm-header{gap:8px}.lm-workspace{padding:14px 10px}.lm-panel{width:96vw;padding:16px;border-width:6px}.lm-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lm-class-card,.lm-subject-card{min-height:135px;padding:12px}.lm-class-folder{width:88px;height:62px;margin-bottom:12px}.lm-class-folder::before{width:42px;height:16px;top:-13px}.lm-card-label,.lm-subject-name{font-size:15px}.lm-subject-icon{font-size:34px}.lm-choice-grid{grid-template-columns:1fr;gap:14px}.lm-choice-card{min-height:180px}.lm-choice-icon{font-size:54px}.lm-search{padding:0}.lm-title{font-size:21px}.lm-add{padding:0 10px;font-size:13px}.lm-binder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lm-binder-head{align-items:flex-start;flex-direction:column}.lm-binder-card{padding:10px}.lm-screen.notebook .lm-workspace{padding:8px 8px 82px}.lm-notebook-shell{height:calc(100vh - 158px)}.lm-page{height:min(720px,calc(100vh - 174px));width:auto;max-width:92vw}.lm-notebook-tools{left:10px;bottom:10px;transform:scale(.92);transform-origin:left bottom}.lm-page-nav{bottom:10px}}
     `;
     document.head.appendChild(style);
 
@@ -504,9 +503,7 @@
       liberaObjectUrls();
       const page = currentNotebookPage(); if (!page) return;
       const pageEl = panel.querySelector(".lm-page"); if (!pageEl) return;
-      const dateInput = pageEl.querySelector(".lm-page-date");
       const dateLabel = pageEl.querySelector(".lm-page-date-label");
-      dateInput.value = page.date || "";
       if (dateLabel) dateLabel.textContent = formattaDataEstesa(page.date || "");
       const layer = pageEl.querySelector(".lm-object-layer"); layer.innerHTML="";
       (page.objects||[]).forEach(obj=>makePageObjectElement(obj,layer));
@@ -518,15 +515,6 @@
       next.disabled=false;
       panel.querySelectorAll(".lm-notebook-tools button[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===notebookMode));
       updateTextbar();
-    }
-
-    function addTextObject() {
-      const t = window.prompt("Scrivi il testo da inserire:", ""); if (!t) return;
-      const page=currentNotebookPage(); pushHistory();
-      const obj={id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type:"text",text:t,x:8,y:14,w:65,fontFamily:"Andika, Arial, sans-serif",fontSize:32,color:"#111111",bold:false,italic:false,align:"left"};
-      page.objects.push(obj); selectedObjectId=obj.id;
-      if (page.startsLesson) { const lesson=currentLesson(); if (lesson && !lesson.title) lesson.title=t.trim(); page.startsLesson=false; }
-      persistNotebook().then(renderNotebookPage);
     }
 
     async function addBlobObject(blob, name, type) {
@@ -560,14 +548,12 @@
     async function renderQuaderno() {
       liberaObjectUrls(); setBinderMode(false); setNotebookMode(true); schermata="quaderno"; temaClasse(classeCorrente); title.textContent=`${materiaCorrente.toUpperCase()} — QUADERNO`;
       quadernoCorrente=await leggiQuaderno(classeCorrente.id,materiaCorrente); notebookHistory=[];notebookFuture=[];selectedObjectId=null;notebookMode="select";
-      panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><div class="lm-page-date-wrap"><span class="lm-page-date-label"></span><input class="lm-page-date" type="date" aria-label="Data"></div><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-tools"><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="text" type="button" title="Testo">T</button><button data-tool="select" type="button" title="Seleziona">◌</button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div>`;
+      panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><div class="lm-page-date-wrap"><span class="lm-page-date-label"></span></div><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-tools"><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="select" type="button" title="Seleziona">◌</button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div>`;
       const canvas=panel.querySelector(".lm-draw-canvas");installDrawing(canvas);
-      panel.querySelector(".lm-page-date").addEventListener("change",async e=>{pushHistory();currentNotebookPage().date=e.target.value;await persistNotebook();renderNotebookPage();});
       panel.querySelector(".lm-object-layer").addEventListener("pointerdown",e=>{if(e.target===e.currentTarget){selectedObjectId=null;renderNotebookPage();}});
       panel.querySelectorAll(".lm-notebook-tools button[data-tool]").forEach(btn=>btn.addEventListener("click",async()=>{
         const t=btn.dataset.tool;
         if(t==="pencil"||t==="select"){notebookMode=t;selectedObjectId=null;renderNotebookPage();return;}
-        if(t==="text"){notebookMode="select";addTextObject();return;}
         if(t==="plus"){plusMenu.classList.toggle("aperto");return;}
         if(t==="undo"&&notebookHistory.length){notebookFuture.push(notebookSnapshot());quadernoCorrente=notebookHistory.pop();await persistNotebook();renderNotebookPage();return;}
         if(t==="redo"&&notebookFuture.length){notebookHistory.push(notebookSnapshot());quadernoCorrente=notebookFuture.pop();await persistNotebook();renderNotebookPage();}
