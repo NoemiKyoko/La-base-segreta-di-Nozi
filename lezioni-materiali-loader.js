@@ -223,7 +223,7 @@
       .lm-notebook-shell{position:relative;min-height:calc(100vh - 145px);display:flex;align-items:center;justify-content:center}
       .lm-page{position:relative;width:min(720px,72vw);aspect-ratio:0.76;background:#fff;box-shadow:0 10px 24px rgba(55,60,70,.18);border-radius:10px;overflow:hidden;touch-action:none}
       .lm-page-paper{position:absolute;inset:0;background-color:#fff;background-image:linear-gradient(to right,rgba(89,130,170,.14) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.14) 1px,transparent 1px);background-size:32px 32px}
-      .lm-page-date{position:absolute;z-index:7;top:22px;left:7%;width:44%;height:42px;border:0;border-bottom:1px solid transparent;background:rgba(255,255,255,.72);color:#173f7a;font:500 clamp(16px,2vw,23px) -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;padding:0 4px;outline:none}.lm-page-date:focus{border-bottom-color:var(--lm-color)}
+      .lm-page-date-wrap{position:absolute;z-index:7;top:22px;left:7%;height:42px;display:flex;align-items:center}.lm-page-date-label{color:#111;font:500 clamp(16px,2vw,23px) -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;white-space:nowrap;pointer-events:none}.lm-page-date{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:0;background:transparent}
       .lm-draw-canvas{position:absolute;inset:0;z-index:3;width:100%;height:100%;touch-action:none}
       .lm-object-layer{position:absolute;inset:0;z-index:5;pointer-events:none}
       .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}.lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}.lm-page-object img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}.lm-page-object.file{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.94);box-shadow:0 2px 8px rgba(50,60,70,.14);color:#314d6a;font-weight:700}
@@ -253,7 +253,7 @@
       <input class="lm-file-input" type="file" multiple accept="image/*,application/pdf,.doc,.docx,.odt,.ppt,.pptx">
       <input class="lm-notebook-file lm-notebook-image-input" type="file" accept="image/*">
       <input class="lm-notebook-file lm-notebook-any-input" type="file">
-      <div class="lm-plus-menu"><button data-plus="sheet" type="button">Scheda da stampare</button><button data-plus="image" type="button">Immagine</button><button data-plus="file" type="button">File</button></div>
+      <div class="lm-plus-menu"><button data-plus="sheet" type="button">Scheda</button><button data-plus="image" type="button">Immagine</button><button data-plus="file" type="button">File</button></div>
       <div class="lm-more-menu"><button data-more="lesson" type="button">Nuova lezione</button><button data-more="share" type="button">Condividi / Esporta</button></div>
       <div class="lm-textbar"><select class="lm-font"><option value="Andika, Arial, sans-serif">Andika</option><option value="Arial, sans-serif">Arial</option><option value="Georgia, serif">Corsivo Primaria</option></select><select class="lm-size"><option>24</option><option selected>32</option><option>40</option><option>48</option><option>56</option></select><button class="lm-bold" type="button"><b>B</b></button><button class="lm-italic" type="button"><i>I</i></button><button class="lm-align" type="button">☰</button><input class="lm-color" type="color" value="#111111"></div>
       <div class="lm-modal lm-sheet-modal"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Schede da stampare</h2><div class="lm-sheet-picker-grid"></div></div></div>
@@ -487,7 +487,18 @@
       liberaObjectUrls();
       const page = currentNotebookPage(); if (!page) return;
       const pageEl = panel.querySelector(".lm-page"); if (!pageEl) return;
-      const dateInput = pageEl.querySelector(".lm-page-date"); dateInput.value = page.date || "";
+      const dateInput = pageEl.querySelector(".lm-page-date");
+      dateInput.value = page.date || "";
+      const dateLabel = pageEl.querySelector(".lm-page-date-label");
+      if (dateLabel) {
+        const giorni = ["domenica","lunedì","martedì","mercoledì","giovedì","venerdì","sabato"];
+        const mesi = ["gennaio","febbraio","marzo","aprile","maggio","giugno","luglio","agosto","settembre","ottobre","novembre","dicembre"];
+        if (page.date) {
+          const [y,m,d] = page.date.split("-").map(Number);
+          const dt = new Date(y, m-1, d);
+          dateLabel.textContent = `${giorni[dt.getDay()]}, ${d} ${mesi[m-1]} ${y}`;
+        } else dateLabel.textContent = "";
+      }
       const layer = pageEl.querySelector(".lm-object-layer"); layer.innerHTML="";
       (page.objects||[]).forEach(obj=>makePageObjectElement(obj,layer));
       const canvas = pageEl.querySelector(".lm-draw-canvas");
@@ -540,7 +551,7 @@
     async function renderQuaderno() {
       liberaObjectUrls(); setBinderMode(false); setNotebookMode(true); schermata="quaderno"; temaClasse(classeCorrente); title.textContent=`${materiaCorrente} · Quaderno`;
       quadernoCorrente=await leggiQuaderno(classeCorrente.id,materiaCorrente); notebookHistory=[];notebookFuture=[];selectedObjectId=null;notebookMode="select";
-      panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><input class="lm-page-date" type="date" aria-label="Data"><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-tools"><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="text" type="button" title="Testo">T</button><button data-tool="select" type="button" title="Seleziona">◌</button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div>`;
+      panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><div class="lm-page-date-wrap"><span class="lm-page-date-label"></span><input class="lm-page-date" type="date" aria-label="Data"></div><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-tools"><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="text" type="button" title="Testo">T</button><button data-tool="select" type="button" title="Seleziona">◌</button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div>`;
       const canvas=panel.querySelector(".lm-draw-canvas");installDrawing(canvas);
       panel.querySelector(".lm-page-date").addEventListener("change",async e=>{pushHistory();currentNotebookPage().date=e.target.value;await persistNotebook();});
       panel.querySelector(".lm-object-layer").addEventListener("pointerdown",e=>{if(e.target===e.currentTarget){selectedObjectId=null;renderNotebookPage();}});
