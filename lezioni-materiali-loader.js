@@ -200,6 +200,7 @@
 
     const style = document.createElement("style");
     style.textContent = `
+      @font-face{font-family:"Corsivo Primaria";src:url("assets/CorsivoPrimaria.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap}
       .lm-screen{position:fixed;inset:0;z-index:238;display:none;flex-direction:column;overflow:hidden;background:linear-gradient(180deg,#eef6ff 0%,#f7f2fb 100%);color:#315d91;--lm-color:#82bce6;--lm-soft:#edf7ff;--lm-dark:#416f96}
       .lm-screen.aperto{display:flex}
       .lm-header{display:flex;align-items:center;gap:14px;padding:max(16px,env(safe-area-inset-top)) max(18px,env(safe-area-inset-right)) 12px max(18px,env(safe-area-inset-left));background:color-mix(in srgb,var(--lm-color) 27%,white);border-bottom:1px solid color-mix(in srgb,var(--lm-color) 28%,transparent)}
@@ -237,19 +238,18 @@
       .lm-screen.notebook .lm-header{background:color-mix(in srgb,var(--lm-color) 25%,white)}
       .lm-screen.notebook .lm-panel{width:100%;max-width:none;padding:0;border:0;background:transparent;box-shadow:none}
       .lm-screen.notebook .lm-workspace{padding:14px 18px 96px;overflow:hidden}
-      .lm-notebook-shell{position:relative;height:calc(100vh - 174px);min-height:0;display:flex;align-items:flex-start;justify-content:center;padding-top:4px}
-      .lm-page{position:relative;height:min(760px,calc(100vh - 190px));width:auto;max-width:72vw;aspect-ratio:.76;background:#fff;box-shadow:0 10px 24px rgba(55,60,70,.18);border-radius:10px;overflow:hidden;touch-action:none}
-      .lm-page-paper{position:absolute;inset:0;background-color:#fff;background-image:linear-gradient(to right,rgba(89,130,170,.13) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.13) 1px,transparent 1px);background-size:32px 32px}
-      .lm-page-date-wrap{position:absolute;z-index:2;top:20px;left:7%;height:34px;min-width:290px;display:flex;align-items:center}
-      .lm-page-date-label{color:#111;background:transparent;font:500 clamp(16px,1.8vw,22px) -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;white-space:nowrap;pointer-events:none}
+      .lm-notebook-shell{position:relative;height:calc(100vh - 174px);min-height:0;display:flex;align-items:center;justify-content:center;padding:0 12px}
+      .lm-page{position:relative;height:min(700px,calc(100vh - 190px));width:auto;max-width:64vw;aspect-ratio:.76;background:#fff;box-shadow:0 10px 24px rgba(55,60,70,.18);border-radius:8px;overflow:hidden;touch-action:none}
+      .lm-page-paper{position:absolute;inset:0;background-color:#fff;background-image:linear-gradient(to right,rgba(89,130,170,.13) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.13) 1px,transparent 1px);background-size:24px 24px}
             .lm-draw-canvas{position:absolute;inset:0;z-index:4;width:100%;height:100%;touch-action:none}
       .lm-object-layer{position:absolute;inset:0;z-index:5;pointer-events:none}
+      .lm-lasso-hint{position:fixed;z-index:905;display:none;left:50%;top:92px;transform:translateX(-50%);padding:7px 12px;border-radius:12px;background:rgba(255,255,255,.92);color:var(--lm-dark);font-size:13px;font-weight:800;box-shadow:0 4px 14px rgba(50,60,75,.12)}.lm-lasso-hint.aperto{display:block}
       .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}.lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}.lm-page-object img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}.lm-page-object.file{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,.94);box-shadow:0 2px 8px rgba(50,60,70,.14);color:#314d6a;font-weight:700}
       .lm-object-delete,.lm-object-resize{display:none;position:absolute;width:26px;height:26px;border:0;border-radius:50%;align-items:center;justify-content:center;color:#fff;font-weight:900;box-shadow:0 2px 8px rgba(0,0,0,.2)}.lm-page-object.selected .lm-object-delete,.lm-page-object.selected .lm-object-resize{display:flex}.lm-object-delete{right:-13px;top:-13px;background:#9b5f69}.lm-object-resize{right:-13px;bottom:-13px;background:#4478a5}
       .lm-notebook-tools{position:fixed;left:max(24px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));z-index:870;display:flex;align-items:center;gap:2px;padding:7px 9px;border:1px solid color-mix(in srgb,var(--lm-color) 55%,white);border-radius:18px;background:color-mix(in srgb,var(--lm-soft) 82%,white);box-shadow:0 7px 20px rgba(80,60,45,.13)}.lm-notebook-tools button{appearance:none;border:0;width:44px;height:44px;border-radius:12px;background:transparent;color:var(--lm-dark);font-size:23px;font-weight:800;cursor:pointer}.lm-notebook-tools button.active{background:white;box-shadow:0 3px 10px rgba(45,50,60,.10)}.lm-notebook-tools button:disabled{opacity:.28}
       .lm-page-nav{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:870;display:flex;align-items:center;gap:8px;padding:6px 9px;border-radius:17px;background:color-mix(in srgb,var(--lm-soft) 78%,white);border:1px solid color-mix(in srgb,var(--lm-color) 48%,white);box-shadow:0 6px 18px rgba(80,60,45,.13)}.lm-page-nav button{appearance:none;border:0;width:34px;height:34px;border-radius:10px;background:transparent;color:var(--lm-dark);font-size:23px}.lm-page-counter{min-width:64px;text-align:center;color:var(--lm-dark);font-weight:850}
       .lm-plus-menu,.lm-more-menu{position:fixed;z-index:930;display:none;padding:7px;border:1px solid color-mix(in srgb,var(--lm-color) 35%,white);border-radius:16px;background:#fffaf7;box-shadow:0 10px 28px rgba(40,45,55,.19)}.lm-plus-menu.aperto,.lm-more-menu.aperto{display:block}.lm-plus-menu{left:max(200px,calc(env(safe-area-inset-left) + 170px));bottom:max(86px,calc(env(safe-area-inset-bottom) + 80px));min-width:210px}.lm-more-menu{right:max(18px,env(safe-area-inset-right));top:max(78px,calc(env(safe-area-inset-top) + 64px));min-width:210px}.lm-plus-menu button,.lm-more-menu button{appearance:none;border:0;width:100%;padding:12px 14px;border-radius:11px;background:transparent;color:var(--lm-dark);font-size:15px;font-weight:750;text-align:left;cursor:pointer}.lm-plus-menu button:hover,.lm-more-menu button:hover{background:var(--lm-soft)}
-      .lm-textbar{position:fixed;z-index:910;display:none;left:50%;top:120px;transform:translateX(-50%);align-items:center;border:1px solid color-mix(in srgb,var(--lm-color) 45%,white);border-radius:20px;background:#fffaf7;box-shadow:0 8px 22px rgba(65,55,50,.15);overflow:hidden}.lm-textbar.aperto{display:flex}.lm-textbar select,.lm-textbar button,.lm-textbar input{height:46px;border:0;border-right:1px solid rgba(80,80,80,.10);background:transparent;color:var(--lm-dark);font-weight:750;padding:0 12px}.lm-textbar input[type=color]{width:48px;padding:8px}
+      .lm-textbar{position:fixed;z-index:910;display:none;left:50%;top:104px;transform:translateX(-50%);align-items:center;border:1px solid color-mix(in srgb,var(--lm-color) 45%,white);border-radius:20px;background:#fffaf7;box-shadow:0 8px 22px rgba(65,55,50,.15);overflow:hidden}.lm-textbar.aperto{display:flex}.lm-textbar select,.lm-textbar button,.lm-textbar input{height:46px;border:0;border-right:1px solid rgba(80,80,80,.10);background:transparent;color:var(--lm-dark);font-weight:750;padding:0 12px}.lm-textbar input[type=color]{width:48px;padding:8px}
       .lm-modal{position:fixed;inset:0;z-index:980;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(35,45,65,.52);backdrop-filter:blur(5px)}.lm-modal.aperto{display:flex}.lm-modal-card{width:min(720px,94vw);max-height:84vh;overflow:auto;padding:22px;border-radius:24px;background:#fffaf7;box-shadow:0 20px 55px rgba(20,30,50,.26);color:var(--lm-dark)}.lm-modal-card h2{margin:0 0 16px}.lm-modal-close{float:right;border:0;background:var(--lm-soft);color:var(--lm-dark);width:40px;height:40px;border-radius:12px;font-size:22px}.lm-sheet-picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}.lm-sheet-pick{border:1px solid color-mix(in srgb,var(--lm-color) 35%,white);border-radius:16px;background:white;padding:9px;text-align:left;color:var(--lm-dark);font-weight:700}.lm-sheet-pick img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;margin-bottom:7px}.lm-results button{display:block;width:100%;border:0;border-bottom:1px solid rgba(70,80,90,.08);background:transparent;padding:12px;text-align:left;color:var(--lm-dark)}
       .lm-notebook-file{display:none}
       @media(max-width:760px){.lm-header{gap:8px}.lm-workspace{padding:14px 10px}.lm-panel{width:96vw;padding:16px;border-width:6px}.lm-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lm-class-card,.lm-subject-card{min-height:135px;padding:12px}.lm-class-folder{width:88px;height:62px;margin-bottom:12px}.lm-class-folder::before{width:42px;height:16px;top:-13px}.lm-card-label,.lm-subject-name{font-size:15px}.lm-subject-icon{font-size:34px}.lm-choice-grid{grid-template-columns:1fr;gap:14px}.lm-choice-card{min-height:180px}.lm-choice-icon{font-size:54px}.lm-search{padding:0}.lm-title{font-size:21px}.lm-add{padding:0 10px;font-size:13px}.lm-binder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lm-binder-head{align-items:flex-start;flex-direction:column}.lm-binder-card{padding:10px}.lm-screen.notebook .lm-workspace{padding:8px 8px 82px}.lm-notebook-shell{height:calc(100vh - 158px)}.lm-page{height:min(720px,calc(100vh - 174px));width:auto;max-width:92vw}.lm-notebook-tools{left:10px;bottom:10px;transform:scale(.92);transform-origin:left bottom}.lm-page-nav{bottom:10px}}
@@ -273,7 +273,7 @@
       <input class="lm-notebook-file lm-notebook-any-input" type="file">
       <div class="lm-plus-menu"><button data-plus="sheet" type="button">Scheda</button><button data-plus="image" type="button">Immagine</button><button data-plus="file" type="button">File</button></div>
       <div class="lm-more-menu"><button data-more="lesson" type="button">Nuova lezione</button><button data-more="share" type="button">Condividi / Esporta</button></div>
-      <div class="lm-textbar"><select class="lm-font"><option value="Andika, Arial, sans-serif">Andika</option><option value="Georgia, cursive">Corsivo Primaria</option><option value="Arial, sans-serif">Arial</option><option value="system-ui, sans-serif">Altri font…</option></select><select class="lm-size"><option>24</option><option selected>32</option><option>40</option><option>48</option><option>56</option></select><button class="lm-bold" type="button"><b>B</b></button><button class="lm-italic" type="button"><i>I</i></button><button class="lm-align" type="button">☰</button><input class="lm-color" type="color" value="#111111"></div>
+      <div class="lm-lasso-hint">Scrittura selezionata: premi T per trasformarla in testo</div><div class="lm-textbar"><select class="lm-font"><option value="Arial, sans-serif">Andika</option><option value="'Corsivo Primaria', cursive">Corsivo Primaria</option><option value="Arial, sans-serif">Arial</option><option value="system-ui, sans-serif">Altri font…</option></select><select class="lm-size"><option>24</option><option selected>32</option><option>40</option><option>48</option><option>56</option></select><button class="lm-bold" type="button"><b>B</b></button><button class="lm-italic" type="button"><i>I</i></button><button class="lm-align" type="button">☰</button><input class="lm-color" type="color" value="#111111"></div>
       <div class="lm-modal lm-sheet-modal"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Schede da stampare</h2><div class="lm-sheet-picker-grid"></div></div></div>
       <div class="lm-modal lm-share-modal"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Condividi lezione</h2><p class="lm-share-info"></p><button class="lm-share-now" type="button">Condividi / stampa</button></div></div>
       <div class="lm-modal lm-search-results"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Cerca nel quaderno</h2><input class="lm-search-input" type="search" placeholder="Cerca parola o frase..." style="width:100%;height:46px;border:1px solid #ccd8e5;border-radius:12px;padding:0 12px;font-size:16px"><div class="lm-results"></div></div></div>
@@ -297,8 +297,10 @@
     const shareModal = screen.querySelector(".lm-share-modal");
     const searchResults = screen.querySelector(".lm-search-results");
     let quadernoCorrente = null;
-    let notebookMode = "select";
+    let notebookMode = "pencil";
     let selectedObjectId = null;
+    let selectedStrokeIndexes = new Set();
+    let lassoPoints = [];
     let notebookHistory = [];
     let notebookFuture = [];
 
@@ -415,6 +417,108 @@
       return quadernoCorrente.lessons.find(x => x.id === p.lessonId) || null;
     }
 
+
+    function ensureDateObject(page) {
+      page.objects = Array.isArray(page.objects) ? page.objects : [];
+      page.strokes = Array.isArray(page.strokes) ? page.strokes : [];
+      if (!page.date) return;
+      const existing = page.objects.find(o => o.role === "date");
+      if (existing) {
+        if (!existing.text) existing.text = formattaDataEstesa(page.date);
+        return;
+      }
+      page.objects.unshift({
+        id:`date-${page.id}`,
+        type:"text",
+        role:"date",
+        text:formattaDataEstesa(page.date),
+        x:7,
+        y:3.2,
+        w:58,
+        fontFamily:"Arial, sans-serif",
+        fontSize:19,
+        bold:false,
+        italic:false,
+        align:"left",
+        color:"#111111"
+      });
+    }
+
+    function resetSelection() {
+      selectedObjectId = null;
+      selectedStrokeIndexes = new Set();
+      lassoPoints = [];
+    }
+
+    function pointInPolygon(point, polygon) {
+      if (!polygon || polygon.length < 3) return false;
+      let inside = false;
+      for (let i=0,j=polygon.length-1;i<polygon.length;j=i++) {
+        const xi=polygon[i].x, yi=polygon[i].y, xj=polygon[j].x, yj=polygon[j].y;
+        const intersect=((yi>point.y)!=(yj>point.y)) && (point.x < (xj-xi)*(point.y-yi)/((yj-yi)||1e-9)+xi);
+        if(intersect) inside=!inside;
+      }
+      return inside;
+    }
+
+    function distanceToSegment(p,a,b) {
+      const vx=b.x-a.x, vy=b.y-a.y, wx=p.x-a.x, wy=p.y-a.y;
+      const c1=vx*wx+vy*wy;
+      if(c1<=0) return Math.hypot(p.x-a.x,p.y-a.y);
+      const c2=vx*vx+vy*vy;
+      if(c2<=c1) return Math.hypot(p.x-b.x,p.y-b.y);
+      const t=c1/c2;
+      return Math.hypot(p.x-(a.x+t*vx),p.y-(a.y+t*vy));
+    }
+
+    function strokeHit(stroke,p,tolerance=.025) {
+      const pts=stroke?.points||[];
+      if(!pts.length) return false;
+      if(pts.length===1) return Math.hypot(pts[0].x-p.x,pts[0].y-p.y)<=tolerance;
+      for(let i=1;i<pts.length;i++) if(distanceToSegment(p,pts[i-1],pts[i])<=tolerance) return true;
+      return false;
+    }
+
+    function objectContainsPoint(obj,p) {
+      const w=(obj.w||20)/100, h=(obj.h||10)/100;
+      const x=(obj.x||0)/100, y=(obj.y||0)/100;
+      return p.x>=x && p.x<=x+w && p.y>=y && p.y<=y+h;
+    }
+
+    function selectionBounds(page) {
+      const pts=[];
+      selectedStrokeIndexes.forEach(i => (page.strokes?.[i]?.points||[]).forEach(pt=>pts.push(pt)));
+      if(!pts.length) return {x:.12,y:.18,w:.45,h:.10};
+      const xs=pts.map(p=>p.x), ys=pts.map(p=>p.y);
+      const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
+      return {x:minX,y:minY,w:Math.max(.16,maxX-minX),h:Math.max(.06,maxY-minY)};
+    }
+
+    async function convertSelectionToText() {
+      const page=currentNotebookPage();
+      if(!page) return;
+      if(selectedObjectId) {
+        const obj=objectById(selectedObjectId);
+        if(obj?.type==="text") { updateTextbar(); return; }
+      }
+      if(!selectedStrokeIndexes.size) {
+        const text=window.prompt("Scrivi il testo digitale:","");
+        if(text===null || !text.trim()) return;
+        pushHistory();
+        page.objects.push({id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type:"text",text:text.trim(),x:12,y:16,w:56,fontFamily:"Arial, sans-serif",fontSize:32,bold:false,italic:false,align:"left",color:"#111111"});
+        selectedObjectId=page.objects.at(-1).id;
+        await persistNotebook();renderNotebookPage();return;
+      }
+      const text=window.prompt("Trasforma la scrittura selezionata in testo digitale:","");
+      if(text===null || !text.trim()) return;
+      const b=selectionBounds(page);
+      pushHistory();
+      page.strokes=(page.strokes||[]).filter((_,i)=>!selectedStrokeIndexes.has(i));
+      const obj={id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type:"text",text:text.trim(),x:b.x*100,y:b.y*100,w:Math.min(82,Math.max(24,b.w*100)),fontFamily:"Arial, sans-serif",fontSize:32,bold:false,italic:false,align:"left",color:"#111111"};
+      page.objects.push(obj);selectedObjectId=obj.id;selectedStrokeIndexes=new Set();
+      await persistNotebook();renderNotebookPage();
+    }
+
     function renderCanvas(canvas, page) {
       const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
@@ -423,18 +527,16 @@
       const ctx = canvas.getContext("2d");
       ctx.setTransform(dpr,0,0,dpr,0,0);
       ctx.clearRect(0,0,rect.width,rect.height);
-      (page.strokes || []).forEach(stroke => {
+      (page.strokes || []).forEach((stroke,idx) => {
         if (!stroke.points?.length) return;
-        ctx.beginPath();
-        ctx.lineCap = "round"; ctx.lineJoin = "round";
-        ctx.strokeStyle = stroke.color || "#111111";
-        ctx.lineWidth = stroke.width || 3;
-        stroke.points.forEach((pt,i) => {
-          const x = pt.x * rect.width, y = pt.y * rect.height;
-          if (!i) ctx.moveTo(x,y); else ctx.lineTo(x,y);
-        });
-        ctx.stroke();
+        ctx.beginPath();ctx.lineCap="round";ctx.lineJoin="round";
+        ctx.strokeStyle = selectedStrokeIndexes.has(idx) ? "#2b90d9" : (stroke.color || "#111111");
+        ctx.lineWidth = selectedStrokeIndexes.has(idx) ? (stroke.width||3)+1.5 : (stroke.width || 3);
+        stroke.points.forEach((pt,i)=>{const x=pt.x*rect.width,y=pt.y*rect.height;if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();
       });
+      if(lassoPoints.length>1){
+        ctx.save();ctx.setLineDash([7,6]);ctx.strokeStyle="#2b90d9";ctx.lineWidth=1.7;ctx.beginPath();lassoPoints.forEach((pt,i)=>{const x=pt.x*rect.width,y=pt.y*rect.height;if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();ctx.restore();
+      }
     }
 
     function objectById(id) {
@@ -446,6 +548,7 @@
       textbar.classList.toggle("aperto", !!obj && obj.type === "text");
       if (!obj || obj.type !== "text") return;
       screen.querySelector(".lm-size").value = String(obj.fontSize || 32);
+      const fs=screen.querySelector(".lm-font");if(fs){const target=(obj.fontFamily||"Arial, sans-serif");const opt=[...fs.options].find(o=>o.value===target);if(opt)fs.value=target;}
       screen.querySelector(".lm-color").value = obj.color || "#111111";
     }
 
@@ -453,11 +556,11 @@
       const el = document.createElement("div");
       el.className = `lm-page-object ${obj.type}`;
       el.dataset.id = obj.id;
-      el.style.left = `${obj.x}%`; el.style.top = `${obj.y}%`; el.style.width = `${obj.w}%`;
+      el.style.left = `${obj.x}%`; el.style.top = `${obj.y}%`; el.style.width = `${obj.w}%`; if(!obj.h) obj.h = obj.type === "text" ? 7 : (obj.type === "file" ? 8 : 24);
       if (obj.h) el.style.height = `${obj.h}%`;
       if (obj.type === "text") {
         el.textContent = obj.text || "";
-        el.style.fontFamily = obj.fontFamily || "Andika, Arial, sans-serif";
+        el.style.fontFamily = obj.fontFamily || "Arial, sans-serif";
         el.style.fontSize = `${obj.fontSize || 32}px`;
         el.style.fontWeight = obj.bold ? "800" : "400";
         el.style.fontStyle = obj.italic ? "italic" : "normal";
@@ -480,7 +583,7 @@
       el.append(del,resize);
       if (obj.id === selectedObjectId) el.classList.add("selected");
       el.addEventListener("pointerdown", event => {
-        if (event.target === del || event.target === resize || notebookMode === "pencil") return;
+        if (event.target === del || event.target === resize || ["pencil","eraser","lasso"].includes(notebookMode)) return;
         event.preventDefault(); event.stopPropagation(); selectedObjectId = obj.id; renderNotebookPage();
         const pageEl = layer.parentElement, rect = pageEl.getBoundingClientRect(), er = el.getBoundingClientRect();
         const ox = event.clientX-er.left, oy=event.clientY-er.top;
@@ -497,31 +600,30 @@
         const end=async e=>{try{resize.releasePointerCapture(e.pointerId)}catch(_){ } resize.removeEventListener("pointermove",move);resize.removeEventListener("pointerup",end);resize.removeEventListener("pointercancel",end);await persistNotebook();};
         resize.addEventListener("pointermove",move);resize.addEventListener("pointerup",end);resize.addEventListener("pointercancel",end);
       });
-      del.addEventListener("click", async e => { e.stopPropagation(); pushHistory(); const p=currentNotebookPage();p.objects=p.objects.filter(x=>x.id!==obj.id);selectedObjectId=null;await persistNotebook();renderNotebookPage(); });
+      del.addEventListener("click", async e => { e.stopPropagation(); pushHistory(); const p=currentNotebookPage();p.objects=p.objects.filter(x=>x.id!==obj.id);if(obj.role==="date")p.date="";selectedObjectId=null;await persistNotebook();renderNotebookPage(); });
       layer.appendChild(el);
     }
 
     function renderNotebookPage() {
       liberaObjectUrls();
-      const page = currentNotebookPage(); if (!page) return;
-      const pageEl = panel.querySelector(".lm-page"); if (!pageEl) return;
-      const dateLabel = pageEl.querySelector(".lm-page-date-label");
-      if (dateLabel) dateLabel.textContent = formattaDataEstesa(page.date || "");
-      const layer = pageEl.querySelector(".lm-object-layer"); layer.innerHTML="";
+      const page=currentNotebookPage();if(!page)return;
+      ensureDateObject(page);
+      const pageEl=panel.querySelector(".lm-page");if(!pageEl)return;
+      const layer=pageEl.querySelector(".lm-object-layer");layer.innerHTML="";
       (page.objects||[]).forEach(obj=>makePageObjectElement(obj,layer));
-      const canvas = pageEl.querySelector(".lm-draw-canvas");
-      requestAnimationFrame(()=>renderCanvas(canvas,page));
-      panel.querySelector(".lm-page-counter").textContent = `${quadernoCorrente.currentPage+1} / ${quadernoCorrente.pages.length}`;
-      const prev=panel.querySelector(".lm-nav-prev"), next=panel.querySelector(".lm-nav-next");
-      prev.disabled=quadernoCorrente.currentPage===0;
-      next.disabled=false;
+      layer.querySelectorAll(".lm-page-object").forEach(el=>{el.style.pointerEvents=["pencil","eraser","lasso"].includes(notebookMode)?"none":"auto";});
+      const canvas=pageEl.querySelector(".lm-draw-canvas");requestAnimationFrame(()=>renderCanvas(canvas,page));
+      panel.querySelector(".lm-page-counter").textContent=`${quadernoCorrente.currentPage+1} / ${quadernoCorrente.pages.length}`;
+      const prev=panel.querySelector(".lm-nav-prev"),next=panel.querySelector(".lm-nav-next");prev.disabled=quadernoCorrente.currentPage===0;next.disabled=false;
       panel.querySelectorAll(".lm-notebook-tools button[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===notebookMode));
+      screen.dataset.notebookTool=notebookMode;
+      const hint=screen.querySelector(".lm-lasso-hint");if(hint)hint.classList.toggle("aperto",selectedStrokeIndexes.size>0);
       updateTextbar();
     }
 
     async function addBlobObject(blob, name, type) {
       const page=currentNotebookPage(); pushHistory();
-      page.objects.push({id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type,blob,name,x:12,y:22,w:type==="file"?38:68});
+      page.objects.push({id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type,blob,name,x:12,y:22,w:type==="file"?38:68,h:type==="file"?8:30});
       await persistNotebook(); renderNotebookPage();
     }
 
@@ -536,37 +638,53 @@
     }
 
     function installDrawing(canvas) {
-      let stroke=null;
-      canvas.addEventListener("pointerdown", e=>{
-        if(notebookMode!=="pencil") return; e.preventDefault(); pushHistory();
-        const rect=canvas.getBoundingClientRect();stroke={color:"#111111",width:e.pointerType==="pen"?2.2:3.0,points:[]};currentNotebookPage().strokes.push(stroke);canvas.setPointerCapture(e.pointerId);
-        const addPt=ev=>stroke.points.push({x:(ev.clientX-rect.left)/rect.width,y:(ev.clientY-rect.top)/rect.height});addPt(e);renderCanvas(canvas,currentNotebookPage());
-        const move=ev=>{addPt(ev);renderCanvas(canvas,currentNotebookPage());};
-        const end=async ev=>{try{canvas.releasePointerCapture(ev.pointerId)}catch(_){ }canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",end);canvas.removeEventListener("pointercancel",end);stroke=null;await persistNotebook();};
-        canvas.addEventListener("pointermove",move);canvas.addEventListener("pointerup",end);canvas.addEventListener("pointercancel",end);
+      let stroke=null, erasing=false, lassoActive=false;
+      const norm=(ev,rect)=>({x:(ev.clientX-rect.left)/rect.width,y:(ev.clientY-rect.top)/rect.height});
+
+      canvas.addEventListener("pointerdown",e=>{
+        const page=currentNotebookPage();if(!page)return;
+        const rect=canvas.getBoundingClientRect();
+        if(notebookMode==="select"){resetSelection();renderNotebookPage();return;}
+        if(notebookMode==="pencil"){
+          e.preventDefault();pushHistory();stroke={color:"#111111",width:e.pointerType==="pen"?2.2:3.0,points:[]};page.strokes.push(stroke);canvas.setPointerCapture(e.pointerId);
+          const add=ev=>stroke.points.push(norm(ev,rect));add(e);renderCanvas(canvas,page);
+          const move=ev=>{add(ev);renderCanvas(canvas,page)};
+          const end=async ev=>{try{canvas.releasePointerCapture(ev.pointerId)}catch(_){ }canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",end);canvas.removeEventListener("pointercancel",end);stroke=null;await persistNotebook();};
+          canvas.addEventListener("pointermove",move);canvas.addEventListener("pointerup",end);canvas.addEventListener("pointercancel",end);return;
+        }
+        if(notebookMode==="eraser"){
+          e.preventDefault();pushHistory();erasing=true;canvas.setPointerCapture(e.pointerId);
+          const eraseAt=ev=>{const p=norm(ev,rect);let changed=false;page.strokes=(page.strokes||[]).filter(st=>{const hit=strokeHit(st,p,.032);if(hit)changed=true;return !hit});page.objects=(page.objects||[]).filter(o=>{if(objectContainsPoint(o,p)){if(o.role==="date")page.date="";if(o.id===selectedObjectId)selectedObjectId=null;changed=true;return false}return true});if(changed)renderNotebookPage();};
+          eraseAt(e);const move=ev=>eraseAt(ev);const end=async ev=>{try{canvas.releasePointerCapture(ev.pointerId)}catch(_){ }canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",end);canvas.removeEventListener("pointercancel",end);erasing=false;await persistNotebook();renderNotebookPage();};
+          canvas.addEventListener("pointermove",move);canvas.addEventListener("pointerup",end);canvas.addEventListener("pointercancel",end);return;
+        }
+        if(notebookMode==="lasso"){
+          e.preventDefault();resetSelection();lassoActive=true;lassoPoints=[norm(e,rect)];canvas.setPointerCapture(e.pointerId);renderCanvas(canvas,page);
+          const move=ev=>{lassoPoints.push(norm(ev,rect));renderCanvas(canvas,page)};
+          const end=async ev=>{try{canvas.releasePointerCapture(ev.pointerId)}catch(_){ }canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",end);canvas.removeEventListener("pointercancel",end);lassoActive=false;if(lassoPoints.length>=3){(page.strokes||[]).forEach((st,i)=>{if((st.points||[]).some(pt=>pointInPolygon(pt,lassoPoints)))selectedStrokeIndexes.add(i)});const selectedObjects=(page.objects||[]).filter(o=>pointInPolygon({x:((o.x||0)+(o.w||20)/2)/100,y:((o.y||0)+(o.h||10)/2)/100},lassoPoints));if(selectedObjects.length===1)selectedObjectId=selectedObjects[0].id;}lassoPoints=[];renderNotebookPage();};
+          canvas.addEventListener("pointermove",move);canvas.addEventListener("pointerup",end);canvas.addEventListener("pointercancel",end);
+        }
       });
     }
 
     async function renderQuaderno() {
-      liberaObjectUrls(); setBinderMode(false); setNotebookMode(true); schermata="quaderno"; temaClasse(classeCorrente); title.textContent=`${materiaCorrente.toUpperCase()} — QUADERNO`;
-      quadernoCorrente=await leggiQuaderno(classeCorrente.id,materiaCorrente); notebookHistory=[];notebookFuture=[];selectedObjectId=null;notebookMode="select";
-      panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><div class="lm-page-date-wrap"><span class="lm-page-date-label"></span></div><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-tools"><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="select" type="button" title="Seleziona">◌</button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div>`;
+      liberaObjectUrls();setBinderMode(false);setNotebookMode(true);schermata="quaderno";temaClasse(classeCorrente);title.textContent=`${materiaCorrente.toUpperCase()} — QUADERNO`;
+      quadernoCorrente=await leggiQuaderno(classeCorrente.id,materiaCorrente);notebookHistory=[];notebookFuture=[];resetSelection();notebookMode="pencil";
+      (quadernoCorrente.pages||[]).forEach(ensureDateObject);
+      panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-tools"><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="eraser" type="button" title="Gomma">⌫</button><button data-tool="text" type="button" title="Testo">T</button><button data-tool="lasso" type="button" title="Lazo">◌</button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div>`;
       const canvas=panel.querySelector(".lm-draw-canvas");installDrawing(canvas);
-      const tools = panel.querySelector(".lm-notebook-tools");
-      tools.addEventListener("pointerdown", event => event.stopPropagation());
-      panel.querySelector(".lm-object-layer").addEventListener("pointerdown",e=>{if(e.target===e.currentTarget){selectedObjectId=null;renderNotebookPage();}});
-      panel.querySelectorAll(".lm-notebook-tools button[data-tool]").forEach(btn=>btn.addEventListener("click",async(event)=>{
-        event.preventDefault();
-        event.stopPropagation();
-        const t=btn.dataset.tool;
-        if(t==="pencil"||t==="select"){notebookMode=t;selectedObjectId=null;renderNotebookPage();return;}
-        if(t==="plus"){plusMenu.classList.toggle("aperto");return;}
-        if(t==="undo"&&notebookHistory.length){notebookFuture.push(notebookSnapshot());quadernoCorrente=notebookHistory.pop();await persistNotebook();renderNotebookPage();return;}
-        if(t==="redo"&&notebookFuture.length){notebookHistory.push(notebookSnapshot());quadernoCorrente=notebookFuture.pop();await persistNotebook();renderNotebookPage();}
+      const tools=panel.querySelector(".lm-notebook-tools");tools.addEventListener("pointerdown",event=>event.stopPropagation());tools.addEventListener("click",event=>event.stopPropagation());
+      panel.querySelectorAll(".lm-notebook-tools button[data-tool]").forEach(btn=>btn.addEventListener("click",async event=>{
+        event.preventDefault();event.stopPropagation();const t=btn.dataset.tool;
+        if(["pencil","eraser","lasso"].includes(t)){notebookMode=t;resetSelection();renderNotebookPage();return;}
+        if(t==="text"){await convertSelectionToText();return;}
+        if(t==="plus"){plusMenu.classList.toggle("aperto");moreMenu.classList.remove("aperto");return;}
+        if(t==="undo"&&notebookHistory.length){notebookFuture.push(notebookSnapshot());quadernoCorrente=notebookHistory.pop();resetSelection();await persistNotebook();renderNotebookPage();return;}
+        if(t==="redo"&&notebookFuture.length){notebookHistory.push(notebookSnapshot());quadernoCorrente=notebookFuture.pop();resetSelection();await persistNotebook();renderNotebookPage();}
       }));
-      panel.querySelector(".lm-nav-prev").addEventListener("click",async()=>{if(quadernoCorrente.currentPage>0){quadernoCorrente.currentPage--;selectedObjectId=null;await persistNotebook();renderNotebookPage();}});
-      panel.querySelector(".lm-nav-next").addEventListener("click",async()=>{if(quadernoCorrente.currentPage<quadernoCorrente.pages.length-1){quadernoCorrente.currentPage++;}else{const lesson=currentLesson();if(!lesson)return;pushHistory();quadernoCorrente.pages.push(paginaNuova(lesson.id,false));quadernoCorrente.currentPage=quadernoCorrente.pages.length-1;}selectedObjectId=null;await persistNotebook();renderNotebookPage();});
-      renderNotebookPage();
+      panel.querySelector(".lm-nav-prev").addEventListener("click",async()=>{if(quadernoCorrente.currentPage>0){quadernoCorrente.currentPage--;resetSelection();await persistNotebook();renderNotebookPage();}});
+      panel.querySelector(".lm-nav-next").addEventListener("click",async()=>{if(quadernoCorrente.currentPage<quadernoCorrente.pages.length-1){quadernoCorrente.currentPage++;}else{const lesson=currentLesson();if(!lesson)return;pushHistory();const p=paginaNuova(lesson.id,false);ensureDateObject(p);quadernoCorrente.pages.push(p);quadernoCorrente.currentPage=quadernoCorrente.pages.length-1;}resetSelection();await persistNotebook();renderNotebookPage();});
+      await persistNotebook();renderNotebookPage();
     }
 
     function creaCardScheda(record, refresh) {
@@ -718,7 +836,7 @@
     notebookImageInput.addEventListener("change",async()=>{const f=notebookImageInput.files?.[0];notebookImageInput.value="";if(f&&schermata==="quaderno")await addBlobObject(f,f.name,"image");});
     notebookAnyInput.addEventListener("change",async()=>{const f=notebookAnyInput.files?.[0];notebookAnyInput.value="";if(f&&schermata==="quaderno")await addBlobObject(f,f.name,f.type?.startsWith("image/")?"image":"file");});
     screen.querySelectorAll(".lm-modal-close").forEach(b=>b.addEventListener("click",()=>b.closest(".lm-modal").classList.remove("aperto")));
-    moreMenu.querySelector('[data-more="lesson"]').addEventListener("click",async()=>{if(schermata!=="quaderno")return;moreMenu.classList.remove("aperto");pushHistory();const id=`l-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;quadernoCorrente.lessons.push({id,title:"",startPage:quadernoCorrente.pages.length,createdAt:Date.now()});quadernoCorrente.pages.push(paginaNuova(id,true));quadernoCorrente.currentPage=quadernoCorrente.pages.length-1;selectedObjectId=null;await persistNotebook();renderNotebookPage();});
+    moreMenu.querySelector('[data-more="lesson"]').addEventListener("click",async()=>{if(schermata!=="quaderno")return;moreMenu.classList.remove("aperto");pushHistory();const id=`l-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;quadernoCorrente.lessons.push({id,title:"",startPage:quadernoCorrente.pages.length,createdAt:Date.now()});const nuova=paginaNuova(id,true);ensureDateObject(nuova);quadernoCorrente.pages.push(nuova);quadernoCorrente.currentPage=quadernoCorrente.pages.length-1;selectedObjectId=null;await persistNotebook();renderNotebookPage();});
     moreMenu.querySelector('[data-more="share"]').addEventListener("click",()=>{moreMenu.classList.remove("aperto");const lesson=currentLesson();shareModal.querySelector(".lm-share-info").textContent=lesson?`Argomento: ${lesson.title||"senza titolo"}. Verranno considerate le pagine di questa lezione.`:"Questa pagina non appartiene ancora a una lezione.";shareModal.classList.add("aperto");});
     shareModal.querySelector(".lm-share-now").addEventListener("click",()=>{shareModal.classList.remove("aperto");window.print();});
     screen.querySelector(".lm-font").addEventListener("change",async e=>{const o=objectById(selectedObjectId);if(!o)return;pushHistory();o.fontFamily=e.target.value;await persistNotebook();renderNotebookPage();});
