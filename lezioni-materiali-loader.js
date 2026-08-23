@@ -243,7 +243,7 @@
       .lm-search-pop{position:fixed;inset:0;z-index:950;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(35,45,65,.52);backdrop-filter:blur(5px)}.lm-search-pop.aperto{display:flex}.lm-search-card{width:min(540px,92vw);padding:24px;border-radius:24px;background:#fffaf7;box-shadow:0 20px 55px rgba(20,30,50,.26)}.lm-search-card h2{margin:0 0 12px;color:var(--lm-dark)}.lm-search-card p{margin:0 0 16px;color:#5f7184}.lm-search-card button{appearance:none;border:0;padding:12px 18px;border-radius:13px;background:var(--lm-soft);color:var(--lm-dark);font-weight:800;cursor:pointer}
 
       .lm-more{display:none;appearance:none;border:0;width:52px;height:52px;min-width:52px;border-radius:18px;background:rgba(255,255,255,.84);color:var(--lm-dark);cursor:pointer;box-shadow:0 5px 14px rgba(50,65,80,.10);font-size:24px;font-weight:900;line-height:1}.lm-screen.notebook .lm-more{display:block}
-      .lm-screen.notebook{width:100vw;height:100dvh;max-width:none;max-height:none;inset:0;background:linear-gradient(180deg,color-mix(in srgb,var(--lm-soft) 92%,white) 0%,color-mix(in srgb,var(--lm-soft) 62%,#fff7f2) 100%);overflow:hidden}
+      .lm-screen.notebook{user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;width:100vw;height:100dvh;max-width:none;max-height:none;inset:0;background:linear-gradient(180deg,color-mix(in srgb,var(--lm-soft) 92%,white) 0%,color-mix(in srgb,var(--lm-soft) 62%,#fff7f2) 100%);overflow:hidden}
       .lm-screen.notebook .lm-header{position:relative;min-height:88px;flex:0 0 88px;padding:max(18px,env(safe-area-inset-top)) max(24px,env(safe-area-inset-right)) 10px max(24px,env(safe-area-inset-left));gap:12px;background:transparent;border:0;z-index:20}
       .lm-screen.notebook .lm-title{position:absolute;left:50%;top:50%;transform:translate(-50%,-42%);width:min(62vw,760px);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(25px,3vw,38px);letter-spacing:.01em}
       .lm-screen.notebook .lm-back{width:52px;height:52px;flex:0 0 52px;border-radius:18px;font-size:31px;z-index:2}
@@ -256,12 +256,12 @@
       .lm-draw-canvas{position:absolute;inset:0;z-index:4;width:100%;height:100%;touch-action:none}
       .lm-object-layer{position:absolute;inset:0;z-index:5;pointer-events:none}
       .lm-lasso-hint{position:fixed;z-index:905;display:none;left:50%;top:88px;transform:translateX(-50%);padding:7px 12px;border-radius:12px;background:rgba(255,255,255,.94);color:var(--lm-dark);font-size:13px;font-weight:800;box-shadow:0 4px 14px rgba(50,60,75,.12)}.lm-lasso-hint.aperto{display:block}
-      .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}.lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}.lm-page-object.text.andika{font-feature-settings:"ss13" 1}.lm-page-object img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}.lm-page-object.file{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:#fffaf4;color:#444;box-shadow:0 3px 10px rgba(0,0,0,.07)}
+      .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}.lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}.lm-page-object.text.andika{font-feature-settings:normal;font-variant-ligatures:normal}.lm-page-object img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}.lm-page-object.file{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:#fffaf4;color:#444;box-shadow:0 3px 10px rgba(0,0,0,.07)}
       .lm-object-delete,.lm-object-resize{display:none;position:absolute;appearance:none;border:0;width:27px;height:27px;border-radius:50%;background:#fff;color:#5f7184;box-shadow:0 2px 8px rgba(0,0,0,.16);cursor:pointer}.lm-page-object.selected .lm-object-delete,.lm-page-object.selected .lm-object-resize{display:block}.lm-object-delete{right:-12px;top:-12px}.lm-object-resize{right:-12px;bottom:-12px}
       .lm-notebook-tools{position:fixed;left:max(38px,env(safe-area-inset-left));bottom:max(34px,env(safe-area-inset-bottom));z-index:880;display:flex;align-items:center;gap:3px;padding:9px 10px 9px 28px;border:1.5px solid color-mix(in srgb,var(--lm-color) 68%,white);border-radius:24px;background:color-mix(in srgb,var(--lm-soft) 88%,white);box-shadow:0 9px 24px rgba(80,60,45,.14);touch-action:none;user-select:none;-webkit-user-select:none}.lm-tools-grip{position:absolute;left:8px;top:50%;transform:translateY(-50%);width:17px;height:32px;display:grid;place-items:center;color:color-mix(in srgb,var(--lm-dark) 62%,white);font-weight:900;font-size:17px;cursor:grab;touch-action:none}.lm-tools-grip:active{cursor:grabbing}.lm-notebook-tools button{appearance:none;border:0;width:45px;height:45px;border-radius:13px;background:transparent;color:var(--lm-dark);font-size:22px;font-weight:800;cursor:pointer;touch-action:manipulation}.lm-notebook-tools button.active{background:white;box-shadow:0 3px 10px rgba(45,50,60,.10)}.lm-notebook-tools button:disabled{opacity:.28}.lm-tool-eraser,.lm-tool-lasso{display:grid!important;place-items:center}.lm-tool-eraser svg,.lm-tool-lasso svg{width:25px;height:25px;display:block;overflow:visible}.lm-tool-eraser svg{width:26px;height:26px}.lm-tool-lasso svg{width:27px;height:27px}
       .lm-page-nav{position:fixed;left:50%;bottom:max(28px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:875;display:flex;align-items:center;gap:10px;padding:6px 9px;border:1.5px solid color-mix(in srgb,var(--lm-color) 58%,white);border-radius:18px;background:color-mix(in srgb,var(--lm-soft) 90%,white);box-shadow:0 6px 16px rgba(80,60,45,.11)}.lm-page-nav button{appearance:none;border:0;width:34px;height:32px;background:transparent;color:var(--lm-dark);font-size:27px;cursor:pointer}.lm-page-nav span{min-width:64px;text-align:center;color:var(--lm-dark);font-weight:850;font-size:15px}
       .lm-plus-menu,.lm-more-menu{position:fixed;z-index:910;display:none;min-width:190px;padding:8px;border:1px solid color-mix(in srgb,var(--lm-color) 42%,white);border-radius:17px;background:#fffaf7;box-shadow:0 10px 30px rgba(35,45,60,.20)}.lm-plus-menu{left:max(170px,calc(env(safe-area-inset-left) + 130px));bottom:max(92px,calc(env(safe-area-inset-bottom) + 82px))}.lm-more-menu{right:max(24px,env(safe-area-inset-right));top:max(78px,calc(env(safe-area-inset-top) + 66px))}.lm-plus-menu.aperto,.lm-more-menu.aperto{display:block}.lm-plus-menu button,.lm-more-menu button{appearance:none;border:0;width:100%;padding:11px 13px;border-radius:11px;background:transparent;color:var(--lm-dark);text-align:left;font-size:15px;font-weight:750;cursor:pointer}.lm-plus-menu button:hover,.lm-more-menu button:hover{background:var(--lm-soft)}
-      .lm-textbar{position:fixed;left:50%;top:50%;transform:translate(-50%,70px);z-index:900;display:none;align-items:center;overflow:visible;border:1.5px solid color-mix(in srgb,var(--lm-color) 55%,white);border-radius:19px;background:#fffaf7;box-shadow:0 9px 24px rgba(60,50,45,.15)}.lm-textbar.aperto{display:flex}.lm-textbar select,.lm-textbar button,.lm-textbar input{height:50px;border:0;border-right:1px solid rgba(100,100,100,.09);background:transparent;color:var(--lm-dark);font-size:16px;font-weight:750}.lm-textbar select{padding:0 13px}.lm-textbar button{width:49px;font-size:21px;cursor:pointer}.lm-textbar input[type=color]{width:52px;padding:10px;border-right:0}
+      .lm-textbar{position:fixed;left:50%;top:50%;transform:translate(-50%,70px);z-index:900;display:none;align-items:center;overflow:visible;border:1.5px solid color-mix(in srgb,var(--lm-color) 55%,white);border-radius:19px;background:#fffaf7;box-shadow:0 9px 24px rgba(60,50,45,.15)}.lm-textbar.aperto{display:flex}.lm-textbar select,.lm-textbar button,.lm-textbar input{height:50px;border:0;border-right:1px solid rgba(100,100,100,.09);background:transparent;color:var(--lm-dark);font-size:16px;font-weight:750}.lm-textbar select{padding:0 13px}.lm-font option:nth-child(1){font-family:Andika,Arial,sans-serif}.lm-font option:nth-child(2){font-family:"Corsivo Primaria",cursive}.lm-font option:nth-child(3){font-family:Arial,sans-serif}.lm-textbar button{width:49px;font-size:21px;cursor:pointer}.lm-textbar input[type=color]{width:52px;padding:10px;border-right:0}
       .lm-notebook-file{display:none}
       @media(max-width:760px){.lm-header{gap:8px}.lm-workspace{padding:14px 10px}.lm-panel{width:96vw;padding:16px;border-width:6px}.lm-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lm-class-card,.lm-subject-card{min-height:135px;padding:12px}.lm-class-folder{width:88px;height:62px;margin-bottom:12px}.lm-class-folder::before{width:42px;height:16px;top:-13px}.lm-card-label,.lm-subject-name{font-size:15px}.lm-subject-icon{font-size:34px}.lm-choice-grid{grid-template-columns:1fr;gap:14px}.lm-choice-card{min-height:180px}.lm-choice-icon{font-size:54px}.lm-search{padding:0}.lm-title{font-size:21px}.lm-add{padding:0 10px;font-size:13px}.lm-binder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lm-binder-head{align-items:flex-start;flex-direction:column}.lm-binder-card{padding:10px}.lm-screen.notebook .lm-workspace{padding:2px 8px 74px}.lm-screen.notebook .lm-header{min-height:78px;flex-basis:78px;padding-left:12px;padding-right:12px}.lm-screen.notebook .lm-title{font-size:21px;width:58vw}.lm-screen.notebook .lm-back,.lm-screen.notebook .lm-search,.lm-screen.notebook .lm-more{width:46px;height:46px;min-width:46px;flex-basis:46px;border-radius:15px}.lm-notebook-shell{inset:0 0 58px;padding:16px 14px 0}.lm-page{width:min(calc(100vw - 28px),calc((100dvh - 160px)*.82));max-height:calc(100dvh - 160px)}.lm-notebook-tools{left:10px;bottom:10px;transform:scale(.88);transform-origin:left bottom}.lm-page-nav{bottom:10px}}
     `;
@@ -284,7 +284,7 @@
       <input class="lm-notebook-file lm-notebook-any-input" type="file">
       <div class="lm-plus-menu"><button data-plus="sheet" type="button">Scheda</button><button data-plus="image" type="button">Immagine</button><button data-plus="file" type="button">File</button></div>
       <div class="lm-more-menu"><button data-more="lesson" type="button">Nuova lezione</button><button data-more="share" type="button">Condividi / Esporta</button></div>
-      <div class="lm-lasso-hint">Scrittura selezionata: premi T per trasformarla in testo</div><div class="lm-textbar"><select class="lm-font"><option value="'Andika', Arial, sans-serif">Andika</option><option value="'Corsivo Primaria', cursive">Corsivo Primaria</option><option value="Arial, sans-serif">Arial</option><option value="system-ui, sans-serif">Altri font…</option></select><select class="lm-size"><option>24</option><option selected>32</option><option>40</option><option>48</option><option>56</option></select><button class="lm-bold" type="button"><b>B</b></button><button class="lm-italic" type="button"><i>I</i></button><button class="lm-align" type="button">☰</button><input class="lm-color" type="color" value="#111111"></div>
+      <div class="lm-lasso-hint">Scrittura selezionata: premi T per trasformarla in testo</div><div class="lm-textbar"><select class="lm-font" aria-label="Font"><option style="font-family:Andika,Arial,sans-serif" value="'Andika', Arial, sans-serif">Andika</option><option style="font-family:'Corsivo Primaria',cursive" value="'Corsivo Primaria', cursive">Corsivo Primaria</option><option style="font-family:Arial,sans-serif" value="Arial, sans-serif">Arial</option></select><select class="lm-size"><option>24</option><option selected>32</option><option>40</option><option>48</option><option>56</option></select><button class="lm-align" type="button">☰</button><input class="lm-color" type="color" value="#111111"></div>
       <div class="lm-modal lm-sheet-modal"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Schede da stampare</h2><div class="lm-sheet-picker-grid"></div></div></div>
       <div class="lm-modal lm-share-modal"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Condividi lezione</h2><p class="lm-share-info"></p><button class="lm-share-now" type="button">Condividi / stampa</button></div></div>
       <div class="lm-modal lm-search-results"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Cerca nel quaderno</h2><input class="lm-search-input" type="search" placeholder="Cerca parola o frase..." style="width:100%;height:46px;border:1px solid #ccd8e5;border-radius:12px;padding:0 12px;font-size:16px"><div class="lm-results"></div></div></div>
@@ -513,19 +513,16 @@
         if(obj?.type==="text") { updateTextbar(); return; }
       }
       if(!selectedStrokeIndexes.size) {
-        const text=window.prompt("Scrivi il testo digitale:","");
-        if(text===null || !text.trim()) return;
-        pushHistory();
-        page.objects.push({id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type:"text",text:text.trim(),x:12,y:16,w:56,fontFamily:"'Andika', Arial, sans-serif",fontSize:32,bold:false,italic:false,align:"left",color:"#111111"});
-        selectedObjectId=page.objects.at(-1).id;
-        await persistNotebook();renderNotebookPage();return;
+        const hint=screen.querySelector(".lm-lasso-hint");
+        if(hint){hint.textContent="Prima circonda con il lazo la scrittura da trasformare";hint.classList.add("aperto");setTimeout(()=>hint.classList.remove("aperto"),1800);}
+        return;
       }
       const text=window.prompt("Trasforma la scrittura selezionata in testo digitale:","");
       if(text===null || !text.trim()) return;
       const b=selectionBounds(page);
       pushHistory();
       page.strokes=(page.strokes||[]).filter((_,i)=>!selectedStrokeIndexes.has(i));
-      const obj={id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type:"text",text:text.trim(),x:b.x*100,y:b.y*100,w:Math.min(82,Math.max(24,b.w*100)),fontFamily:"'Andika', Arial, sans-serif",fontSize:32,bold:false,italic:false,align:"left",color:"#111111"};
+      const obj={id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type:"text",text:text.trim(),x:b.x*100,y:b.y*100,w:Math.min(82,Math.max(24,b.w*100)),fontFamily:"'Andika', Arial, sans-serif",fontSize:32,align:"left",color:"#111111"};
       page.objects.push(obj);selectedObjectId=obj.id;selectedStrokeIndexes=new Set();
       await persistNotebook();renderNotebookPage();
     }
@@ -572,10 +569,10 @@
       if (obj.type === "text") {
         el.textContent = obj.text || "";
         el.style.fontFamily = obj.fontFamily || "Arial, sans-serif";
-        if ((obj.fontFamily || "").includes("Andika")) { el.classList.add("andika"); el.style.fontFeatureSettings='"ss13" 1'; }
+        if ((obj.fontFamily || "").includes("Andika")) { el.classList.add("andika"); el.style.fontFeatureSettings="normal"; }
         el.style.fontSize = `${obj.fontSize || 32}px`;
-        el.style.fontWeight = obj.bold ? "800" : "400";
-        el.style.fontStyle = obj.italic ? "italic" : "normal";
+        el.style.fontWeight = "400";
+        el.style.fontStyle = "normal";
         el.style.textAlign = obj.align || "left";
         el.style.color = obj.color || "#111111";
         el.addEventListener("dblclick", async () => {
@@ -662,11 +659,12 @@
           if(e.pointerType!=="pen") return;
           e.preventDefault();pushHistory();stroke={color:"#111111",width:2.2,points:[]};page.strokes.push(stroke);canvas.setPointerCapture(e.pointerId);
           const add=ev=>stroke.points.push(norm(ev,rect));add(e);renderCanvas(canvas,page);
-          const move=ev=>{add(ev);renderCanvas(canvas,page)};
+          const move=ev=>{const events=typeof ev.getCoalescedEvents==="function"?ev.getCoalescedEvents():[ev];events.forEach(add);renderCanvas(canvas,page)};
           const end=async ev=>{try{canvas.releasePointerCapture(ev.pointerId)}catch(_){ }canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",end);canvas.removeEventListener("pointercancel",end);stroke=null;await persistNotebook();};
           canvas.addEventListener("pointermove",move);canvas.addEventListener("pointerup",end);canvas.addEventListener("pointercancel",end);return;
         }
         if(notebookMode==="eraser"){
+          if(e.pointerType!=="pen") return;
           e.preventDefault();pushHistory();erasing=true;canvas.setPointerCapture(e.pointerId);
           const eraseAt=ev=>{
             const p=norm(ev,rect), radius=.018;
@@ -689,8 +687,9 @@
           canvas.addEventListener("pointermove",move);canvas.addEventListener("pointerup",end);canvas.addEventListener("pointercancel",end);return;
         }
         if(notebookMode==="lasso"){
+          if(e.pointerType!=="pen") return;
           e.preventDefault();resetSelection();lassoActive=true;lassoPoints=[norm(e,rect)];canvas.setPointerCapture(e.pointerId);renderCanvas(canvas,page);
-          const move=ev=>{lassoPoints.push(norm(ev,rect));renderCanvas(canvas,page)};
+          const move=ev=>{const events=typeof ev.getCoalescedEvents==="function"?ev.getCoalescedEvents():[ev];events.forEach(x=>lassoPoints.push(norm(x,rect)));renderCanvas(canvas,page)};
           const end=async ev=>{try{canvas.releasePointerCapture(ev.pointerId)}catch(_){ }canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",end);canvas.removeEventListener("pointercancel",end);lassoActive=false;if(lassoPoints.length>=3){(page.strokes||[]).forEach((st,i)=>{if((st.points||[]).some(pt=>pointInPolygon(pt,lassoPoints)))selectedStrokeIndexes.add(i)});const selectedObjects=(page.objects||[]).filter(o=>pointInPolygon({x:((o.x||0)+(o.w||20)/2)/100,y:((o.y||0)+(o.h||10)/2)/100},lassoPoints));if(selectedObjects.length===1)selectedObjectId=selectedObjects[0].id;}lassoPoints=[];renderNotebookPage();};
           canvas.addEventListener("pointermove",move);canvas.addEventListener("pointerup",end);canvas.addEventListener("pointercancel",end);
         }
@@ -911,10 +910,8 @@
     moreMenu.querySelector('[data-more="lesson"]').addEventListener("click",async()=>{if(schermata!=="quaderno")return;moreMenu.classList.remove("aperto");pushHistory();const id=`l-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;quadernoCorrente.lessons.push({id,title:"",startPage:quadernoCorrente.pages.length,createdAt:Date.now()});const nuova=paginaNuova(id,true);ensureDateObject(nuova);quadernoCorrente.pages.push(nuova);quadernoCorrente.currentPage=quadernoCorrente.pages.length-1;selectedObjectId=null;await persistNotebook();renderNotebookPage();});
     moreMenu.querySelector('[data-more="share"]').addEventListener("click",()=>{moreMenu.classList.remove("aperto");const lesson=currentLesson();shareModal.querySelector(".lm-share-info").textContent=lesson?`Argomento: ${lesson.title||"senza titolo"}. Verranno considerate le pagine di questa lezione.`:"Questa pagina non appartiene ancora a una lezione.";shareModal.classList.add("aperto");});
     shareModal.querySelector(".lm-share-now").addEventListener("click",()=>{shareModal.classList.remove("aperto");window.print();});
-    screen.querySelector(".lm-font").addEventListener("change",async e=>{const o=objectById(selectedObjectId);if(!o)return;pushHistory();o.fontFamily=e.target.value;await persistNotebook();renderNotebookPage();});
+    screen.querySelector(".lm-font").addEventListener("change",async e=>{e.target.style.fontFamily=e.target.value;const o=objectById(selectedObjectId);if(!o)return;pushHistory();o.fontFamily=e.target.value;await persistNotebook();renderNotebookPage();});
     screen.querySelector(".lm-size").addEventListener("change",async e=>{const o=objectById(selectedObjectId);if(!o)return;pushHistory();o.fontSize=Number(e.target.value);await persistNotebook();renderNotebookPage();});
-    screen.querySelector(".lm-bold").addEventListener("click",async()=>{const o=objectById(selectedObjectId);if(!o)return;pushHistory();o.bold=!o.bold;await persistNotebook();renderNotebookPage();});
-    screen.querySelector(".lm-italic").addEventListener("click",async()=>{const o=objectById(selectedObjectId);if(!o)return;pushHistory();o.italic=!o.italic;await persistNotebook();renderNotebookPage();});
     screen.querySelector(".lm-align").addEventListener("click",async()=>{const o=objectById(selectedObjectId);if(!o)return;pushHistory();o.align=o.align==="left"?"center":o.align==="center"?"right":"left";await persistNotebook();renderNotebookPage();});
     screen.querySelector(".lm-color").addEventListener("input",async e=>{const o=objectById(selectedObjectId);if(!o)return;o.color=e.target.value;await persistNotebook();renderNotebookPage();});
 
