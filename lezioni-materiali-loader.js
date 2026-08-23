@@ -768,29 +768,79 @@
       pageForNativeBlock.addEventListener("selectstart",e=>{e.preventDefault();e.stopPropagation();},{capture:true});
       pageForNativeBlock.addEventListener("dragstart",e=>{e.preventDefault();e.stopPropagation();},{capture:true});
       const tools=panel.querySelector(".lm-notebook-tools");tools.addEventListener("pointerdown",event=>event.stopPropagation());tools.addEventListener("click",event=>event.stopPropagation());
-      // v3A.8: barra laterale esplicita. La Pencil resta dedicata agli strumenti del foglio.
-      const scrollShell=panel.querySelector(".lm-notebook-shell"),scrollRail=panel.querySelector(".lm-scroll-rail"),scrollTrack=panel.querySelector(".lm-scroll-track"),scrollThumb=panel.querySelector(".lm-scroll-thumb");
-      const syncScrollRail=()=>{if(!scrollShell||!scrollTrack||!scrollThumb)return;const max=Math.max(0,scrollShell.scrollHeight-scrollShell.clientHeight),trackH=scrollTrack.clientHeight,ratio=scrollShell.scrollHeight?scrollShell.clientHeight/scrollShell.scrollHeight:1,thumbH=Math.max(54,Math.min(trackH,trackH*ratio)),maxTop=Math.max(0,trackH-thumbH);scrollThumb.style.height=`${thumbH}px`;scrollThumb.style.top=`${max?scrollShell.scrollTop/max*maxTop:0}px`;scrollRail.classList.remove("hidden");};
+      // v3A.16.1 — SOLO SCROLLBAR.
+      // La barra comanda direttamente lo scroll del contenitore del Quaderno.
+      // Nessuna modifica a Pencil, palmo, toolbar, data o strumenti.
+      const scrollShell=panel.querySelector(".lm-notebook-shell"),
+            scrollRail=panel.querySelector(".lm-scroll-rail"),
+            scrollTrack=panel.querySelector(".lm-scroll-track"),
+            scrollThumb=panel.querySelector(".lm-scroll-thumb");
+
+      const scrollMetrics=()=>{
+        if(!scrollShell||!scrollTrack||!scrollThumb)return null;
+        const maxScroll=Math.max(0,scrollShell.scrollHeight-scrollShell.clientHeight);
+        const trackH=scrollTrack.getBoundingClientRect().height||scrollTrack.clientHeight||1;
+        const ratio=scrollShell.scrollHeight ? scrollShell.clientHeight/scrollShell.scrollHeight : 1;
+        const thumbH=Math.max(42,Math.min(trackH,trackH*ratio));
+        const maxTop=Math.max(0,trackH-thumbH);
+        return {maxScroll,trackH,thumbH,maxTop};
+      };
+
+      const syncScrollRail=()=>{
+        const m=scrollMetrics(); if(!m)return;
+        scrollThumb.style.height=`${m.thumbH}px`;
+        scrollThumb.style.top=`${m.maxScroll ? (scrollShell.scrollTop/m.maxScroll)*m.maxTop : 0}px`;
+        scrollRail.classList.remove("hidden");
+      };
+
+      const setScrollFromThumbTop=(top)=>{
+        const m=scrollMetrics(); if(!m)return;
+        const clamped=Math.max(0,Math.min(m.maxTop,top));
+        scrollShell.scrollTop=m.maxTop ? (clamped/m.maxTop)*m.maxScroll : 0;
+        syncScrollRail();
+      };
+
       let railDrag=null;
-      scrollThumb?.addEventListener("pointerdown",e=>{e.preventDefault();e.stopPropagation();railDrag={id:e.pointerId,y:e.clientY,top:parseFloat(scrollThumb.style.top)||0};try{scrollThumb.setPointerCapture(e.pointerId)}catch(_){}} ,{passive:false});
-      scrollThumb?.addEventListener("pointermove",e=>{if(!railDrag||railDrag.id!==e.pointerId)return;e.preventDefault();e.stopPropagation();const maxScroll=Math.max(0,scrollShell.scrollHeight-scrollShell.clientHeight),maxTop=Math.max(1,scrollTrack.clientHeight-scrollThumb.offsetHeight),top=Math.max(0,Math.min(maxTop,railDrag.top+e.clientY-railDrag.y));scrollShell.scrollTop=top/maxTop*maxScroll;syncScrollRail();},{passive:false});
-      const endRail=e=>{if(!railDrag||railDrag.id!==e.pointerId)return;railDrag=null;try{scrollThumb.releasePointerCapture(e.pointerId)}catch(_){}};scrollThumb?.addEventListener("pointerup",endRail);scrollThumb?.addEventListener("pointercancel",endRail);
-      scrollTrack?.addEventListener("pointerdown",e=>{if(e.target===scrollThumb)return;e.preventDefault();e.stopPropagation();const r=scrollTrack.getBoundingClientRect(),maxTop=Math.max(1,scrollTrack.clientHeight-scrollThumb.offsetHeight),top=Math.max(0,Math.min(maxTop,e.clientY-r.top-scrollThumb.offsetHeight/2)),maxScroll=Math.max(0,scrollShell.scrollHeight-scrollShell.clientHeight);scrollShell.scrollTop=top/maxTop*maxScroll;syncScrollRail();},{passive:false});
-      scrollShell?.addEventListener("scroll",syncScrollRail,{passive:true});window.addEventListener("resize",syncScrollRail,{passive:true});requestAnimationFrame(syncScrollRail);setTimeout(syncScrollRail,120);
-      const grip=tools.querySelector(".lm-tools-grip");
-      grip.addEventListener("pointerdown",event=>{
-        event.preventDefault();event.stopPropagation();
-        const r=tools.getBoundingClientRect(),ox=event.clientX-r.left,oy=event.clientY-r.top;
-        grip.setPointerCapture(event.pointerId);
-        const move=e=>{
-          const maxX=Math.max(8,window.innerWidth-r.width-8),maxY=Math.max(8,window.innerHeight-r.height-8);
-          tools.style.left=`${Math.max(8,Math.min(maxX,e.clientX-ox))}px`;
-          tools.style.top=`${Math.max(8,Math.min(maxY,e.clientY-oy))}px`;
-          tools.style.bottom="auto";tools.style.transform="none";
-        };
-        const end=e=>{try{grip.releasePointerCapture(e.pointerId)}catch(_){ }grip.removeEventListener("pointermove",move);grip.removeEventListener("pointerup",end);grip.removeEventListener("pointercancel",end)};
-        grip.addEventListener("pointermove",move);grip.addEventListener("pointerup",end);grip.addEventListener("pointercancel",end);
-      });
+      const beginRailDrag=(e)=>{
+        if(!scrollThumb)return;
+        e.preventDefault(); e.stopPropagation();
+        railDrag={id:e.pointerId,y:e.clientY,top:parseFloat(scrollThumb.style.top)||0};
+        try{scrollThumb.setPointerCapture(e.pointerId)}catch(_){}
+      };
+      const moveRailDrag=(e)=>{
+        if(!railDrag||railDrag.id!==e.pointerId)return;
+        e.preventDefault(); e.stopPropagation();
+        setScrollFromThumbTop(railDrag.top+(e.clientY-railDrag.y));
+      };
+      const endRailDrag=(e)=>{
+        if(!railDrag||railDrag.id!==e.pointerId)return;
+        e.preventDefault(); e.stopPropagation();
+        railDrag=null;
+        try{scrollThumb.releasePointerCapture(e.pointerId)}catch(_){}
+      };
+
+      scrollThumb?.addEventListener("pointerdown",beginRailDrag,{passive:false});
+      scrollThumb?.addEventListener("pointermove",moveRailDrag,{passive:false});
+      scrollThumb?.addEventListener("pointerup",endRailDrag,{passive:false});
+      scrollThumb?.addEventListener("pointercancel",endRailDrag,{passive:false});
+
+      // iPad/WebKit fallback: se il pointer capture non consegna i move al thumb,
+      // continuiamo il drag a livello finestra. Vale solo mentre la scrollbar è presa.
+      window.addEventListener("pointermove",moveRailDrag,{passive:false});
+      window.addEventListener("pointerup",endRailDrag,{passive:false});
+      window.addEventListener("pointercancel",endRailDrag,{passive:false});
+
+      scrollTrack?.addEventListener("pointerdown",e=>{
+        if(e.target===scrollThumb)return;
+        e.preventDefault(); e.stopPropagation();
+        const r=scrollTrack.getBoundingClientRect();
+        const m=scrollMetrics(); if(!m)return;
+        setScrollFromThumbTop((e.clientY-r.top)-(m.thumbH/2));
+      },{passive:false});
+
+      scrollShell?.addEventListener("scroll",syncScrollRail,{passive:true});
+      window.addEventListener("resize",syncScrollRail,{passive:true});
+      requestAnimationFrame(syncScrollRail);
       panel.querySelectorAll(".lm-notebook-tools button[data-tool]").forEach(btn=>btn.addEventListener("click",async event=>{
         event.preventDefault();event.stopPropagation();const t=btn.dataset.tool;
         if(["pencil","eraser","lasso"].includes(t)){notebookMode=t;resetSelection();renderNotebookPage();return;}
