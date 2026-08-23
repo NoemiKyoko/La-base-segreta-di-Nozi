@@ -697,6 +697,34 @@
       });
     }
 
+    function positionPlusMenu(anchor) {
+      if (!anchor) return;
+      const r = anchor.getBoundingClientRect();
+      const w = 205, gap = 10;
+      let left = Math.max(10, Math.min(window.innerWidth - w - 10, r.left + r.width/2 - w/2));
+      let top = r.top - 150 - gap;
+      if (top < 10) top = r.bottom + gap;
+      plusMenu.style.left = `${left}px`;
+      plusMenu.style.top = `${top}px`;
+      plusMenu.style.bottom = 'auto';
+    }
+
+    function positionTextbarForSelection() {
+      const bar = screen.querySelector('.lm-textbar');
+      const pageEl = panel.querySelector('.lm-page');
+      if (!bar || !pageEl) return;
+      const pr = pageEl.getBoundingClientRect();
+      const obj = objectById(selectedObjectId);
+      let cx = pr.left + pr.width/2, y = pr.top + 110;
+      if (obj) {
+        cx = pr.left + ((obj.x||0)+(obj.w||20)/2)/100*pr.width;
+        y = pr.top + ((obj.y||0)+(obj.h||8))/100*pr.height + 12;
+      }
+      bar.style.left = `${Math.max(12, Math.min(window.innerWidth-12, cx))}px`;
+      bar.style.top = `${Math.max(90, Math.min(window.innerHeight-80, y))}px`;
+      bar.style.transform = 'translateX(-50%)';
+    }
+
     async function renderQuaderno() {
       liberaObjectUrls();setBinderMode(false);setNotebookMode(true);schermata="quaderno";temaClasse(classeCorrente);title.textContent=`${materiaCorrente.toUpperCase()} — QUADERNO`;
       quadernoCorrente=await leggiQuaderno(classeCorrente.id,materiaCorrente);notebookHistory=[];notebookFuture=[];resetSelection();notebookMode="pencil";
@@ -722,7 +750,7 @@
         event.preventDefault();event.stopPropagation();const t=btn.dataset.tool;
         if(["pencil","eraser","lasso"].includes(t)){notebookMode=t;resetSelection();renderNotebookPage();return;}
         if(t==="text"){await convertSelectionToText();return;}
-        if(t==="plus"){plusMenu.classList.toggle("aperto");moreMenu.classList.remove("aperto");return;}
+        if(t==="plus"){positionPlusMenu(btn);plusMenu.classList.toggle("aperto");moreMenu.classList.remove("aperto");return;}
         if(t==="undo"&&notebookHistory.length){notebookFuture.push(notebookSnapshot());quadernoCorrente=notebookHistory.pop();resetSelection();await persistNotebook();renderNotebookPage();return;}
         if(t==="redo"&&notebookFuture.length){notebookHistory.push(notebookSnapshot());quadernoCorrente=notebookFuture.pop();resetSelection();await persistNotebook();renderNotebookPage();}
       }));
