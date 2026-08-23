@@ -658,7 +658,9 @@
         const rect=canvas.getBoundingClientRect();
         if(notebookMode==="select"){resetSelection();renderNotebookPage();return;}
         if(notebookMode==="pencil"){
-          e.preventDefault();pushHistory();stroke={color:"#111111",width:e.pointerType==="pen"?2.2:3.0,points:[]};page.strokes.push(stroke);canvas.setPointerCapture(e.pointerId);
+          // Scrittura: solo Apple Pencil / stilo. Il dito resta libero per UI e navigazione.
+          if(e.pointerType!=="pen") return;
+          e.preventDefault();pushHistory();stroke={color:"#111111",width:2.2,points:[]};page.strokes.push(stroke);canvas.setPointerCapture(e.pointerId);
           const add=ev=>stroke.points.push(norm(ev,rect));add(e);renderCanvas(canvas,page);
           const move=ev=>{add(ev);renderCanvas(canvas,page)};
           const end=async ev=>{try{canvas.releasePointerCapture(ev.pointerId)}catch(_){ }canvas.removeEventListener("pointermove",move);canvas.removeEventListener("pointerup",end);canvas.removeEventListener("pointercancel",end);stroke=null;await persistNotebook();};
