@@ -259,7 +259,7 @@
       .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}.lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}.lm-page-object.text.andika{font-feature-settings:normal;font-variant-ligatures:normal}.lm-page-object img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}.lm-page-object.file{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:#fffaf4;color:#444;box-shadow:0 3px 10px rgba(0,0,0,.07)}
       .lm-object-delete,.lm-object-resize{display:none;position:absolute;appearance:none;border:0;width:27px;height:27px;border-radius:50%;background:#fff;color:#5f7184;box-shadow:0 2px 8px rgba(0,0,0,.16);cursor:pointer}.lm-page-object.selected .lm-object-delete,.lm-page-object.selected .lm-object-resize{display:block}.lm-object-delete{right:-12px;top:-12px}.lm-object-resize{right:-12px;bottom:-12px}
       .lm-notebook-tools{position:fixed;left:max(38px,env(safe-area-inset-left));bottom:max(34px,env(safe-area-inset-bottom));z-index:880;display:flex;align-items:center;gap:3px;padding:9px 10px 9px 28px;border:1.5px solid color-mix(in srgb,var(--lm-color) 68%,white);border-radius:24px;background:color-mix(in srgb,var(--lm-soft) 88%,white);box-shadow:0 9px 24px rgba(80,60,45,.14);touch-action:none;user-select:none;-webkit-user-select:none}.lm-tools-grip{position:absolute;left:8px;top:50%;transform:translateY(-50%);width:17px;height:32px;display:grid;place-items:center;color:color-mix(in srgb,var(--lm-dark) 62%,white);font-weight:900;font-size:17px;cursor:grab;touch-action:none}.lm-tools-grip:active{cursor:grabbing}.lm-notebook-tools button{appearance:none;border:0;width:45px;height:45px;border-radius:13px;background:transparent;color:var(--lm-dark);font-size:22px;font-weight:800;cursor:pointer;touch-action:manipulation}.lm-notebook-tools button.active{background:white;box-shadow:0 3px 10px rgba(45,50,60,.10)}.lm-notebook-tools button:disabled{opacity:.28}.lm-tool-eraser,.lm-tool-lasso{display:grid!important;place-items:center}.lm-tool-eraser svg,.lm-tool-lasso svg{width:25px;height:25px;display:block;overflow:visible}.lm-tool-eraser svg{width:26px;height:26px}.lm-tool-lasso svg{width:27px;height:27px}
-      .lm-scroll-rail{position:fixed;right:max(12px,env(safe-area-inset-right));top:132px;bottom:92px;width:24px;z-index:870;display:flex;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}.lm-scroll-track{position:relative;width:7px;height:100%;border-radius:999px;background:rgba(23,63,122,.12)}.lm-scroll-thumb{position:absolute;left:50%;top:0;transform:translateX(-50%);width:18px;min-height:54px;border-radius:999px;background:color-mix(in srgb,var(--lm-color) 82%,white);box-shadow:0 2px 8px rgba(45,55,70,.16);touch-action:none}.lm-scroll-rail.hidden{display:none}
+      .lm-scroll-rail{position:fixed;right:max(12px,env(safe-area-inset-right));top:132px;bottom:92px;width:24px;z-index:870;display:flex;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}.lm-scroll-track{position:relative;width:7px;height:100%;border-radius:999px;background:rgba(23,63,122,.12)}.lm-scroll-thumb{position:absolute;left:50%;top:0;transform:translateX(-50%);width:18px;min-height:54px;border-radius:999px;background:color-mix(in srgb,var(--lm-color) 82%,white);box-shadow:0 2px 8px rgba(45,55,70,.16);touch-action:none}.lm-scroll-rail.hidden{display:flex}
       .lm-page-nav{position:fixed;left:50%;bottom:max(28px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:875;display:flex;align-items:center;gap:10px;padding:6px 9px;border:1.5px solid color-mix(in srgb,var(--lm-color) 58%,white);border-radius:18px;background:color-mix(in srgb,var(--lm-soft) 90%,white);box-shadow:0 6px 16px rgba(80,60,45,.11)}.lm-page-nav button{appearance:none;border:0;width:34px;height:32px;background:transparent;color:var(--lm-dark);font-size:27px;cursor:pointer}.lm-page-nav span{min-width:64px;text-align:center;color:var(--lm-dark);font-weight:850;font-size:15px}
       .lm-plus-menu,.lm-more-menu{position:fixed;z-index:910;display:none;min-width:190px;padding:8px;border:1px solid color-mix(in srgb,var(--lm-color) 42%,white);border-radius:17px;background:#fffaf7;box-shadow:0 10px 30px rgba(35,45,60,.20)}.lm-plus-menu{left:max(170px,calc(env(safe-area-inset-left) + 130px));bottom:max(92px,calc(env(safe-area-inset-bottom) + 82px))}.lm-more-menu{right:max(24px,env(safe-area-inset-right));top:max(78px,calc(env(safe-area-inset-top) + 66px))}.lm-plus-menu.aperto,.lm-more-menu.aperto{display:block}.lm-plus-menu button,.lm-more-menu button{appearance:none;border:0;width:100%;padding:11px 13px;border-radius:11px;background:transparent;color:var(--lm-dark);text-align:left;font-size:15px;font-weight:750;cursor:pointer}.lm-plus-menu button:hover,.lm-more-menu button:hover{background:var(--lm-soft)}
       .lm-textbar{position:fixed;left:50%;top:50%;transform:translate(-50%,70px);z-index:900;display:none;align-items:center;overflow:visible;border:1.5px solid color-mix(in srgb,var(--lm-color) 55%,white);border-radius:19px;background:#fffaf7;box-shadow:0 9px 24px rgba(60,50,45,.15)}.lm-textbar.aperto{display:flex}.lm-textbar select,.lm-textbar button,.lm-textbar input,.lm-font-trigger{height:50px;border:0;border-right:1px solid rgba(100,100,100,.09);background:transparent;color:var(--lm-dark);font-size:16px;font-weight:750}.lm-textbar select{padding:0 13px}.lm-font-wrap{position:relative}.lm-font-trigger{appearance:none;border:0;border-right:1px solid rgba(100,100,100,.09);background:transparent;padding:0 14px;min-width:170px;color:var(--lm-dark);font-size:16px;font-weight:600;text-align:left}.lm-font-menu{display:none;position:absolute;left:0;bottom:56px;min-width:220px;padding:7px;background:#fffaf7;border:1.5px solid color-mix(in srgb,var(--lm-color) 45%,white);border-radius:15px;box-shadow:0 9px 24px rgba(60,50,45,.16);z-index:930}.lm-font-menu.aperto{display:grid;gap:3px}.lm-font-choice{appearance:none;border:0!important;border-radius:10px;background:transparent!important;height:46px!important;padding:0 12px;text-align:left;color:#111!important;font-size:18px!important;font-weight:400!important}.lm-font-choice:hover,.lm-font-choice:focus{background:color-mix(in srgb,var(--lm-soft) 75%,white)!important}.lm-font-choice[data-font="andika"]{font-family:Andika,Arial,sans-serif}.lm-font-choice[data-font="corsivo"]{font-family:"Corsivo Primaria",cursive}.lm-font-choice[data-font="arial"]{font-family:Arial,sans-serif}.lm-textbar button{width:49px;font-size:21px;cursor:pointer}.lm-textbar input[type=color]{width:52px;padding:10px;border-right:0}
@@ -764,10 +764,32 @@
       panel.querySelector(".lm-page").addEventListener("contextmenu",e=>e.preventDefault());
       panel.querySelector(".lm-page").addEventListener("selectstart",e=>e.preventDefault());
       panel.querySelector(".lm-page").addEventListener("dragstart",e=>e.preventDefault());
+
+      // v3A.11: Safari completamente spento nella schermata Quaderno, salvo i controlli espliciti.
+      if(!screen.dataset.safariGuardV3a11){
+        screen.dataset.safariGuardV3a11="1";
+        const isNotebookControl=target=>target instanceof Element && !!target.closest(
+          ".lm-header button,.lm-notebook-tools,.lm-scroll-rail,.lm-page-nav,.lm-plus-menu,.lm-more-menu,.lm-textbar,.lm-modal,.lm-search-pop"
+        );
+        const stopSafariNative=e=>{
+          if(schermata!=="quaderno"||isNotebookControl(e.target)) return;
+          e.preventDefault();
+          e.stopPropagation();
+          if(typeof e.stopImmediatePropagation==="function") e.stopImmediatePropagation();
+        };
+        ["touchstart","touchmove","touchend","touchcancel"].forEach(type=>screen.addEventListener(type,stopSafariNative,{capture:true,passive:false}));
+        ["selectstart","contextmenu","dragstart"].forEach(type=>screen.addEventListener(type,stopSafariNative,{capture:true,passive:false}));
+        document.addEventListener("selectionchange",()=>{
+          if(schermata!=="quaderno") return;
+          const sel=window.getSelection?.();
+          if(sel && sel.rangeCount) sel.removeAllRanges();
+        });
+      }
+
       const tools=panel.querySelector(".lm-notebook-tools");tools.addEventListener("pointerdown",event=>event.stopPropagation());tools.addEventListener("click",event=>event.stopPropagation());
       // v3A.8: barra laterale esplicita. La Pencil resta dedicata agli strumenti del foglio.
       const scrollShell=panel.querySelector(".lm-notebook-shell"),scrollRail=panel.querySelector(".lm-scroll-rail"),scrollTrack=panel.querySelector(".lm-scroll-track"),scrollThumb=panel.querySelector(".lm-scroll-thumb");
-      const syncScrollRail=()=>{if(!scrollShell||!scrollTrack||!scrollThumb)return;const max=Math.max(0,scrollShell.scrollHeight-scrollShell.clientHeight),trackH=scrollTrack.clientHeight,ratio=scrollShell.scrollHeight?scrollShell.clientHeight/scrollShell.scrollHeight:1,thumbH=Math.max(54,Math.min(trackH,trackH*ratio)),maxTop=Math.max(0,trackH-thumbH);scrollThumb.style.height=`${thumbH}px`;scrollThumb.style.top=`${max?scrollShell.scrollTop/max*maxTop:0}px`;scrollRail.classList.toggle("hidden",max<2);};
+      const syncScrollRail=()=>{if(!scrollShell||!scrollTrack||!scrollThumb)return;const max=Math.max(0,scrollShell.scrollHeight-scrollShell.clientHeight),trackH=scrollTrack.clientHeight,ratio=scrollShell.scrollHeight?scrollShell.clientHeight/scrollShell.scrollHeight:1,thumbH=Math.max(54,Math.min(trackH,trackH*ratio)),maxTop=Math.max(0,trackH-thumbH);scrollThumb.style.height=`${thumbH}px`;scrollThumb.style.top=`${max?scrollShell.scrollTop/max*maxTop:0}px`;scrollRail.classList.remove("hidden");};
       let railDrag=null;
       scrollThumb?.addEventListener("pointerdown",e=>{e.preventDefault();e.stopPropagation();railDrag={id:e.pointerId,y:e.clientY,top:parseFloat(scrollThumb.style.top)||0};try{scrollThumb.setPointerCapture(e.pointerId)}catch(_){}} ,{passive:false});
       scrollThumb?.addEventListener("pointermove",e=>{if(!railDrag||railDrag.id!==e.pointerId)return;e.preventDefault();e.stopPropagation();const maxScroll=Math.max(0,scrollShell.scrollHeight-scrollShell.clientHeight),maxTop=Math.max(1,scrollTrack.clientHeight-scrollThumb.offsetHeight),top=Math.max(0,Math.min(maxTop,railDrag.top+e.clientY-railDrag.y));scrollShell.scrollTop=top/maxTop*maxScroll;syncScrollRail();},{passive:false});
@@ -775,14 +797,24 @@
       scrollTrack?.addEventListener("pointerdown",e=>{if(e.target===scrollThumb)return;e.preventDefault();e.stopPropagation();const r=scrollTrack.getBoundingClientRect(),maxTop=Math.max(1,scrollTrack.clientHeight-scrollThumb.offsetHeight),top=Math.max(0,Math.min(maxTop,e.clientY-r.top-scrollThumb.offsetHeight/2)),maxScroll=Math.max(0,scrollShell.scrollHeight-scrollShell.clientHeight);scrollShell.scrollTop=top/maxTop*maxScroll;syncScrollRail();},{passive:false});
       scrollShell?.addEventListener("scroll",syncScrollRail,{passive:true});window.addEventListener("resize",syncScrollRail,{passive:true});requestAnimationFrame(syncScrollRail);setTimeout(syncScrollRail,120);
       const grip=tools.querySelector(".lm-tools-grip");
+      const confinaToolbar=(x,y,w,h)=>{
+        const header=screen.querySelector(".lm-header")?.getBoundingClientRect();
+        const nav=panel.querySelector(".lm-page-nav")?.getBoundingClientRect();
+        const rail=panel.querySelector(".lm-scroll-rail")?.getBoundingClientRect();
+        const minX=12;
+        const maxX=Math.max(minX,Math.min(window.innerWidth-w-12,(rail?.left||window.innerWidth)-w-10));
+        const minY=Math.max(12,(header?.bottom||88)+10);
+        const maxY=Math.max(minY,(nav?.top||window.innerHeight-70)-h-12);
+        return {x:Math.max(minX,Math.min(maxX,x)),y:Math.max(minY,Math.min(maxY,y))};
+      };
       grip.addEventListener("pointerdown",event=>{
         event.preventDefault();event.stopPropagation();
         const r=tools.getBoundingClientRect(),ox=event.clientX-r.left,oy=event.clientY-r.top;
         grip.setPointerCapture(event.pointerId);
         const move=e=>{
-          const maxX=Math.max(8,window.innerWidth-r.width-8),maxY=Math.max(8,window.innerHeight-r.height-8);
-          tools.style.left=`${Math.max(8,Math.min(maxX,e.clientX-ox))}px`;
-          tools.style.top=`${Math.max(8,Math.min(maxY,e.clientY-oy))}px`;
+          const pos=confinaToolbar(e.clientX-ox,e.clientY-oy,r.width,r.height);
+          tools.style.left=`${pos.x}px`;
+          tools.style.top=`${pos.y}px`;
           tools.style.bottom="auto";tools.style.transform="none";
         };
         const end=e=>{try{grip.releasePointerCapture(e.pointerId)}catch(_){ }grip.removeEventListener("pointermove",move);grip.removeEventListener("pointerup",end);grip.removeEventListener("pointercancel",end)};
