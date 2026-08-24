@@ -768,18 +768,17 @@
       pageForNativeBlock.addEventListener("selectstart",e=>{e.preventDefault();e.stopPropagation();},{capture:true});
       pageForNativeBlock.addEventListener("dragstart",e=>{e.preventDefault();e.stopPropagation();},{capture:true});
       const tools=panel.querySelector(".lm-notebook-tools");tools.addEventListener("pointerdown",event=>event.stopPropagation());tools.addEventListener("click",event=>event.stopPropagation());
-      // v3A.16.1 — SOLO SCROLLBAR.
-      // La barra comanda direttamente lo scroll del contenitore del Quaderno.
-      // Nessuna modifica a Pencil, palmo, toolbar, data o strumenti.
+      // v3A.16.2 — SOLO SCROLLBAR, senza listener globali.
+      // Toolbar, Pencil, palmo e resto del Quaderno restano invariati.
       const scrollShell=panel.querySelector(".lm-notebook-shell"),
             scrollRail=panel.querySelector(".lm-scroll-rail"),
             scrollTrack=panel.querySelector(".lm-scroll-track"),
             scrollThumb=panel.querySelector(".lm-scroll-thumb");
 
-      const scrollMetrics=()=>{
+      const getScrollMetrics=()=>{
         if(!scrollShell||!scrollTrack||!scrollThumb)return null;
         const maxScroll=Math.max(0,scrollShell.scrollHeight-scrollShell.clientHeight);
-        const trackH=scrollTrack.getBoundingClientRect().height||scrollTrack.clientHeight||1;
+        const trackH=scrollTrack.getBoundingClientRect().height||1;
         const ratio=scrollShell.scrollHeight ? scrollShell.clientHeight/scrollShell.scrollHeight : 1;
         const thumbH=Math.max(42,Math.min(trackH,trackH*ratio));
         const maxTop=Math.max(0,trackH-thumbH);
@@ -787,59 +786,56 @@
       };
 
       const syncScrollRail=()=>{
-        const m=scrollMetrics(); if(!m)return;
+        const m=getScrollMetrics(); if(!m)return;
         scrollThumb.style.height=`${m.thumbH}px`;
         scrollThumb.style.top=`${m.maxScroll ? (scrollShell.scrollTop/m.maxScroll)*m.maxTop : 0}px`;
         scrollRail.classList.remove("hidden");
       };
 
-      const setScrollFromThumbTop=(top)=>{
-        const m=scrollMetrics(); if(!m)return;
-        const clamped=Math.max(0,Math.min(m.maxTop,top));
-        scrollShell.scrollTop=m.maxTop ? (clamped/m.maxTop)*m.maxScroll : 0;
+      let dragState=null;
+
+      scrollThumb?.addEventListener("pointerdown",e=>{
+        e.preventDefault(); e.stopPropagation();
+        dragState={
+          id:e.pointerId,
+          y:e.clientY,
+          top:parseFloat(scrollThumb.style.top)||0
+        };
+        try{scrollThumb.setPointerCapture(e.pointerId)}catch(_){}
+      },{passive:false});
+
+      scrollThumb?.addEventListener("pointermove",e=>{
+        if(!dragState||dragState.id!==e.pointerId)return;
+        e.preventDefault(); e.stopPropagation();
+        const m=getScrollMetrics(); if(!m)return;
+        const nextTop=Math.max(0,Math.min(m.maxTop,dragState.top+(e.clientY-dragState.y)));
+        scrollThumb.style.top=`${nextTop}px`;
+        scrollShell.scrollTop=m.maxTop ? (nextTop/m.maxTop)*m.maxScroll : 0;
+      },{passive:false});
+
+      const finishScrollDrag=e=>{
+        if(!dragState||dragState.id!==e.pointerId)return;
+        e.preventDefault(); e.stopPropagation();
+        dragState=null;
+        try{scrollThumb.releasePointerCapture(e.pointerId)}catch(_){}
         syncScrollRail();
       };
 
-      let railDrag=null;
-      const beginRailDrag=(e)=>{
-        if(!scrollThumb)return;
-        e.preventDefault(); e.stopPropagation();
-        railDrag={id:e.pointerId,y:e.clientY,top:parseFloat(scrollThumb.style.top)||0};
-        try{scrollThumb.setPointerCapture(e.pointerId)}catch(_){}
-      };
-      const moveRailDrag=(e)=>{
-        if(!railDrag||railDrag.id!==e.pointerId)return;
-        e.preventDefault(); e.stopPropagation();
-        setScrollFromThumbTop(railDrag.top+(e.clientY-railDrag.y));
-      };
-      const endRailDrag=(e)=>{
-        if(!railDrag||railDrag.id!==e.pointerId)return;
-        e.preventDefault(); e.stopPropagation();
-        railDrag=null;
-        try{scrollThumb.releasePointerCapture(e.pointerId)}catch(_){}
-      };
-
-      scrollThumb?.addEventListener("pointerdown",beginRailDrag,{passive:false});
-      scrollThumb?.addEventListener("pointermove",moveRailDrag,{passive:false});
-      scrollThumb?.addEventListener("pointerup",endRailDrag,{passive:false});
-      scrollThumb?.addEventListener("pointercancel",endRailDrag,{passive:false});
-
-      // iPad/WebKit fallback: se il pointer capture non consegna i move al thumb,
-      // continuiamo il drag a livello finestra. Vale solo mentre la scrollbar è presa.
-      window.addEventListener("pointermove",moveRailDrag,{passive:false});
-      window.addEventListener("pointerup",endRailDrag,{passive:false});
-      window.addEventListener("pointercancel",endRailDrag,{passive:false});
+      scrollThumb?.addEventListener("pointerup",finishScrollDrag,{passive:false});
+      scrollThumb?.addEventListener("pointercancel",finishScrollDrag,{passive:false});
 
       scrollTrack?.addEventListener("pointerdown",e=>{
         if(e.target===scrollThumb)return;
         e.preventDefault(); e.stopPropagation();
-        const r=scrollTrack.getBoundingClientRect();
-        const m=scrollMetrics(); if(!m)return;
-        setScrollFromThumbTop((e.clientY-r.top)-(m.thumbH/2));
+        const m=getScrollMetrics(); if(!m)return;
+        const rect=scrollTrack.getBoundingClientRect();
+        const nextTop=Math.max(0,Math.min(m.maxTop,e.clientY-rect.top-(m.thumbH/2)));
+        scrollThumb.style.top=`${nextTop}px`;
+        scrollShell.scrollTop=m.maxTop ? (nextTop/m.maxTop)*m.maxScroll : 0;
+        syncScrollRail();
       },{passive:false});
 
       scrollShell?.addEventListener("scroll",syncScrollRail,{passive:true});
-      window.addEventListener("resize",syncScrollRail,{passive:true});
       requestAnimationFrame(syncScrollRail);
       panel.querySelectorAll(".lm-notebook-tools button[data-tool]").forEach(btn=>btn.addEventListener("click",async event=>{
         event.preventDefault();event.stopPropagation();const t=btn.dataset.tool;
