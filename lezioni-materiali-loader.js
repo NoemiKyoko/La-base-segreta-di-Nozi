@@ -259,11 +259,7 @@
       .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}.lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}.lm-page-object.text.andika{font-feature-settings:normal;font-variant-ligatures:normal}.lm-page-object img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}.lm-page-object.file{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:#fffaf4;color:#444;box-shadow:0 3px 10px rgba(0,0,0,.07)}
       .lm-object-delete,.lm-object-resize{display:none;position:absolute;appearance:none;border:0;width:27px;height:27px;border-radius:50%;background:#fff;color:#5f7184;box-shadow:0 2px 8px rgba(0,0,0,.16);cursor:pointer}.lm-page-object.selected .lm-object-delete,.lm-page-object.selected .lm-object-resize{display:block}.lm-object-delete{right:-12px;top:-12px}.lm-object-resize{right:-12px;bottom:-12px}
       .lm-notebook-tools{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));z-index:880;display:flex;align-items:center;gap:0;padding:4px 5px 4px 18px;border:1.25px solid color-mix(in srgb,var(--lm-color) 62%,white);border-radius:15px;background:color-mix(in srgb,var(--lm-soft) 88%,white);box-shadow:0 5px 14px rgba(80,60,45,.12);touch-action:none;user-select:none;-webkit-user-select:none}.lm-tools-grip{position:absolute;left:4px;top:50%;transform:translateY(-50%);width:12px;height:23px;display:grid;place-items:center;color:color-mix(in srgb,var(--lm-dark) 62%,white);font-weight:900;font-size:12px;cursor:grab;touch-action:none}.lm-tools-grip:active{cursor:grabbing}.lm-notebook-tools button{appearance:none;border:0;width:30px;height:30px;border-radius:8px;background:transparent;color:var(--lm-dark);font-size:16px;font-weight:800;cursor:pointer;touch-action:manipulation}.lm-notebook-tools button.active{background:white;box-shadow:0 2px 7px rgba(45,50,60,.09)}.lm-notebook-tools button:disabled{opacity:.28}.lm-tool-eraser,.lm-tool-lasso{display:grid!important;place-items:center}.lm-tool-eraser svg,.lm-tool-lasso svg{width:18px;height:18px;display:block;overflow:visible}.lm-tool-eraser svg{width:19px;height:19px}.lm-tool-lasso svg{width:20px;height:20px}
-      .lm-scroll-rail{position:fixed;right:max(4px,env(safe-area-inset-right));top:132px;bottom:92px;width:8px;z-index:870;display:flex;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}
-      .lm-scroll-rail{display:none!important}
-      .lm-notebook-shell{overflow:auto!important;justify-content:flex-start!important;align-items:flex-start!important}
-      .lm-page{flex:0 0 auto;margin-left:auto;margin-right:auto}
-.lm-scroll-track{position:relative;width:2px;height:100%;border-radius:999px;background:rgba(23,63,122,.08)}.lm-scroll-thumb{position:absolute;left:50%;top:0;transform:translateX(-50%);width:5px;min-height:42px;border-radius:999px;background:color-mix(in srgb,var(--lm-color) 72%,white);box-shadow:0 1px 4px rgba(45,55,70,.12);touch-action:none}.lm-scroll-rail.hidden{display:none}
+      .lm-scroll-rail{position:fixed;right:max(4px,env(safe-area-inset-right));top:132px;bottom:92px;width:8px;z-index:870;display:flex;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}.lm-scroll-track{position:relative;width:2px;height:100%;border-radius:999px;background:rgba(23,63,122,.08)}.lm-scroll-thumb{position:absolute;left:50%;top:0;transform:translateX(-50%);width:5px;min-height:42px;border-radius:999px;background:color-mix(in srgb,var(--lm-color) 72%,white);box-shadow:0 1px 4px rgba(45,55,70,.12);touch-action:none}.lm-scroll-rail.hidden{display:none}
       .lm-page-nav{position:fixed;left:50%;bottom:max(28px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:875;display:flex;align-items:center;gap:10px;padding:6px 9px;border:1.5px solid color-mix(in srgb,var(--lm-color) 58%,white);border-radius:18px;background:color-mix(in srgb,var(--lm-soft) 90%,white);box-shadow:0 6px 16px rgba(80,60,45,.11)}.lm-page-nav button{appearance:none;border:0;width:34px;height:32px;background:transparent;color:var(--lm-dark);font-size:27px;cursor:pointer}.lm-page-nav span{min-width:64px;text-align:center;color:var(--lm-dark);font-weight:850;font-size:15px}
       .lm-plus-menu,.lm-more-menu{position:fixed;z-index:910;display:none;min-width:190px;padding:8px;border:1px solid color-mix(in srgb,var(--lm-color) 42%,white);border-radius:17px;background:#fffaf7;box-shadow:0 10px 30px rgba(35,45,60,.20)}.lm-plus-menu{left:max(170px,calc(env(safe-area-inset-left) + 130px));bottom:max(92px,calc(env(safe-area-inset-bottom) + 82px))}.lm-more-menu{right:max(24px,env(safe-area-inset-right));top:max(78px,calc(env(safe-area-inset-top) + 66px))}.lm-plus-menu.aperto,.lm-more-menu.aperto{display:block}.lm-plus-menu button,.lm-more-menu button{appearance:none;border:0;width:100%;padding:11px 13px;border-radius:11px;background:transparent;color:var(--lm-dark);text-align:left;font-size:15px;font-weight:750;cursor:pointer}.lm-plus-menu button:hover,.lm-more-menu button:hover{background:var(--lm-soft)}
       .lm-transcribe{position:fixed;inset:0;z-index:960;display:none;place-items:center;background:rgba(35,42,52,.20);padding:20px}.lm-transcribe.aperto{display:grid}.lm-transcribe-card{width:min(560px,92vw);padding:18px;border-radius:20px;background:#fffaf7;border:1.5px solid color-mix(in srgb,var(--lm-color) 50%,white);box-shadow:0 18px 45px rgba(40,45,55,.20)}.lm-transcribe-title{font-weight:850;color:var(--lm-dark);margin-bottom:10px}.lm-transcribe-input{width:100%;min-height:82px;resize:vertical;border:1.5px solid rgba(80,90,105,.18);border-radius:13px;padding:12px;font:20px Andika,Arial,sans-serif;color:#111;background:white;box-sizing:border-box}.lm-transcribe-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.lm-transcribe-actions button{appearance:none;border:0;border-radius:11px;padding:10px 14px;font-weight:800}.lm-transcribe-cancel{background:#eee;color:#536273}.lm-transcribe-ok{background:var(--lm-color);color:white}
@@ -573,101 +569,109 @@
       page.objects.push(obj);selectedObjectId=obj.id;selectedStrokeIndexes=new Set();
       await persistNotebook();
       renderNotebookPage();
-      // v3A.16.7 — niente scrollbar: zoom + pan a DUE dita.
-      // Una sola dita/palmo sul foglio continua a essere ignorata dal motore esistente.
-      // La Pencil resta completamente invariata.
-      const zoomShell=panel.querySelector(".lm-notebook-shell");
-      const zoomPage=panel.querySelector(".lm-page");
-      const oldRail=panel.querySelector(".lm-scroll-rail");
-      if(oldRail) oldRail.style.display="none";
+      // v3A.16.4: mostra il Quaderno soltanto quando foglio, toolbar e navigazione
+      // sono già montati e il layout ha completato due frame.
+      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      const readyShell=panel.querySelector(".lm-notebook-shell");
+      if(readyShell) readyShell.scrollTop=0;
+      screen.classList.remove("notebook-preparing");
+    }
 
-      if(zoomShell && zoomPage){
-        let zoomScale=1;
-        let gesture=null;
-        let baseW=0, baseH=0;
-
-        const midpoint=(a,b)=>({x:(a.clientX+b.clientX)/2,y:(a.clientY+b.clientY)/2});
-        const distance=(a,b)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
-
-        const rememberBaseSize=()=>{
-          if(baseW && baseH) return;
-          const r=zoomPage.getBoundingClientRect();
-          baseW=r.width;
-          baseH=r.height;
-        };
-
-        const applyZoom=(nextScale, focal)=>{
-          rememberBaseSize();
-          const prevScale=zoomScale;
-          nextScale=Math.max(1,Math.min(2.4,nextScale));
-          if(Math.abs(nextScale-prevScale)<0.001) return;
-
-          const shellRect=zoomShell.getBoundingClientRect();
-          const fx=focal.x-shellRect.left;
-          const fy=focal.y-shellRect.top;
-
-          const contentX=zoomShell.scrollLeft+fx;
-          const contentY=zoomShell.scrollTop+fy;
-          const ratio=nextScale/prevScale;
-
-          zoomScale=nextScale;
-          zoomPage.style.width=`${baseW*zoomScale}px`;
-          zoomPage.style.height=`${baseH*zoomScale}px`;
-          zoomPage.style.maxHeight="none";
-          zoomPage.style.aspectRatio="auto";
-
-          zoomShell.scrollLeft=Math.max(0,contentX*ratio-fx);
-          zoomShell.scrollTop=Math.max(0,contentY*ratio-fy);
-
-          requestAnimationFrame(()=>{
-            const c=zoomPage.querySelector(".lm-draw-canvas");
-            const p=currentNotebookPage();
-            if(c&&p) renderCanvas(c,p);
-          });
-        };
-
-        zoomShell.addEventListener("touchstart",e=>{
-          if(e.touches.length!==2) return;
-          e.preventDefault();
-          e.stopPropagation();
-          rememberBaseSize();
-          const a=e.touches[0], b=e.touches[1];
-          gesture={
-            dist:Math.max(1,distance(a,b)),
-            scale:zoomScale,
-            mid:midpoint(a,b),
-            left:zoomShell.scrollLeft,
-            top:zoomShell.scrollTop
-          };
-        },{capture:true,passive:false});
-
-        zoomShell.addEventListener("touchmove",e=>{
-          if(!gesture || e.touches.length!==2) return;
-          e.preventDefault();
-          e.stopPropagation();
-          const a=e.touches[0], b=e.touches[1];
-          const mid=midpoint(a,b);
-          const nextScale=gesture.scale*(distance(a,b)/gesture.dist);
-
-          applyZoom(nextScale,mid);
-
-          // Le due dita spostano anche il foglio.
-          zoomShell.scrollLeft=Math.max(0,zoomShell.scrollLeft-(mid.x-gesture.mid.x));
-          zoomShell.scrollTop=Math.max(0,zoomShell.scrollTop-(mid.y-gesture.mid.y));
-          gesture.mid=mid;
-        },{capture:true,passive:false});
-
-        const endGesture=e=>{
-          if(e.touches && e.touches.length>=2) return;
-          gesture=null;
-        };
-        zoomShell.addEventListener("touchend",endGesture,{capture:true,passive:false});
-        zoomShell.addEventListener("touchcancel",()=>{gesture=null},{capture:true,passive:false});
-
-        // Doppio tap con due dita non serve: per tornare alla vista intera
-        // basta "pizzicare" fino al limite minimo 1x.
+    function renderCanvas(canvas, page) {
+      const rect = canvas.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = Math.max(1, Math.round(rect.width * dpr));
+      canvas.height = Math.max(1, Math.round(rect.height * dpr));
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      ctx.clearRect(0,0,rect.width,rect.height);
+      (page.strokes || []).forEach((stroke,idx) => {
+        if (!stroke.points?.length) return;
+        ctx.beginPath();ctx.lineCap="round";ctx.lineJoin="round";
+        ctx.strokeStyle = selectedStrokeIndexes.has(idx) ? "#2b90d9" : (stroke.color || "#111111");
+        ctx.lineWidth = selectedStrokeIndexes.has(idx) ? (stroke.width||3)+1.5 : (stroke.width || 3);
+        stroke.points.forEach((pt,i)=>{const x=pt.x*rect.width,y=pt.y*rect.height;if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();
+      });
+      if(lassoPoints.length>1){
+        ctx.save();ctx.setLineDash([7,6]);ctx.strokeStyle="#2b90d9";ctx.lineWidth=1.7;ctx.beginPath();lassoPoints.forEach((pt,i)=>{const x=pt.x*rect.width,y=pt.y*rect.height;if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();ctx.restore();
       }
+    }
 
+    function objectById(id) {
+      return currentNotebookPage()?.objects?.find(o => o.id === id) || null;
+    }
+
+    function updateTextbar() {
+      const obj = objectById(selectedObjectId);
+      textbar.classList.toggle("aperto", !!obj && obj.type === "text");
+      if (!obj || obj.type !== "text") return;
+      screen.querySelector(".lm-size").value = String(obj.fontSize || 32);
+      const ft=screen.querySelector(".lm-font-trigger");if(ft){const target=(obj.fontFamily||"Arial, sans-serif");ft.textContent=target.includes("Corsivo")?"Corsivo Primaria":target.includes("Andika")?"Andika":"Arial";ft.style.fontFamily=target;}
+      screen.querySelector(".lm-color").value = obj.color || "#111111";
+    }
+
+    function makePageObjectElement(obj, layer) {
+      const el = document.createElement("div");
+      el.className = `lm-page-object ${obj.type}`;
+      el.dataset.id = obj.id;
+      el.style.left = `${obj.x}%`; el.style.top = `${obj.y}%`; el.style.width = `${obj.w}%`; if(!obj.h) obj.h = obj.type === "text" ? 7 : (obj.type === "file" ? 8 : 24);
+      if (obj.h) el.style.height = `${obj.h}%`;
+      if (obj.type === "text") {
+        el.textContent = obj.text || "";
+        el.style.fontFamily = obj.fontFamily || "Arial, sans-serif";
+        if ((obj.fontFamily || "").includes("Andika")) { el.classList.add("andika"); el.style.fontFeatureSettings="normal"; }
+        el.style.fontSize = `${obj.fontSize || 32}px`;
+        el.style.fontWeight = "400";
+        el.style.fontStyle = "normal";
+        el.style.textAlign = obj.align || "left";
+        el.style.color = obj.color || "#111111";
+        el.addEventListener("dblclick", async () => {
+          const t = window.prompt("Modifica testo:", obj.text || "");
+          if (t === null) return;
+          pushHistory(); obj.text = t; await persistNotebook(); renderNotebookPage();
+        });
+      } else if (obj.type === "image" || obj.type === "sheet") {
+        const img = document.createElement("img");
+        const url = URL.createObjectURL(obj.blob); objectUrls.push(url);
+        img.src = url; img.alt = obj.name || ""; el.appendChild(img);
+      } else {
+        el.classList.add("file"); el.textContent = `📎 ${obj.name || "File"}`;
+      }
+      const del = document.createElement("button"); del.className="lm-object-delete"; del.type="button"; del.textContent="×";
+      const resize = document.createElement("button"); resize.className="lm-object-resize"; resize.type="button"; resize.textContent="↘";
+      el.append(del,resize);
+      if (obj.id === selectedObjectId) el.classList.add("selected");
+      el.addEventListener("pointerdown", event => {
+        if (event.target === del || event.target === resize || ["pencil","eraser","lasso"].includes(notebookMode)) return;
+        event.preventDefault(); event.stopPropagation(); selectedObjectId = obj.id; renderNotebookPage();
+        const pageEl = layer.parentElement, rect = pageEl.getBoundingClientRect(), er = el.getBoundingClientRect();
+        const ox = event.clientX-er.left, oy=event.clientY-er.top;
+        el.setPointerCapture(event.pointerId); pushHistory();
+        const move = e => { obj.x=Math.max(0,Math.min(100-obj.w,(e.clientX-rect.left-ox)/rect.width*100)); obj.y=Math.max(0,Math.min(96,(e.clientY-rect.top-oy)/rect.height*100)); el.style.left=`${obj.x}%`;el.style.top=`${obj.y}%`; };
+        const end = async e => { try{el.releasePointerCapture(e.pointerId)}catch(_){ } el.removeEventListener("pointermove",move);el.removeEventListener("pointerup",end);el.removeEventListener("pointercancel",end);await persistNotebook(); };
+        el.addEventListener("pointermove",move);el.addEventListener("pointerup",end);el.addEventListener("pointercancel",end);
+      });
+      resize.addEventListener("pointerdown", event => {
+        event.preventDefault();event.stopPropagation();selectedObjectId=obj.id;pushHistory();
+        const pageEl=layer.parentElement, rect=pageEl.getBoundingClientRect(), er=el.getBoundingClientRect(), left=er.left-rect.left;
+        resize.setPointerCapture(event.pointerId);
+        const move=e=>{obj.w=Math.max(8,Math.min(92-obj.x,(e.clientX-rect.left-left)/rect.width*100));el.style.width=`${obj.w}%`;};
+        const end=async e=>{try{resize.releasePointerCapture(e.pointerId)}catch(_){ } resize.removeEventListener("pointermove",move);resize.removeEventListener("pointerup",end);resize.removeEventListener("pointercancel",end);await persistNotebook();};
+        resize.addEventListener("pointermove",move);resize.addEventListener("pointerup",end);resize.addEventListener("pointercancel",end);
+      });
+      del.addEventListener("click", async e => { e.stopPropagation(); pushHistory(); const p=currentNotebookPage();p.objects=p.objects.filter(x=>x.id!==obj.id);if(obj.role==="date")p.date="";selectedObjectId=null;await persistNotebook();renderNotebookPage(); });
+      layer.appendChild(el);
+    }
+
+    function renderNotebookPage() {
+      liberaObjectUrls();
+      const page=currentNotebookPage();if(!page)return;
+      ensureDateObject(page);
+      const pageEl=panel.querySelector(".lm-page");if(!pageEl)return;
+      const layer=pageEl.querySelector(".lm-object-layer");layer.innerHTML="";
+      (page.objects||[]).forEach(obj=>makePageObjectElement(obj,layer));
+      layer.querySelectorAll(".lm-page-object").forEach(el=>{el.style.pointerEvents=["pencil","eraser","lasso"].includes(notebookMode)?"none":"auto";});
+      const canvas=pageEl.querySelector(".lm-draw-canvas");requestAnimationFrame(()=>renderCanvas(canvas,page));
       panel.querySelector(".lm-page-counter").textContent=`${quadernoCorrente.currentPage+1} / ${quadernoCorrente.pages.length}`;
       const prev=panel.querySelector(".lm-nav-prev"),next=panel.querySelector(".lm-nav-next");prev.disabled=quadernoCorrente.currentPage===0;next.disabled=false;
       panel.querySelectorAll(".lm-notebook-tools button[data-tool]").forEach(b=>b.classList.toggle("active",b.dataset.tool===notebookMode));
