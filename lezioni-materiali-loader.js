@@ -768,75 +768,60 @@
       pageForNativeBlock.addEventListener("selectstart",e=>{e.preventDefault();e.stopPropagation();},{capture:true});
       pageForNativeBlock.addEventListener("dragstart",e=>{e.preventDefault();e.stopPropagation();},{capture:true});
       const tools=panel.querySelector(".lm-notebook-tools");tools.addEventListener("pointerdown",event=>event.stopPropagation());tools.addEventListener("click",event=>event.stopPropagation());
-      // v3A.16.2 — SOLO SCROLLBAR, senza listener globali.
-      // Toolbar, Pencil, palmo e resto del Quaderno restano invariati.
+      // v3A.16.3 — MICRO SCROLL:
+      // niente drag della scrollbar. Due zone discrete ▲/▼ fanno scorrere il Quaderno.
+      // Nessun listener globale: toolbar, Pencil, palmo e data restano invariati.
       const scrollShell=panel.querySelector(".lm-notebook-shell"),
             scrollRail=panel.querySelector(".lm-scroll-rail"),
             scrollTrack=panel.querySelector(".lm-scroll-track"),
             scrollThumb=panel.querySelector(".lm-scroll-thumb");
 
-      const getScrollMetrics=()=>{
-        if(!scrollShell||!scrollTrack||!scrollThumb)return null;
-        const maxScroll=Math.max(0,scrollShell.scrollHeight-scrollShell.clientHeight);
-        const trackH=scrollTrack.getBoundingClientRect().height||1;
-        const ratio=scrollShell.scrollHeight ? scrollShell.clientHeight/scrollShell.scrollHeight : 1;
-        const thumbH=Math.max(42,Math.min(trackH,trackH*ratio));
-        const maxTop=Math.max(0,trackH-thumbH);
-        return {maxScroll,trackH,thumbH,maxTop};
-      };
+      if(scrollRail && scrollShell){
+        // Disinnesca la vecchia thumb trascinabile e la usa solo come contenitore grafico.
+        if(scrollTrack) scrollTrack.style.display="none";
+        if(scrollThumb) scrollThumb.style.display="none";
 
-      const syncScrollRail=()=>{
-        const m=getScrollMetrics(); if(!m)return;
-        scrollThumb.style.height=`${m.thumbH}px`;
-        scrollThumb.style.top=`${m.maxScroll ? (scrollShell.scrollTop/m.maxScroll)*m.maxTop : 0}px`;
+        const scrollControls=document.createElement("div");
+        scrollControls.className="lm-scroll-controls";
+        scrollControls.setAttribute("aria-label","Scorri il quaderno");
+
+        const up=document.createElement("button");
+        up.type="button";
+        up.className="lm-scroll-step lm-scroll-up";
+        up.setAttribute("aria-label","Scorri verso l'alto");
+        up.textContent="▲";
+
+        const down=document.createElement("button");
+        down.type="button";
+        down.className="lm-scroll-step lm-scroll-down";
+        down.setAttribute("aria-label","Scorri verso il basso");
+        down.textContent="▼";
+
+        scrollControls.append(up,down);
+        scrollRail.appendChild(scrollControls);
         scrollRail.classList.remove("hidden");
-      };
 
-      let dragState=null;
-
-      scrollThumb?.addEventListener("pointerdown",e=>{
-        e.preventDefault(); e.stopPropagation();
-        dragState={
-          id:e.pointerId,
-          y:e.clientY,
-          top:parseFloat(scrollThumb.style.top)||0
+        const step=()=>Math.max(180,Math.round(scrollShell.clientHeight*0.42));
+        const move=dir=>{
+          const max=Math.max(0,scrollShell.scrollHeight-scrollShell.clientHeight);
+          scrollShell.scrollTop=Math.max(0,Math.min(max,scrollShell.scrollTop+(dir*step())));
         };
-        try{scrollThumb.setPointerCapture(e.pointerId)}catch(_){}
-      },{passive:false});
 
-      scrollThumb?.addEventListener("pointermove",e=>{
-        if(!dragState||dragState.id!==e.pointerId)return;
-        e.preventDefault(); e.stopPropagation();
-        const m=getScrollMetrics(); if(!m)return;
-        const nextTop=Math.max(0,Math.min(m.maxTop,dragState.top+(e.clientY-dragState.y)));
-        scrollThumb.style.top=`${nextTop}px`;
-        scrollShell.scrollTop=m.maxTop ? (nextTop/m.maxTop)*m.maxScroll : 0;
-      },{passive:false});
+        // Pointer events locali ai due pulsanti: niente drag e niente interferenze globali.
+        up.addEventListener("pointerdown",e=>{
+          e.preventDefault(); e.stopPropagation(); move(-1);
+        },{passive:false});
+        down.addEventListener("pointerdown",e=>{
+          e.preventDefault(); e.stopPropagation(); move(1);
+        },{passive:false});
 
-      const finishScrollDrag=e=>{
-        if(!dragState||dragState.id!==e.pointerId)return;
-        e.preventDefault(); e.stopPropagation();
-        dragState=null;
-        try{scrollThumb.releasePointerCapture(e.pointerId)}catch(_){}
-        syncScrollRail();
-      };
+        // Impedisce a Chrome di trasformare una pressione sui controlli in selezione testo.
+        for(const el of [scrollRail,scrollControls,up,down]){
+          el.addEventListener("selectstart",e=>e.preventDefault());
+          el.addEventListener("contextmenu",e=>e.preventDefault());
+        }
+      }
 
-      scrollThumb?.addEventListener("pointerup",finishScrollDrag,{passive:false});
-      scrollThumb?.addEventListener("pointercancel",finishScrollDrag,{passive:false});
-
-      scrollTrack?.addEventListener("pointerdown",e=>{
-        if(e.target===scrollThumb)return;
-        e.preventDefault(); e.stopPropagation();
-        const m=getScrollMetrics(); if(!m)return;
-        const rect=scrollTrack.getBoundingClientRect();
-        const nextTop=Math.max(0,Math.min(m.maxTop,e.clientY-rect.top-(m.thumbH/2)));
-        scrollThumb.style.top=`${nextTop}px`;
-        scrollShell.scrollTop=m.maxTop ? (nextTop/m.maxTop)*m.maxScroll : 0;
-        syncScrollRail();
-      },{passive:false});
-
-      scrollShell?.addEventListener("scroll",syncScrollRail,{passive:true});
-      requestAnimationFrame(syncScrollRail);
       panel.querySelectorAll(".lm-notebook-tools button[data-tool]").forEach(btn=>btn.addEventListener("click",async event=>{
         event.preventDefault();event.stopPropagation();const t=btn.dataset.tool;
         if(["pencil","eraser","lasso"].includes(t)){notebookMode=t;resetSelection();renderNotebookPage();return;}
