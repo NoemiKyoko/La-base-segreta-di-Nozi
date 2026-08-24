@@ -270,6 +270,35 @@
       /* v3A.16.5 — SOLO RIPRISTINO TOOLBAR + NAV. SCROLLBAR INTOCCABILE. */
       .lm-notebook-tools{display:flex!important;visibility:visible!important;opacity:1!important;z-index:980!important}
       .lm-page-nav{display:flex!important;visibility:visible!important;opacity:1!important;z-index:975!important}
+      /* v3A.16.6 — SOLO RIPRISTINO FOGLIO. */
+      .lm-page{
+        display:block!important;
+        visibility:visible!important;
+        opacity:1!important;
+        flex:0 0 auto!important;
+        z-index:1!important;
+        min-width:280px;
+        min-height:360px;
+        background:#fff!important;
+      }
+      .lm-page-paper{
+        display:block!important;
+        visibility:visible!important;
+        opacity:1!important;
+        z-index:0!important;
+        pointer-events:none;
+      }
+      .lm-draw-canvas{
+        display:block!important;
+        visibility:visible!important;
+        opacity:1!important;
+      }
+      .lm-object-layer{
+        display:block!important;
+        visibility:visible!important;
+        opacity:1!important;
+      }
+
 `;
     document.head.appendChild(style);
 
