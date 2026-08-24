@@ -248,7 +248,7 @@
       .lm-screen.notebook .lm-title{position:absolute;left:50%;top:50%;transform:translate(-50%,-42%);width:min(62vw,760px);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:clamp(25px,3vw,38px);letter-spacing:.01em}
       .lm-screen.notebook .lm-back{width:52px;height:52px;flex:0 0 52px;border-radius:18px;font-size:31px;z-index:2}
       .lm-screen.notebook .lm-search{margin-left:auto;width:52px;height:52px;min-width:52px;border-radius:18px;z-index:2}.lm-screen.notebook .lm-search svg{width:31px;height:31px}
-      .lm-screen.notebook .lm-panel{width:100%;height:100%;max-width:none;margin:0;padding:0;border:0;background:transparent;box-shadow:none}
+      .lm-screen.notebook .lm-panel{width:100%;height:100%;max-width:none;margin:0;padding:0;border:0;background:transparent;box-shadow:none}.lm-screen.notebook.notebook-preparing .lm-panel{visibility:hidden}.lm-screen.notebook .lm-panel{transition:none}
       .lm-screen.notebook .lm-workspace{position:relative;flex:1;min-height:0;padding:4px 18px 78px;overflow:hidden;background:transparent}
       .lm-notebook-shell{position:absolute;inset:0 0 66px;display:flex;align-items:flex-start;justify-content:center;padding:22px 28px 22px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:none}
       .lm-page{position:relative;width:min(calc(100vw - 56px),calc((100dvh - 190px)*.82));height:auto;max-width:none;max-height:calc(100dvh - 190px);aspect-ratio:.82;background:#fff;box-shadow:0 10px 28px rgba(55,60,70,.17);border-radius:10px;overflow:hidden;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}.lm-page,.lm-page *{user-select:none!important;-webkit-user-select:none!important;-webkit-touch-callout:none!important;-webkit-user-drag:none!important}
@@ -341,6 +341,7 @@
     function setNotebookMode(active) {
       screen.classList.toggle("notebook", active);
       if (!active) {
+        screen.classList.remove("notebook-preparing");
         plusMenu.classList.remove("aperto");
         moreMenu.classList.remove("aperto");
         textbar.classList.remove("aperto");
@@ -533,7 +534,14 @@
       page.strokes=(page.strokes||[]).filter((_,i)=>!selectedStrokeIndexes.has(i));
       const obj={id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type:"text",text,x:b.x*100,y:b.y*100,w:Math.min(82,Math.max(24,b.w*100)),fontFamily:"'Andika', Arial, sans-serif",fontSize:32,align:"left",color:"#111111"};
       page.objects.push(obj);selectedObjectId=obj.id;selectedStrokeIndexes=new Set();
-      await persistNotebook();renderNotebookPage();
+      await persistNotebook();
+      renderNotebookPage();
+      // v3A.16.4: mostra il Quaderno soltanto quando foglio, toolbar e navigazione
+      // sono già montati e il layout ha completato due frame.
+      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+      const readyShell=panel.querySelector(".lm-notebook-shell");
+      if(readyShell) readyShell.scrollTop=0;
+      screen.classList.remove("notebook-preparing");
     }
 
     function renderCanvas(canvas, page) {
@@ -758,7 +766,7 @@
     }
 
     async function renderQuaderno() {
-      liberaObjectUrls();setBinderMode(false);setNotebookMode(true);schermata="quaderno";temaClasse(classeCorrente);title.textContent=`${materiaCorrente.toUpperCase()} — QUADERNO`;
+      liberaObjectUrls();setBinderMode(false);setNotebookMode(true);screen.classList.add("notebook-preparing");schermata="quaderno";temaClasse(classeCorrente);title.textContent=`${materiaCorrente.toUpperCase()} — QUADERNO`;
       quadernoCorrente=await leggiQuaderno(classeCorrente.id,materiaCorrente);notebookHistory=[];notebookFuture=[];resetSelection();notebookMode="pencil";
       (quadernoCorrente.pages||[]).forEach(ensureDateObject);
       panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-tools"><span class="lm-tools-grip" title="Sposta toolbar">≡</span><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="text" type="button" title="Testo">T</button><button class="lm-tool-eraser" data-tool="eraser" type="button" title="Gomma" aria-label="Gomma"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7.2 20.8 17.9 7.5a3 3 0 0 1 4.2-.4l3.4 2.8a3 3 0 0 1 .4 4.2L15.2 27.4H8.8l-2.4-2a3.1 3.1 0 0 1 .8-4.6Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="m13 25.8-5.5-4.5M15.3 27.3h10.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><button class="lm-tool-lasso" data-tool="lasso" type="button" title="Lazo" aria-label="Lazo"><svg viewBox="0 0 34 34" aria-hidden="true"><path d="M27.6 14.6c0 5.3-5.5 9.1-12.3 9.1S4.1 20.2 4.1 15.4 9.2 7 15.8 7s11.8 3.3 11.8 7.6Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="3.4 3.4"/><path d="M25.4 20.5c3.8 1.1 5 3.2 3.7 5.1-1.2 1.8-4.4 1.5-5.8-.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-scroll-rail" aria-label="Scorri la pagina"><div class="lm-scroll-track"><div class="lm-scroll-thumb"></div></div></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div>`;
