@@ -270,7 +270,10 @@
       .lm-draw-canvas{position:absolute;inset:0;z-index:4;width:100%;height:100%;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
       .lm-object-layer{position:absolute;inset:0;z-index:5;pointer-events:none}
       .lm-lasso-hint{position:fixed;z-index:905;display:none;left:50%;top:88px;transform:translateX(-50%);padding:7px 12px;border-radius:12px;background:rgba(255,255,255,.94);color:var(--lm-dark);font-size:13px;font-weight:800;box-shadow:0 4px 14px rgba(50,60,75,.12)}.lm-lasso-hint.aperto{display:block}
-      .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}.lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}.lm-page-object.text.andika{font-feature-settings:normal;font-variant-ligatures:normal}.lm-page-object img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}.lm-page-object.file{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:#fffaf4;color:#444;box-shadow:0 3px 10px rgba(0,0,0,.07)}
+      .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}.lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}
+      .lm-page-object.text.lm-textbox-editing{border:1px solid rgba(43,144,217,.38)!important;background:rgba(255,255,255,.08)!important;min-height:34px!important;padding:2px 4px!important;touch-action:auto!important;overflow:visible!important}
+      .lm-page-object.text.lm-textbox-editing .lm-native-text-editor{display:block!important;width:100%!important;min-height:30px!important;height:auto;box-sizing:border-box!important;border:0!important;outline:0!important;resize:none!important;background:transparent!important;color:inherit!important;font:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:inherit!important;font-style:inherit!important;line-height:1.2!important;text-align:inherit!important;padding:0!important;margin:0!important;overflow:hidden!important;-webkit-appearance:none!important;appearance:none!important;touch-action:auto!important;user-select:text!important;-webkit-user-select:text!important;-webkit-touch-callout:default!important;caret-color:#111!important}
+.lm-page-object.text.andika{font-feature-settings:normal;font-variant-ligatures:normal}.lm-page-object img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}.lm-page-object.file{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:#fffaf4;color:#444;box-shadow:0 3px 10px rgba(0,0,0,.07)}
       .lm-object-delete,.lm-object-resize{display:none;position:absolute;appearance:none;border:0;width:27px;height:27px;border-radius:50%;background:#fff;color:#5f7184;box-shadow:0 2px 8px rgba(0,0,0,.16);cursor:pointer}.lm-page-object.selected .lm-object-delete,.lm-page-object.selected .lm-object-resize{display:block}.lm-object-delete{right:-12px;top:-12px}.lm-object-resize{right:-12px;bottom:-12px}
       .lm-notebook-tools{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));z-index:880;display:flex;align-items:center;gap:1px;padding:6px 7px 6px 22px;border:1.25px solid color-mix(in srgb,var(--lm-color) 62%,white);border-radius:17px;background:color-mix(in srgb,var(--lm-soft) 88%,white);box-shadow:0 5px 14px rgba(80,60,45,.12);touch-action:none;user-select:none;-webkit-user-select:none}.lm-tools-grip{position:absolute;left:5px;top:50%;transform:translateY(-50%);width:16px;height:29px;display:grid;place-items:center;color:color-mix(in srgb,var(--lm-dark) 62%,white);font-weight:900;font-size:14px;cursor:grab;touch-action:none}.lm-tools-grip:active{cursor:grabbing}.lm-notebook-tools button{appearance:none;border:0;width:34px;height:34px;border-radius:9px;background:transparent;color:var(--lm-dark);font-size:17px;font-weight:800;cursor:pointer;touch-action:manipulation}.lm-notebook-tools button.active{background:white;box-shadow:0 2px 7px rgba(45,50,60,.09)}.lm-notebook-tools button:disabled{opacity:.28}.lm-tool-eraser,.lm-tool-lasso{display:grid!important;place-items:center}.lm-tool-eraser svg,.lm-tool-lasso svg{width:18px;height:18px;display:block;overflow:visible}.lm-tool-eraser svg{width:19px;height:19px}.lm-tool-lasso svg{width:20px;height:20px}
       .lm-scroll-rail{position:fixed;right:max(4px,env(safe-area-inset-right));top:132px;bottom:92px;width:8px;z-index:870;display:flex;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}.lm-scroll-track{position:relative;width:2px;height:100%;border-radius:999px;background:rgba(23,63,122,.08)}.lm-scroll-thumb{position:absolute;left:50%;top:0;transform:translateX(-50%);width:5px;min-height:42px;border-radius:999px;background:color-mix(in srgb,var(--lm-color) 72%,white);box-shadow:0 1px 4px rgba(45,55,70,.12);touch-action:none}.lm-scroll-rail.hidden{display:none}
@@ -560,69 +563,38 @@
 
     let textDefaults={fontFamily:"'Andika', Arial, sans-serif",fontSize:32,bold:false,italic:false,align:"left",color:"#111111"};
     function textStyleTarget(){return objectById(selectedObjectId);}
-    let persistentTextEditor=null,persistentTextObject=null,persistentTextIsNew=false;
-    function ensurePersistentTextEditor(){
-      if(persistentTextEditor && persistentTextEditor.isConnected)return persistentTextEditor;
-      const layer=panel.querySelector(".lm-page-objects");
-      if(!layer)return null;
-      const ta=document.createElement("textarea");
-      ta.className="lm-native-text-editor lm-persistent-text-editor";
-      ta.rows=1;ta.spellcheck=true;ta.setAttribute("aria-label","Testo");
-      ta.style.position="absolute";ta.style.display="none";ta.style.zIndex="50";
-      layer.appendChild(ta);
-      ta.addEventListener("input",()=>{
-        if(!persistentTextObject)return;
-        persistentTextObject.text=ta.value;
-        ta.style.height="auto";ta.style.height=Math.max(32,ta.scrollHeight)+"px";
-      });
-      ta.addEventListener("blur",async()=>{
-        if(!persistentTextObject)return;
-        const obj=persistentTextObject,isNew=persistentTextIsNew;
-        obj.text=ta.value.replace(/\n+$/,"");
-        if(isNew&&!obj.text){
-          const p=currentNotebookPage();
-          if(p)p.objects=p.objects.filter(o=>o.id!==obj.id);
-          selectedObjectId=null;
-        }
-        persistentTextObject=null;persistentTextIsNew=false;
-        ta.style.display="none";ta.value="";
-        await persistNotebook();renderNotebookPage();
-      });
-      persistentTextEditor=ta;
-      return ta;
-    }
-    function activatePersistentTextEditor(obj,isNew=false){
-      const ta=ensurePersistentTextEditor();if(!ta||!obj)return;
-      persistentTextObject=obj;persistentTextIsNew=isNew;selectedObjectId=obj.id;
-      ta.value=obj.text||"";
-      ta.style.left=(obj.x||0)+"%";ta.style.top=(obj.y||0)+"%";
-      ta.style.width=(obj.w||70)+"%";ta.style.minHeight="36px";
-      ta.style.fontFamily=obj.fontFamily||textDefaults.fontFamily;
-      ta.style.fontSize=(obj.fontSize||textDefaults.fontSize||32)+"px";
-      ta.style.fontWeight=obj.bold?"700":"400";ta.style.fontStyle=obj.italic?"italic":"normal";
-      ta.style.textAlign=obj.align||"left";ta.style.color=obj.color||"#111111";
-      ta.style.display="block";
-      updateTextbar();positionTextbar();
-      ta.focus({preventScroll:true});
-      try{const n=ta.value.length;ta.setSelectionRange(n,n);}catch(_){}
-    }
-
     async function beginTextAtPoint(clientX,clientY){
       if(notebookMode!=="text")return;
-      const page=currentNotebookPage(),pageEl=panel.querySelector(".lm-page");
-      if(!page||!pageEl)return;
+      const page=currentNotebookPage(),pageEl=panel.querySelector(".lm-page"),layer=pageEl?.querySelector(".lm-object-layer");
+      if(!page||!pageEl||!layer)return;
       const r=pageEl.getBoundingClientRect();
       const x=Math.max(1,Math.min(88,(clientX-r.left)/r.width*100));
       const y=Math.max(1,Math.min(94,(clientY-r.top)/r.height*100));
       pushHistory();
-      const obj={id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type:"text",text:"",x,y,w:Math.min(78,96-x),h:7,...textDefaults};
-      page.objects.push(obj);
-      activatePersistentTextEditor(obj,true);
+      const obj={id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type:"text",text:"",x,y,w:Math.min(62,96-x),h:5,...textDefaults};
+      page.objects.push(obj);selectedObjectId=obj.id;
+      const el=makePageObjectElement(obj,layer);
+      editTextInline(obj,el,true);
       persistNotebook();
     }
     function editTextInline(obj,el,isNew=false){
-      if(el)el.style.visibility="hidden";
-      activatePersistentTextEditor(obj,isNew);
+      if(!obj||!el)return;
+      selectedObjectId=obj.id;el.classList.add("selected","lm-textbox-editing");
+      el.style.pointerEvents="auto";el.innerHTML="";
+      const ta=document.createElement("textarea");
+      ta.className="lm-native-text-editor";ta.rows=1;ta.value=obj.text||"";ta.spellcheck=true;
+      ta.setAttribute("aria-label","Scrivi testo");el.appendChild(ta);
+      const autosize=()=>{ta.style.height="auto";ta.style.height=Math.max(30,ta.scrollHeight)+"px";el.style.height="auto";el.style.minHeight=Math.max(34,ta.scrollHeight+4)+"px";};
+      ta.addEventListener("pointerdown",e=>e.stopPropagation());
+      ta.addEventListener("click",e=>e.stopPropagation());
+      ta.addEventListener("input",()=>{obj.text=ta.value;autosize();});
+      ta.addEventListener("blur",async()=>{
+        obj.text=ta.value.replace(/\n+$/,"");el.classList.remove("lm-textbox-editing");
+        if(isNew&&!obj.text){const p=currentNotebookPage();if(p)p.objects=p.objects.filter(o=>o.id!==obj.id);selectedObjectId=null;}
+        await persistNotebook();renderNotebookPage();
+      },{once:true});
+      updateTextbar();positionTextbar();autosize();
+      requestAnimationFrame(()=>{ta.focus({preventScroll:true});try{const n=ta.value.length;ta.setSelectionRange(n,n);}catch(_){}});
     }
 
     function renderCanvas(canvas, page) {
