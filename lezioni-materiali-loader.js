@@ -255,6 +255,36 @@
       .lm-page{position:relative;width:min(calc(100vw - 56px),calc((100dvh - 190px)*.82));height:auto;max-width:none;max-height:calc(100dvh - 190px);aspect-ratio:.82;background:#fff;box-shadow:0 10px 28px rgba(55,60,70,.17);border-radius:10px;overflow:hidden;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
       /* v3A.19 — pagina più grande, stessa proporzione */
       .lm-page{width:min(92vw,820px)!important;max-width:820px!important}
+
+      /* v3A.19.1 — editor data: strumento generale del Quaderno, lavanda */
+      .lm-date-editor-backdrop{
+        position:fixed;inset:0;z-index:99999;background:rgba(45,52,72,.22);
+        display:flex;align-items:center;justify-content:center;padding:22px;
+      }
+      .lm-date-editor{
+        width:min(560px,92vw);background:#fbf9ff;border:2px solid #c9bce8;
+        border-radius:24px;padding:24px;box-shadow:0 18px 55px rgba(74,61,111,.18);
+        color:#354d68;font-family:Arial,sans-serif;
+      }
+      .lm-date-editor-title{font-size:24px;font-weight:700;margin-bottom:16px;color:#66558f}
+      .lm-date-editor-input{
+        box-sizing:border-box;width:100%;font-size:16px;padding:13px 14px;
+        border:1.5px solid #d8cfee;border-radius:14px;background:white;color:#24384d;outline:none;
+      }
+      .lm-date-editor-input:focus{border-color:#9f8dcc;box-shadow:0 0 0 3px rgba(159,141,204,.16)}
+      .lm-date-editor-label{font-size:16px;font-weight:700;margin:20px 0 10px;color:#66558f}
+      .lm-date-writing{display:grid;grid-template-columns:1fr 1.55fr 1fr;gap:8px}
+      .lm-date-writing button,.lm-date-editor-actions button{
+        border:1.5px solid #d8cfee;background:#fff;border-radius:13px;padding:11px 10px;
+        font:600 14px Arial,sans-serif;color:#5b5272;
+      }
+      .lm-date-writing button.is-active{background:#e8e0f6;border-color:#a997d3;color:#493b70}
+      .lm-date-editor-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:22px}
+      .lm-date-editor-actions .lm-date-save{background:#7966aa;border-color:#7966aa;color:white}
+      @media(max-width:560px){
+        .lm-date-writing{grid-template-columns:1fr}
+        .lm-date-editor{padding:19px}
+      }
 .lm-page,.lm-page *{user-select:none!important;-webkit-user-select:none!important;-webkit-touch-callout:none!important;-webkit-user-drag:none!important}
       .lm-page-paper{position:absolute;inset:0;background-color:#fff;background-image:linear-gradient(to right,rgba(89,130,170,.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.12) 1px,transparent 1px);background-size:24px 24px}
       .lm-page-paper.paper-grid-1cm{background-image:linear-gradient(to right,rgba(89,130,170,.14) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.14) 1px,transparent 1px);background-size:48px 48px}
@@ -588,6 +618,68 @@
       const el=layer.querySelector(`.lm-page-object[data-id="${obj.id}"]`);
       if(el) editTextInline(obj,el,true);
     }
+
+    function openDateEditor(obj){
+      document.querySelector(".lm-date-editor-backdrop")?.remove();
+
+      const back=document.createElement("div");
+      back.className="lm-date-editor-backdrop";
+      back.innerHTML=`
+        <div class="lm-date-editor" role="dialog" aria-modal="true" aria-label="Modifica data">
+          <div class="lm-date-editor-title">Modifica data</div>
+          <input class="lm-date-editor-input" type="text" autocomplete="off">
+          <div class="lm-date-editor-label">Scrittura</div>
+          <div class="lm-date-writing">
+            <button type="button" data-date-style="font">Font</button>
+            <button type="button" data-date-style="upper">STAMPATO MAIUSCOLO</button>
+            <button type="button" data-date-style="cursive">Corsivo</button>
+          </div>
+          <div class="lm-date-editor-actions">
+            <button type="button" class="lm-date-cancel">Annulla</button>
+            <button type="button" class="lm-date-save">Salva</button>
+          </div>
+        </div>`;
+
+      document.body.appendChild(back);
+      const input=back.querySelector(".lm-date-editor-input");
+      input.value=String(obj.text||"");
+
+      let mode=obj.dateWriting||"font";
+      const refresh=()=>back.querySelectorAll("[data-date-style]").forEach(b=>
+        b.classList.toggle("is-active",b.dataset.dateStyle===mode)
+      );
+      refresh();
+
+      back.querySelectorAll("[data-date-style]").forEach(b=>b.addEventListener("click",()=>{
+        mode=b.dataset.dateStyle; refresh();
+      }));
+      const close=()=>back.remove();
+      back.querySelector(".lm-date-cancel").addEventListener("click",close);
+      back.addEventListener("click",e=>{ if(e.target===back) close(); });
+
+      back.querySelector(".lm-date-save").addEventListener("click",async()=>{
+        pushHistory();
+        let value=input.value.trim();
+        obj.dateWriting=mode;
+        obj.fontSize=16;
+        if(mode==="upper"){
+          obj.text=value.toLocaleUpperCase("it-IT");
+          obj.fontFamily="Arial, sans-serif";
+        }else if(mode==="cursive"){
+          obj.text=value;
+          obj.fontFamily="'Corsivo Primaria', cursive";
+        }else{
+          obj.text=value;
+          obj.fontFamily="Arial, sans-serif";
+        }
+        await persistNotebook();
+        close();
+        renderNotebookPage();
+      });
+
+      setTimeout(()=>{ input.focus(); input.setSelectionRange(input.value.length,input.value.length); },0);
+    }
+
     function editTextInline(obj,el,isNew=false){
       if(obj?.fontFamily==="Andika" || obj?.font==="Andika"){
         el.style.fontFamily='Andika, Arial, sans-serif';
@@ -767,13 +859,7 @@
         const reopen=async(e)=>{
           if(obj.role==="date"){
             e.preventDefault();e.stopPropagation();
-            const next=window.prompt("Modifica la data",String(obj.text||""));
-            if(next===null)return;
-            pushHistory();
-            obj.text=next.trim();
-            // La data manuale non viene rigenerata: resta il testo scelto.
-            await persistNotebook();
-            renderNotebookPage();
+            openDateEditor(obj);
             return;
           }
           if(notebookMode!=="text")return;
