@@ -256,7 +256,7 @@
       .lm-page-paper{position:absolute;inset:0;background-color:#fff;background-image:linear-gradient(to right,rgba(89,130,170,.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.12) 1px,transparent 1px);background-size:24px 24px}
       .lm-page-paper.paper-grid-1cm{background-image:linear-gradient(to right,rgba(89,130,170,.14) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.14) 1px,transparent 1px);background-size:48px 48px}
       .lm-page-paper.paper-grid-05cm{background-image:linear-gradient(to right,rgba(89,130,170,.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.12) 1px,transparent 1px);background-size:24px 24px}
-      .lm-page-paper.paper-lines-2{background-image:repeating-linear-gradient(to right,transparent 0,transparent 143px,rgba(108,122,135,.20) 143px,rgba(108,122,135,.20) 145px),repeating-linear-gradient(to bottom,transparent 0,transparent 34px,rgba(108,122,135,.22) 34px,rgba(108,122,135,.22) 36px,transparent 36px,transparent 69px,rgba(108,122,135,.13) 69px,rgba(108,122,135,.13) 71px,transparent 71px,transparent 104px,rgba(108,122,135,.13) 104px,rgba(108,122,135,.13) 106px,transparent 106px,transparent 139px,rgba(108,122,135,.22) 139px,rgba(108,122,135,.22) 141px);background-size:145px 141px}
+      .lm-page-paper.paper-lines-2{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 30px,rgba(98,130,170,.20) 30px,rgba(98,130,170,.20) 31px);background-size:100% 31px}
       .lm-page-paper.paper-lines-5{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 30px,rgba(98,130,170,.20) 30px,rgba(98,130,170,.20) 31px);background-size:100% 31px}
       .lm-paper-choice{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;background:rgba(40,52,70,.18);backdrop-filter:blur(2px)}
       .lm-paper-choice-card{width:min(520px,calc(100vw - 44px));padding:20px;border-radius:22px;background:#fffaf7;box-shadow:0 18px 55px rgba(35,45,60,.22);color:var(--lm-dark)}
@@ -264,7 +264,7 @@
       .lm-paper-options{display:grid;grid-template-columns:1fr 1fr;gap:12px}.lm-paper-option{appearance:none;border:1.5px solid color-mix(in srgb,var(--lm-color) 55%,white);border-radius:16px;background:white;padding:12px;color:var(--lm-dark);font-weight:800;font-size:15px}
       .lm-paper-preview{height:116px;margin-bottom:9px;border-radius:10px;border:1px solid rgba(70,90,120,.10);background-color:#fff}
       .lm-paper-preview.grid05{background-image:linear-gradient(to right,rgba(89,130,170,.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.12) 1px,transparent 1px);background-size:12px 12px}
-      .lm-paper-preview.lines2{background-image:repeating-linear-gradient(to right,transparent 0,transparent 71px,rgba(108,122,135,.20) 71px,rgba(108,122,135,.20) 72px),repeating-linear-gradient(to bottom,transparent 0,transparent 17px,rgba(108,122,135,.22) 17px,rgba(108,122,135,.22) 18px,transparent 18px,transparent 34px,rgba(108,122,135,.13) 34px,rgba(108,122,135,.13) 35px,transparent 35px,transparent 51px,rgba(108,122,135,.13) 51px,rgba(108,122,135,.13) 52px,transparent 52px,transparent 68px,rgba(108,122,135,.22) 68px,rgba(108,122,135,.22) 69px);background-size:72px 69px}
+      .lm-paper-preview.lines2{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 15px,rgba(98,130,170,.20) 15px,rgba(98,130,170,.20) 16px)}
       .lm-paper-preview.lines5{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 15px,rgba(98,130,170,.20) 15px,rgba(98,130,170,.20) 16px)}
 
       .lm-draw-canvas{position:absolute;inset:0;z-index:4;width:100%;height:100%;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
@@ -834,7 +834,7 @@
       if(quadernoCorrente.paperType){applyNotebookPaper();return;}
 
       const linesType=String(classeCorrente.id)==="5" ? "lines-5" : "lines-2";
-      const linesLabel=String(classeCorrente.id)==="5" ? "Righe di quinta / medie" : "Righe di seconda";
+      const linesLabel="Righe";
       const modal=document.createElement("div");
       modal.className="lm-paper-choice";
       modal.innerHTML=`<div class="lm-paper-choice-card"><h2>Scegli il foglio</h2><p>${classeCorrente.label} · ${materiaCorrente}</p><div class="lm-paper-options"><button type="button" class="lm-paper-option" data-paper="${linesType}"><div class="lm-paper-preview ${linesType==="lines-5"?"lines5":"lines2"}"></div>${linesLabel}</button><button type="button" class="lm-paper-option" data-paper="grid-05cm"><div class="lm-paper-preview grid05"></div>Quadretti da 0,5 cm</button></div></div>`;
