@@ -272,7 +272,7 @@
       .lm-lasso-hint{position:fixed;z-index:905;display:none;left:50%;top:88px;transform:translateX(-50%);padding:7px 12px;border-radius:12px;background:rgba(255,255,255,.94);color:var(--lm-dark);font-size:13px;font-weight:800;box-shadow:0 4px 14px rgba(50,60,75,.12)}.lm-lasso-hint.aperto{display:block}
       .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}.lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}.lm-page-object.text.andika{font-feature-settings:normal;font-variant-ligatures:normal}.lm-page-object img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}.lm-page-object.file{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:#fffaf4;color:#444;box-shadow:0 3px 10px rgba(0,0,0,.07)}
       .lm-object-delete,.lm-object-resize{display:none;position:absolute;appearance:none;border:0;width:27px;height:27px;border-radius:50%;background:#fff;color:#5f7184;box-shadow:0 2px 8px rgba(0,0,0,.16);cursor:pointer}.lm-page-object.selected .lm-object-delete,.lm-page-object.selected .lm-object-resize{display:block}.lm-object-delete{right:-12px;top:-12px}.lm-object-resize{right:-12px;bottom:-12px}
-      .lm-notebook-tools{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));z-index:880;display:flex;align-items:center;gap:0;padding:4px 5px 4px 18px;border:1.25px solid color-mix(in srgb,var(--lm-color) 62%,white);border-radius:15px;background:color-mix(in srgb,var(--lm-soft) 88%,white);box-shadow:0 5px 14px rgba(80,60,45,.12);touch-action:none;user-select:none;-webkit-user-select:none}.lm-tools-grip{position:absolute;left:4px;top:50%;transform:translateY(-50%);width:12px;height:23px;display:grid;place-items:center;color:color-mix(in srgb,var(--lm-dark) 62%,white);font-weight:900;font-size:12px;cursor:grab;touch-action:none}.lm-tools-grip:active{cursor:grabbing}.lm-notebook-tools button{appearance:none;border:0;width:30px;height:30px;border-radius:8px;background:transparent;color:var(--lm-dark);font-size:16px;font-weight:800;cursor:pointer;touch-action:manipulation}.lm-notebook-tools button.active{background:white;box-shadow:0 2px 7px rgba(45,50,60,.09)}.lm-notebook-tools button:disabled{opacity:.28}.lm-tool-eraser,.lm-tool-lasso{display:grid!important;place-items:center}.lm-tool-eraser svg,.lm-tool-lasso svg{width:18px;height:18px;display:block;overflow:visible}.lm-tool-eraser svg{width:19px;height:19px}.lm-tool-lasso svg{width:20px;height:20px}
+      .lm-notebook-tools{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));z-index:880;display:flex;align-items:center;gap:1px;padding:6px 7px 6px 22px;border:1.25px solid color-mix(in srgb,var(--lm-color) 62%,white);border-radius:17px;background:color-mix(in srgb,var(--lm-soft) 88%,white);box-shadow:0 5px 14px rgba(80,60,45,.12);touch-action:none;user-select:none;-webkit-user-select:none}.lm-tools-grip{position:absolute;left:5px;top:50%;transform:translateY(-50%);width:16px;height:29px;display:grid;place-items:center;color:color-mix(in srgb,var(--lm-dark) 62%,white);font-weight:900;font-size:14px;cursor:grab;touch-action:none}.lm-tools-grip:active{cursor:grabbing}.lm-notebook-tools button{appearance:none;border:0;width:34px;height:34px;border-radius:9px;background:transparent;color:var(--lm-dark);font-size:17px;font-weight:800;cursor:pointer;touch-action:manipulation}.lm-notebook-tools button.active{background:white;box-shadow:0 2px 7px rgba(45,50,60,.09)}.lm-notebook-tools button:disabled{opacity:.28}.lm-tool-eraser,.lm-tool-lasso{display:grid!important;place-items:center}.lm-tool-eraser svg,.lm-tool-lasso svg{width:18px;height:18px;display:block;overflow:visible}.lm-tool-eraser svg{width:19px;height:19px}.lm-tool-lasso svg{width:20px;height:20px}
       .lm-scroll-rail{position:fixed;right:max(4px,env(safe-area-inset-right));top:132px;bottom:92px;width:8px;z-index:870;display:flex;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}.lm-scroll-track{position:relative;width:2px;height:100%;border-radius:999px;background:rgba(23,63,122,.08)}.lm-scroll-thumb{position:absolute;left:50%;top:0;transform:translateX(-50%);width:5px;min-height:42px;border-radius:999px;background:color-mix(in srgb,var(--lm-color) 72%,white);box-shadow:0 1px 4px rgba(45,55,70,.12);touch-action:none}.lm-scroll-rail.hidden{display:none}
       .lm-page-nav{position:fixed;left:50%;bottom:max(28px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:875;display:flex;align-items:center;gap:10px;padding:6px 9px;border:1.5px solid color-mix(in srgb,var(--lm-color) 58%,white);border-radius:18px;background:color-mix(in srgb,var(--lm-soft) 90%,white);box-shadow:0 6px 16px rgba(80,60,45,.11)}.lm-page-nav button{appearance:none;border:0;width:34px;height:32px;background:transparent;color:var(--lm-dark);font-size:27px;cursor:pointer}.lm-page-nav span{min-width:64px;text-align:center;color:var(--lm-dark);font-weight:850;font-size:15px}
       .lm-plus-menu,.lm-more-menu{position:fixed;z-index:910;display:none;min-width:190px;padding:8px;border:1px solid color-mix(in srgb,var(--lm-color) 42%,white);border-radius:17px;background:#fffaf7;box-shadow:0 10px 30px rgba(35,45,60,.20)}.lm-plus-menu{left:max(170px,calc(env(safe-area-inset-left) + 130px));bottom:max(92px,calc(env(safe-area-inset-bottom) + 82px))}.lm-more-menu{right:max(24px,env(safe-area-inset-right));top:max(78px,calc(env(safe-area-inset-top) + 66px))}.lm-plus-menu.aperto,.lm-more-menu.aperto{display:block}.lm-plus-menu button,.lm-more-menu button{appearance:none;border:0;width:100%;padding:11px 13px;border-radius:11px;background:transparent;color:var(--lm-dark);text-align:left;font-size:15px;font-weight:750;cursor:pointer}.lm-plus-menu button:hover,.lm-more-menu button:hover{background:var(--lm-soft)}
@@ -873,6 +873,38 @@
       pageForNativeBlock.addEventListener("selectstart",e=>{e.preventDefault();e.stopPropagation();},{capture:true});
       pageForNativeBlock.addEventListener("dragstart",e=>{e.preventDefault();e.stopPropagation();},{capture:true});
       const tools=panel.querySelector(".lm-notebook-tools");tools.addEventListener("pointerdown",event=>event.stopPropagation());tools.addEventListener("click",event=>event.stopPropagation());
+      // v3A.17.3 — la toolbar si sposta SOLO dal grip ≡.
+      const toolsGrip=tools.querySelector(".lm-tools-grip");
+      if(toolsGrip){
+        let toolsDrag=null;
+        toolsGrip.addEventListener("pointerdown",e=>{
+          e.preventDefault();e.stopPropagation();
+          const r=tools.getBoundingClientRect();
+          toolsDrag={id:e.pointerId,dx:e.clientX-r.left,dy:e.clientY-r.top};
+          toolsGrip.setPointerCapture?.(e.pointerId);
+          // Passa da bottom a coordinate top/left senza far saltare la toolbar.
+          tools.style.left=`${r.left}px`;
+          tools.style.top=`${r.top}px`;
+          tools.style.bottom="auto";
+        },{passive:false});
+        toolsGrip.addEventListener("pointermove",e=>{
+          if(!toolsDrag||e.pointerId!==toolsDrag.id)return;
+          e.preventDefault();e.stopPropagation();
+          const margin=8;
+          const w=tools.offsetWidth,h=tools.offsetHeight;
+          const left=Math.max(margin,Math.min(window.innerWidth-w-margin,e.clientX-toolsDrag.dx));
+          const top=Math.max(margin,Math.min(window.innerHeight-h-margin,e.clientY-toolsDrag.dy));
+          tools.style.left=`${left}px`;tools.style.top=`${top}px`;
+        },{passive:false});
+        const stopToolsDrag=e=>{
+          if(!toolsDrag||e.pointerId!==toolsDrag.id)return;
+          e.preventDefault();e.stopPropagation();
+          try{toolsGrip.releasePointerCapture?.(e.pointerId);}catch(_){}
+          toolsDrag=null;
+        };
+        toolsGrip.addEventListener("pointerup",stopToolsDrag,{passive:false});
+        toolsGrip.addEventListener("pointercancel",stopToolsDrag,{passive:false});
+      }
       // v3A.16.3 — MICRO SCROLL:
       // niente drag della scrollbar. Due zone discrete ▲/▼ fanno scorrere il Quaderno.
       // Nessun listener globale: toolbar, Pencil, palmo e data restano invariati.
