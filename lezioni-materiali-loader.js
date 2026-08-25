@@ -276,7 +276,7 @@
       .lm-scroll-rail{position:fixed;right:max(4px,env(safe-area-inset-right));top:132px;bottom:92px;width:8px;z-index:870;display:flex;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}.lm-scroll-track{position:relative;width:2px;height:100%;border-radius:999px;background:rgba(23,63,122,.08)}.lm-scroll-thumb{position:absolute;left:50%;top:0;transform:translateX(-50%);width:5px;min-height:42px;border-radius:999px;background:color-mix(in srgb,var(--lm-color) 72%,white);box-shadow:0 1px 4px rgba(45,55,70,.12);touch-action:none}.lm-scroll-rail.hidden{display:none}
       .lm-page-nav{position:fixed;left:50%;bottom:max(28px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:875;display:flex;align-items:center;gap:10px;padding:6px 9px;border:1.5px solid color-mix(in srgb,var(--lm-color) 58%,white);border-radius:18px;background:color-mix(in srgb,var(--lm-soft) 90%,white);box-shadow:0 6px 16px rgba(80,60,45,.11)}.lm-page-nav button{appearance:none;border:0;width:34px;height:32px;background:transparent;color:var(--lm-dark);font-size:27px;cursor:pointer}.lm-page-nav span{min-width:64px;text-align:center;color:var(--lm-dark);font-weight:850;font-size:15px}
       .lm-plus-menu,.lm-more-menu{position:fixed;z-index:910;display:none;min-width:190px;padding:8px;border:1px solid color-mix(in srgb,var(--lm-color) 42%,white);border-radius:17px;background:#fffaf7;box-shadow:0 10px 30px rgba(35,45,60,.20)}.lm-plus-menu{left:max(170px,calc(env(safe-area-inset-left) + 130px));bottom:max(92px,calc(env(safe-area-inset-bottom) + 82px))}.lm-more-menu{right:max(24px,env(safe-area-inset-right));top:max(78px,calc(env(safe-area-inset-top) + 66px))}.lm-plus-menu.aperto,.lm-more-menu.aperto{display:block}.lm-plus-menu button,.lm-more-menu button{appearance:none;border:0;width:100%;padding:11px 13px;border-radius:11px;background:transparent;color:var(--lm-dark);text-align:left;font-size:15px;font-weight:750;cursor:pointer}.lm-plus-menu button:hover,.lm-more-menu button:hover{background:var(--lm-soft)}
-      .lm-transcribe{position:fixed;inset:0;z-index:960;display:none;place-items:center;background:rgba(35,42,52,.20);padding:20px}.lm-transcribe.aperto{display:grid}.lm-transcribe-card{width:min(560px,92vw);padding:18px;border-radius:20px;background:#fffaf7;border:1.5px solid color-mix(in srgb,var(--lm-color) 50%,white);box-shadow:0 18px 45px rgba(40,45,55,.20)}.lm-transcribe-title{font-weight:850;color:var(--lm-dark);margin-bottom:10px}.lm-transcribe-input{width:100%;min-height:82px;resize:vertical;border:1.5px solid rgba(80,90,105,.18);border-radius:13px;padding:12px;font:20px Andika,Arial,sans-serif;color:#111;background:white;box-sizing:border-box}.lm-transcribe-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.lm-transcribe-actions button{appearance:none;border:0;border-radius:11px;padding:10px 14px;font-weight:800}.lm-transcribe-cancel{background:#eee;color:#536273}.lm-transcribe-ok{background:var(--lm-color);color:white}
+      .lm-transcribe{position:fixed;inset:0;z-index:960;display:none;place-items:center;background:rgba(35,42,52,.20);padding:20px}.lm-transcribe.aperto{display:grid}.lm-transcribe-card{width:min(590px,92vw);padding:18px;border-radius:20px;background:#fffaf7;border:1.5px solid color-mix(in srgb,var(--lm-color) 50%,white);box-shadow:0 18px 45px rgba(40,45,55,.20)}.lm-transcribe-title{font-weight:850;color:var(--lm-dark);margin-bottom:6px}.lm-transcribe-sub{font-size:13px;line-height:1.35;color:#66717e;margin-bottom:10px}.lm-transcribe-preview{width:100%;height:110px;display:block;border:1px solid rgba(80,90,105,.14);border-radius:13px;background:#fff;margin-bottom:10px}.lm-transcribe-input{width:100%;min-height:82px;resize:vertical;border:1.5px solid rgba(80,90,105,.18);border-radius:13px;padding:12px;font:20px Andika,Arial,sans-serif;color:#111;background:white;box-sizing:border-box}.lm-transcribe-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.lm-transcribe-actions button{appearance:none;border:0;border-radius:11px;padding:10px 14px;font-weight:800}.lm-transcribe-cancel{background:#eee;color:#536273}.lm-transcribe-ok{background:var(--lm-color);color:white}
       .lm-textbar{position:fixed;left:50%;top:50%;transform:translate(-50%,70px);z-index:900;display:none;align-items:center;overflow:visible;border:1.5px solid color-mix(in srgb,var(--lm-color) 55%,white);border-radius:19px;background:#fffaf7;box-shadow:0 9px 24px rgba(60,50,45,.15)}.lm-textbar.aperto{display:flex}.lm-textbar select,.lm-textbar button,.lm-textbar input,.lm-font-trigger{height:50px;border:0;border-right:1px solid rgba(100,100,100,.09);background:transparent;color:var(--lm-dark);font-size:16px;font-weight:750}.lm-textbar select{padding:0 13px}.lm-font-wrap{position:relative}.lm-font-trigger{appearance:none;border:0;border-right:1px solid rgba(100,100,100,.09);background:transparent;padding:0 14px;min-width:170px;color:var(--lm-dark);font-size:16px;font-weight:600;text-align:left}.lm-font-menu{display:none;position:absolute;left:0;bottom:56px;min-width:220px;padding:7px;background:#fffaf7;border:1.5px solid color-mix(in srgb,var(--lm-color) 45%,white);border-radius:15px;box-shadow:0 9px 24px rgba(60,50,45,.16);z-index:930}.lm-font-menu.aperto{display:grid;gap:3px}.lm-font-choice{appearance:none;border:0!important;border-radius:10px;background:transparent!important;height:46px!important;padding:0 12px;text-align:left;color:#111!important;font-size:18px!important;font-weight:400!important}.lm-font-choice:hover,.lm-font-choice:focus{background:color-mix(in srgb,var(--lm-soft) 75%,white)!important}.lm-font-choice[data-font="andika"]{font-family:Andika,Arial,sans-serif}.lm-font-choice[data-font="corsivo"]{font-family:"Corsivo Primaria",cursive}.lm-font-choice[data-font="arial"]{font-family:Arial,sans-serif}.lm-textbar button{width:49px;font-size:21px;cursor:pointer}.lm-textbar input[type=color]{width:52px;padding:10px;border-right:0}
       .lm-notebook-file{display:none}
       @media(max-width:760px){.lm-header{gap:8px}.lm-workspace{padding:14px 10px}.lm-panel{width:96vw;padding:16px;border-width:6px}.lm-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lm-class-card,.lm-subject-card{min-height:135px;padding:12px}.lm-class-folder{width:88px;height:62px;margin-bottom:12px}.lm-class-folder::before{width:42px;height:16px;top:-13px}.lm-card-label,.lm-subject-name{font-size:15px}.lm-subject-icon{font-size:34px}.lm-choice-grid{grid-template-columns:1fr;gap:14px}.lm-choice-card{min-height:180px}.lm-choice-icon{font-size:54px}.lm-search{padding:0}.lm-title{font-size:21px}.lm-add{padding:0 10px;font-size:13px}.lm-binder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lm-binder-head{align-items:flex-start;flex-direction:column}.lm-binder-card{padding:10px}.lm-screen.notebook .lm-workspace{padding:2px 8px 74px}.lm-screen.notebook .lm-header{min-height:78px;flex-basis:78px;padding-left:12px;padding-right:12px}.lm-screen.notebook .lm-title{font-size:21px;width:58vw}.lm-screen.notebook .lm-back,.lm-screen.notebook .lm-search,.lm-screen.notebook .lm-more{width:46px;height:46px;min-width:46px;flex-basis:46px;border-radius:15px}.lm-notebook-shell{inset:0 0 58px;padding:16px 14px 0}.lm-page{width:min(calc(100vw - 28px),calc((100dvh - 160px)*.82));max-height:calc(100dvh - 160px)}.lm-notebook-tools{left:10px;bottom:10px}.lm-page-nav{bottom:10px}}
@@ -333,7 +333,7 @@
       <input class="lm-notebook-file lm-notebook-any-input" type="file">
       <div class="lm-plus-menu"><button data-plus="sheet" type="button">Scheda</button><button data-plus="image" type="button">Immagine</button><button data-plus="file" type="button">File</button></div>
       <div class="lm-more-menu"><button data-more="lesson" type="button">Nuova lezione</button><button data-more="share" type="button">Condividi / Esporta</button></div>
-      <div class="lm-transcribe"><div class="lm-transcribe-card"><div class="lm-transcribe-title">Trasforma in testo digitale</div><textarea class="lm-transcribe-input" placeholder="Scrivi qui il testo (puoi usare anche Scribble con Apple Pencil)"></textarea><div class="lm-transcribe-actions"><button class="lm-transcribe-cancel" type="button">Annulla</button><button class="lm-transcribe-ok" type="button">Digitalizza</button></div></div></div><div class="lm-lasso-hint">Scrittura selezionata: premi T per trasformarla in testo</div><div class="lm-textbar"><div class="lm-font-wrap"><button class="lm-font-trigger" type="button" aria-label="Font">Andika</button><div class="lm-font-menu"><button class="lm-font-choice" data-font="andika" data-value="'Andika', Arial, sans-serif" type="button">Andika</button><button class="lm-font-choice" data-font="corsivo" data-value="'Corsivo Primaria', cursive" type="button">Corsivo Primaria</button><button class="lm-font-choice" data-font="arial" data-value="Arial, sans-serif" type="button">Arial</button></div></div><select class="lm-size"><option>24</option><option selected>32</option><option>40</option><option>48</option><option>56</option></select><button class="lm-align" type="button">☰</button><input class="lm-color" type="color" value="#111111"></div>
+      <div class="lm-transcribe"><div class="lm-transcribe-card"><div class="lm-transcribe-title">Trasforma in testo digitale</div><div class="lm-transcribe-sub">Controlla la scrittura selezionata e inserisci il testo. Con Apple Pencil puoi scrivere direttamente nel campo usando Scribble.</div><canvas class="lm-transcribe-preview" aria-label="Anteprima della scrittura selezionata"></canvas><textarea class="lm-transcribe-input" autocomplete="off" autocapitalize="sentences" spellcheck="true" placeholder="Scrivi qui il testo digitale…"></textarea><div class="lm-transcribe-actions"><button class="lm-transcribe-cancel" type="button">Annulla</button><button class="lm-transcribe-ok" type="button">Digitalizza</button></div></div></div><div class="lm-lasso-hint">Scrittura selezionata: premi T per trasformarla in testo</div><div class="lm-textbar"><div class="lm-font-wrap"><button class="lm-font-trigger" type="button" aria-label="Font">Andika</button><div class="lm-font-menu"><button class="lm-font-choice" data-font="andika" data-value="'Andika', Arial, sans-serif" type="button">Andika</button><button class="lm-font-choice" data-font="corsivo" data-value="'Corsivo Primaria', cursive" type="button">Corsivo Primaria</button><button class="lm-font-choice" data-font="arial" data-value="Arial, sans-serif" type="button">Arial</button></div></div><select class="lm-size"><option>24</option><option selected>32</option><option>40</option><option>48</option><option>56</option></select><button class="lm-align" type="button">☰</button><input class="lm-color" type="color" value="#111111"></div>
       <div class="lm-modal lm-sheet-modal"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Schede da stampare</h2><div class="lm-sheet-picker-grid"></div></div></div>
       <div class="lm-modal lm-share-modal"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Condividi lezione</h2><p class="lm-share-info"></p><button class="lm-share-now" type="button">Condividi / stampa</button></div></div>
       <div class="lm-modal lm-search-results"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Cerca nel quaderno</h2><input class="lm-search-input" type="search" placeholder="Cerca parola o frase..." style="width:100%;height:46px;border:1px solid #ccd8e5;border-radius:12px;padding:0 12px;font-size:16px"><div class="lm-results"></div></div></div>
@@ -555,40 +555,120 @@
       return {x:minX,y:minY,w:Math.max(.16,maxX-minX),h:Math.max(.06,maxY-minY)};
     }
 
+    function renderSelectionPreview(page, canvas) {
+      if(!canvas || !page) return;
+      const box=selectionBounds(page);
+      const rect=canvas.getBoundingClientRect();
+      const dpr=window.devicePixelRatio||1;
+      const w=Math.max(1,Math.round((rect.width||520)*dpr));
+      const h=Math.max(1,Math.round((rect.height||110)*dpr));
+      canvas.width=w; canvas.height=h;
+      const ctx=canvas.getContext("2d");
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      const cw=w/dpr, ch=h/dpr;
+      ctx.clearRect(0,0,cw,ch);
+      ctx.fillStyle="#fff";ctx.fillRect(0,0,cw,ch);
+      const pad=10;
+      const scaleX=(cw-pad*2)/Math.max(.001,box.w);
+      const scaleY=(ch-pad*2)/Math.max(.001,box.h);
+      const scale=Math.min(scaleX,scaleY);
+      ctx.lineCap="round";ctx.lineJoin="round";ctx.strokeStyle="#111";ctx.lineWidth=2.2;
+      selectedStrokeIndexes.forEach(i=>{
+        const s=page.strokes?.[i]; if(!s?.points?.length)return;
+        ctx.beginPath();
+        s.points.forEach((pt,j)=>{
+          const x=pad+(pt.x-box.x)*scale;
+          const y=pad+(pt.y-box.y)*scale;
+          if(!j)ctx.moveTo(x,y);else ctx.lineTo(x,y);
+        });
+        ctx.stroke();
+      });
+    }
+
     async function convertSelectionToText() {
       const page=currentNotebookPage();
       if(!page) return;
+
+      // Se è già testo digitale, T apre semplicemente gli strumenti di formattazione.
       if(selectedObjectId) {
         const obj=objectById(selectedObjectId);
         if(obj?.type==="text") { updateTextbar(); return; }
       }
+
       if(!selectedStrokeIndexes.size) {
         const hint=screen.querySelector(".lm-lasso-hint");
-        if(hint){hint.textContent="Prima circonda con il lazo la scrittura da trasformare";hint.classList.add("aperto");setTimeout(()=>hint.classList.remove("aperto"),1800);}
+        if(hint){
+          hint.textContent="Prima circonda con il lazo la scrittura da trasformare";
+          hint.classList.add("aperto");
+          setTimeout(()=>hint.classList.remove("aperto"),1800);
+        }
         return;
       }
-      const modal=screen.querySelector(".lm-transcribe"),input=screen.querySelector(".lm-transcribe-input"),ok=screen.querySelector(".lm-transcribe-ok"),cancel=screen.querySelector(".lm-transcribe-cancel");
+
+      const modal=screen.querySelector(".lm-transcribe");
+      const input=screen.querySelector(".lm-transcribe-input");
+      const ok=screen.querySelector(".lm-transcribe-ok");
+      const cancel=screen.querySelector(".lm-transcribe-cancel");
+      const preview=screen.querySelector(".lm-transcribe-preview");
       if(!modal||!input||!ok||!cancel)return;
-      input.value="";modal.classList.add("aperto");setTimeout(()=>input.focus(),50);
-      const text=await new Promise(resolve=>{
-        const done=value=>{modal.classList.remove("aperto");ok.removeEventListener("click",yes);cancel.removeEventListener("click",no);resolve(value)};
-        const yes=()=>done(input.value.trim());const no=()=>done("");
-        ok.addEventListener("click",yes);cancel.addEventListener("click",no);
+
+      renderSelectionPreview(page,preview);
+      input.value="";
+      modal.classList.add("aperto");
+      setTimeout(()=>input.focus({preventScroll:true}),60);
+
+      const digitalText=await new Promise(resolve=>{
+        const cleanup=()=>{
+          ok.removeEventListener("click",yes);
+          cancel.removeEventListener("click",no);
+          input.removeEventListener("keydown",keys);
+          modal.classList.remove("aperto");
+        };
+        const done=value=>{cleanup();resolve(value);};
+        const yes=()=>done(input.value.trim());
+        const no=()=>done("");
+        const keys=e=>{
+          if(e.key==="Escape"){e.preventDefault();no();}
+          if((e.metaKey||e.ctrlKey)&&e.key==="Enter"){e.preventDefault();yes();}
+        };
+        ok.addEventListener("click",yes);
+        cancel.addEventListener("click",no);
+        input.addEventListener("keydown",keys);
       });
-      if(!text) return;
+
+      // Annulla = nessun tratto viene cancellato.
+      if(!digitalText) return;
+
       const b=selectionBounds(page);
       pushHistory();
+
+      // Solo dopo conferma sostituiamo i tratti selezionati col testo digitale.
       page.strokes=(page.strokes||[]).filter((_,i)=>!selectedStrokeIndexes.has(i));
-      const obj={id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type:"text",text,x:b.x*100,y:b.y*100,w:Math.min(82,Math.max(24,b.w*100)),fontFamily:"'Andika', Arial, sans-serif",fontSize:32,align:"left",color:"#111111"};
-      page.objects.push(obj);selectedObjectId=obj.id;selectedStrokeIndexes=new Set();
+
+      const obj={
+        id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,
+        type:"text",
+        text:digitalText,
+        x:b.x*100,
+        y:b.y*100,
+        w:Math.min(82,Math.max(24,b.w*100)),
+        h:Math.min(22,Math.max(7,b.h*100)),
+        fontFamily:"'Andika', Arial, sans-serif",
+        fontSize:32,
+        align:"left",
+        color:"#111111"
+      };
+
+      page.objects.push(obj);
+      selectedObjectId=obj.id;
+      selectedStrokeIndexes=new Set();
+      lassoPoints=[];
       await persistNotebook();
       renderNotebookPage();
-      // v3A.16.4: mostra il Quaderno soltanto quando foglio, toolbar e navigazione
-      // sono già montati e il layout ha completato due frame.
-      await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-      const readyShell=panel.querySelector(".lm-notebook-shell");
-      if(readyShell) readyShell.scrollTop=0;
-      screen.classList.remove("notebook-preparing");
+
+      // Il nuovo testo resta selezionato e la barra di formattazione si apre subito.
+      updateTextbar();
+      requestAnimationFrame(positionTextbar);
     }
 
     function renderCanvas(canvas, page) {
