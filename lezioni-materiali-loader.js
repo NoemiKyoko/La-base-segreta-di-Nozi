@@ -606,27 +606,16 @@
       const ta=document.createElement("textarea");
       ta.className="lm-native-text-editor";
       ta.rows=1;
-      ta.wrap="soft";
-      ta.value=String(obj.text??"").replace(/\r\n?/g,"\n");
+      ta.value=obj.text||"";
       ta.spellcheck=true;
       ta.setAttribute("aria-label","Scrivi testo");
       el.appendChild(ta);
 
       const autosize=()=>{
-        // SOLO geometria: il comportamento focus/cursore resta quello della 18.5.3.
         ta.style.height="auto";
-        void ta.offsetHeight;
-        const needed=Math.max(30,ta.scrollHeight);
-        ta.style.height=needed+"px";
-        el.style.height=(needed+4)+"px";
-        el.style.minHeight=(needed+4)+"px";
-
-        // Memorizza anche l'altezza corretta dell'oggetto per i riapri successivi.
-        const pageEl=el.closest(".lm-page");
-        if(pageEl){
-          const pr=pageEl.getBoundingClientRect();
-          if(pr.height>0) obj.h=(needed+4)/pr.height*100;
-        }
+        ta.style.height=Math.max(30,ta.scrollHeight)+"px";
+        el.style.height="auto";
+        el.style.minHeight=Math.max(34,ta.scrollHeight+4)+"px";
       };
 
       ta.addEventListener("pointerdown",e=>{e.stopPropagation();});
