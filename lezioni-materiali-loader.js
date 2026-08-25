@@ -156,6 +156,7 @@
       key: chiaveQuaderno(classeId, materia),
       classId: classeId,
       subject: materia,
+      paperType: String(classeId)==="1" ? "grid-1cm" : null,
       currentPage: 0,
       pages: [paginaNuova(null, false)],
       lessons: [],
@@ -253,6 +254,19 @@
       .lm-notebook-shell{position:absolute;inset:0 0 66px;display:flex;align-items:flex-start;justify-content:center;padding:22px 28px 22px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:none}
       .lm-page{position:relative;width:min(calc(100vw - 56px),calc((100dvh - 190px)*.82));height:auto;max-width:none;max-height:calc(100dvh - 190px);aspect-ratio:.82;background:#fff;box-shadow:0 10px 28px rgba(55,60,70,.17);border-radius:10px;overflow:hidden;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}.lm-page,.lm-page *{user-select:none!important;-webkit-user-select:none!important;-webkit-touch-callout:none!important;-webkit-user-drag:none!important}
       .lm-page-paper{position:absolute;inset:0;background-color:#fff;background-image:linear-gradient(to right,rgba(89,130,170,.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.12) 1px,transparent 1px);background-size:24px 24px}
+      .lm-page-paper.paper-grid-1cm{background-image:linear-gradient(to right,rgba(89,130,170,.14) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.14) 1px,transparent 1px);background-size:48px 48px}
+      .lm-page-paper.paper-grid-05cm{background-image:linear-gradient(to right,rgba(89,130,170,.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.12) 1px,transparent 1px);background-size:24px 24px}
+      .lm-page-paper.paper-lines-2{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 34px,rgba(98,130,170,.22) 34px,rgba(98,130,170,.22) 35px,transparent 35px,transparent 45px,rgba(98,130,170,.10) 45px,rgba(98,130,170,.10) 46px);background-size:100% 46px}
+      .lm-page-paper.paper-lines-5{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 30px,rgba(98,130,170,.20) 30px,rgba(98,130,170,.20) 31px);background-size:100% 31px}
+      .lm-paper-choice{position:fixed;inset:0;z-index:1200;display:grid;place-items:center;background:rgba(40,52,70,.18);backdrop-filter:blur(2px)}
+      .lm-paper-choice-card{width:min(520px,calc(100vw - 44px));padding:20px;border-radius:22px;background:#fffaf7;box-shadow:0 18px 55px rgba(35,45,60,.22);color:var(--lm-dark)}
+      .lm-paper-choice-card h2{margin:0 0 5px;font-size:21px}.lm-paper-choice-card p{margin:0 0 16px;font-size:14px;opacity:.78}
+      .lm-paper-options{display:grid;grid-template-columns:1fr 1fr;gap:12px}.lm-paper-option{appearance:none;border:1.5px solid color-mix(in srgb,var(--lm-color) 55%,white);border-radius:16px;background:white;padding:12px;color:var(--lm-dark);font-weight:800;font-size:15px}
+      .lm-paper-preview{height:116px;margin-bottom:9px;border-radius:10px;border:1px solid rgba(70,90,120,.10);background-color:#fff}
+      .lm-paper-preview.grid05{background-image:linear-gradient(to right,rgba(89,130,170,.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.12) 1px,transparent 1px);background-size:12px 12px}
+      .lm-paper-preview.lines2{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 17px,rgba(98,130,170,.22) 17px,rgba(98,130,170,.22) 18px,transparent 18px,transparent 23px,rgba(98,130,170,.10) 23px,rgba(98,130,170,.10) 24px)}
+      .lm-paper-preview.lines5{background-image:repeating-linear-gradient(to bottom,transparent 0,transparent 15px,rgba(98,130,170,.20) 15px,rgba(98,130,170,.20) 16px)}
+
       .lm-draw-canvas{position:absolute;inset:0;z-index:4;width:100%;height:100%;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
       .lm-object-layer{position:absolute;inset:0;z-index:5;pointer-events:none}
       .lm-lasso-hint{position:fixed;z-index:905;display:none;left:50%;top:88px;transform:translateX(-50%);padding:7px 12px;border-radius:12px;background:rgba(255,255,255,.94);color:var(--lm-dark);font-size:13px;font-weight:800;box-shadow:0 4px 14px rgba(50,60,75,.12)}.lm-lasso-hint.aperto{display:block}
@@ -667,6 +681,7 @@
       liberaObjectUrls();
       const page=currentNotebookPage();if(!page)return;
       ensureDateObject(page);
+      applyNotebookPaper();
       const pageEl=panel.querySelector(".lm-page");if(!pageEl)return;
       const layer=pageEl.querySelector(".lm-object-layer");layer.innerHTML="";
       (page.objects||[]).forEach(obj=>makePageObjectElement(obj,layer));
@@ -798,6 +813,43 @@
       bar.style.transform = 'translateX(-50%)';
     }
 
+    function applyNotebookPaper() {
+      const paper=panel.querySelector(".lm-page-paper");
+      if(!paper||!quadernoCorrente)return;
+      const type=quadernoCorrente.paperType || (String(classeCorrente?.id)==="1" ? "grid-1cm" : "grid-05cm");
+      paper.classList.remove("paper-grid-1cm","paper-grid-05cm","paper-lines-2","paper-lines-5");
+      paper.classList.add(
+        type==="grid-1cm" ? "paper-grid-1cm" :
+        type==="grid-05cm" ? "paper-grid-05cm" :
+        type==="lines-5" ? "paper-lines-5" : "paper-lines-2"
+      );
+    }
+
+    async function chooseNotebookPaperIfNeeded() {
+      if(!quadernoCorrente)return;
+      if(String(classeCorrente.id)==="1"){
+        if(quadernoCorrente.paperType!=="grid-1cm"){quadernoCorrente.paperType="grid-1cm";await persistNotebook();}
+        applyNotebookPaper(); return;
+      }
+      if(quadernoCorrente.paperType){applyNotebookPaper();return;}
+
+      const linesType=String(classeCorrente.id)==="5" ? "lines-5" : "lines-2";
+      const linesLabel=String(classeCorrente.id)==="5" ? "Righe di quinta / medie" : "Righe di seconda";
+      const modal=document.createElement("div");
+      modal.className="lm-paper-choice";
+      modal.innerHTML=`<div class="lm-paper-choice-card"><h2>Scegli il foglio</h2><p>${classeCorrente.label} · ${materiaCorrente}</p><div class="lm-paper-options"><button type="button" class="lm-paper-option" data-paper="${linesType}"><div class="lm-paper-preview ${linesType==="lines-5"?"lines5":"lines2"}"></div>${linesLabel}</button><button type="button" class="lm-paper-option" data-paper="grid-05cm"><div class="lm-paper-preview grid05"></div>Quadretti da 0,5 cm</button></div></div>`;
+      screen.appendChild(modal);
+      await new Promise(resolve=>{
+        modal.querySelectorAll("[data-paper]").forEach(btn=>btn.addEventListener("click",async()=>{
+          quadernoCorrente.paperType=btn.dataset.paper;
+          await persistNotebook();
+          applyNotebookPaper();
+          modal.remove();
+          resolve();
+        },{once:true}));
+      });
+    }
+
     async function renderQuaderno() {
       liberaObjectUrls();setBinderMode(false);setNotebookMode(true);screen.classList.add("notebook-preparing");schermata="quaderno";temaClasse(classeCorrente);title.textContent=`${materiaCorrente.toUpperCase()} — QUADERNO`;
       quadernoCorrente=await leggiQuaderno(classeCorrente.id,materiaCorrente);notebookHistory=[];notebookFuture=[];resetSelection();notebookMode="pencil";
@@ -812,6 +864,8 @@
       restoreNotebookUI();
       requestAnimationFrame(restoreNotebookUI);
       setTimeout(restoreNotebookUI,120);
+      applyNotebookPaper();
+      await chooseNotebookPaperIfNeeded();
 
       const canvas=panel.querySelector(".lm-draw-canvas");installDrawing(canvas);
       const pageForNativeBlock=panel.querySelector(".lm-page");
