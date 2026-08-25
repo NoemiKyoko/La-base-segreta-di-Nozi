@@ -581,8 +581,9 @@
       pushHistory();
       const obj={id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type:"text",text:"",x,y,w:Math.min(62,96-x),h:5,...textDefaults};
       page.objects.push(obj);selectedObjectId=obj.id;
-      const el=makePageObjectElement(obj,layer);
-      editTextInline(obj,el,true);
+      makePageObjectElement(obj,layer);
+      const el=layer.querySelector(`.lm-page-object[data-id="${obj.id}"]`);
+      if(el) editTextInline(obj,el,true);
       persistNotebook();
     }
     function editTextInline(obj,el,isNew=false){
