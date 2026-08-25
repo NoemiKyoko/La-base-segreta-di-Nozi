@@ -584,11 +584,10 @@
       makePageObjectElement(obj,layer);
       const el=layer.querySelector(`.lm-page-object[data-id="${obj.id}"]`);
       if(el) editTextInline(obj,el,true);
-      persistNotebook();
     }
     function editTextInline(obj,el,isNew=false){
       if(obj?.fontFamily==="Andika" || obj?.font==="Andika"){
-        el.style.fontFamily='Arial,"Helvetica Neue",sans-serif';
+        el.style.fontFamily='Andika, Arial, sans-serif';
       }
 
       if(!obj||!el)return;
@@ -737,6 +736,12 @@
       if (obj.id === selectedObjectId) el.classList.add("selected");
       el.addEventListener("pointerdown", event => {
         if (event.target === del || event.target === resize || ["pencil","eraser"].includes(notebookMode)) return;
+        // In modalità T, un testo già esistente NON deve entrare nel drag generico:
+        // il tap deve poter arrivare all'handler che riapre davvero l'editor.
+        if (obj.type === "text" && notebookMode === "text") {
+          event.stopPropagation();
+          return;
+        }
         event.preventDefault(); event.stopPropagation(); selectedObjectId = obj.id; renderNotebookPage();
         const pageEl = layer.parentElement, rect = pageEl.getBoundingClientRect(), er = el.getBoundingClientRect();
         const ox = event.clientX-er.left, oy=event.clientY-er.top;
@@ -763,9 +768,12 @@
           editTextInline(obj,el,false);
         };
         el.addEventListener("dblclick",reopen);
+        el.addEventListener("pointerup",e=>{
+          if(notebookMode!=="text")return;
+          reopen(e);
+        });
         el.addEventListener("click",e=>{
           if(notebookMode!=="text")return;
-          // Su iPad non aspettiamo il dblclick: un tap sul testo esistente riapre l'editing.
           reopen(e);
         });
       }
