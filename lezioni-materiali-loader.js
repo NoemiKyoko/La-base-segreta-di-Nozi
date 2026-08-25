@@ -280,7 +280,7 @@
       }
       .lm-text-move-handle:active{cursor:grabbing}
 
-      .lm-page-object.text.lm-textbox-editing .lm-native-text-editor{display:block!important;width:100%!important;min-height:30px!important;height:auto;box-sizing:border-box!important;border:0!important;outline:0!important;resize:none!important;background:transparent!important;color:inherit!important;font:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:inherit!important;font-style:inherit!important;line-height:1.2!important;text-align:inherit!important;padding:0!important;margin:0!important;overflow:hidden!important;-webkit-appearance:none!important;appearance:none!important;touch-action:auto!important;user-select:text!important;-webkit-user-select:text!important;-webkit-touch-callout:default!important;caret-color:#111!important}
+      .lm-page-object.text.lm-textbox-editing .lm-native-text-editor{display:block!important;width:100%!important;min-height:30px!important;height:auto;box-sizing:border-box!important;border:0!important;outline:0!important;resize:none!important;background:transparent!important;color:inherit!important;font:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:inherit!important;font-style:inherit!important;line-height:1.2!important;text-align:inherit!important;padding:0!important;margin:0!important;overflow:hidden!important;-webkit-appearance:none!important;appearance:none!important;touch-action:auto!important;user-select:text!important;-webkit-user-select:text!important;-webkit-touch-callout:default!important;caret-color:#111!importantwhite-space:pre-wrap!important;overflow-wrap:break-word!important;word-break:normal!important;}
 .lm-page-object.text.andika{font-feature-settings:normal;font-variant-ligatures:normal}.lm-page-object img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}.lm-page-object.file{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:#fffaf4;color:#444;box-shadow:0 3px 10px rgba(0,0,0,.07)}
       .lm-object-delete,.lm-object-resize{display:none;position:absolute;appearance:none;border:0;width:27px;height:27px;border-radius:50%;background:#fff;color:#5f7184;box-shadow:0 2px 8px rgba(0,0,0,.16);cursor:pointer}.lm-page-object.selected .lm-object-delete,.lm-page-object.selected .lm-object-resize{display:block}.lm-object-delete{right:-12px;top:-12px}.lm-object-resize{right:-12px;bottom:-12px}
       .lm-notebook-tools{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));z-index:880;display:flex;align-items:center;gap:1px;padding:6px 7px 6px 22px;border:1.25px solid color-mix(in srgb,var(--lm-color) 62%,white);border-radius:17px;background:color-mix(in srgb,var(--lm-soft) 88%,white);box-shadow:0 5px 14px rgba(80,60,45,.12);touch-action:none;user-select:none;-webkit-user-select:none}.lm-tools-grip{position:absolute;left:5px;top:50%;transform:translateY(-50%);width:16px;height:29px;display:grid;place-items:center;color:color-mix(in srgb,var(--lm-dark) 62%,white);font-weight:900;font-size:14px;cursor:grab;touch-action:none}.lm-tools-grip:active{cursor:grabbing}.lm-notebook-tools button{appearance:none;border:0;width:34px;height:34px;border-radius:9px;background:transparent;color:var(--lm-dark);font-size:17px;font-weight:800;cursor:pointer;touch-action:manipulation}.lm-notebook-tools button.active{background:white;box-shadow:0 2px 7px rgba(45,50,60,.09)}.lm-notebook-tools button:disabled{opacity:.28}.lm-tool-eraser,.lm-tool-lasso{display:grid!important;place-items:center}.lm-tool-eraser svg,.lm-tool-lasso svg{width:18px;height:18px;display:block;overflow:visible}.lm-tool-eraser svg{width:19px;height:19px}.lm-tool-lasso svg{width:20px;height:20px}
@@ -606,16 +606,23 @@
       const ta=document.createElement("textarea");
       ta.className="lm-native-text-editor";
       ta.rows=1;
-      ta.value=obj.text||"";
+      const fullSavedText=String(obj.text??"").replace(/\r\n?/g,"\n");
+      ta.value=fullSavedText;
       ta.spellcheck=true;
       ta.setAttribute("aria-label","Scrivi testo");
       el.appendChild(ta);
 
       const autosize=()=>{
-        ta.style.height="auto";
-        ta.style.height=Math.max(30,ta.scrollHeight)+"px";
-        el.style.height="auto";
-        el.style.minHeight=Math.max(34,ta.scrollHeight+4)+"px";
+        ta.style.height="0px";
+        const needed=Math.max(30,ta.scrollHeight);
+        ta.style.height=needed+"px";
+        el.style.height=(needed+4)+"px";
+        el.style.minHeight=(needed+4)+"px";
+        const pageEl=el.closest(".lm-page");
+        if(pageEl){
+          const pr=pageEl.getBoundingClientRect();
+          if(pr.height>0) obj.h=(needed+4)/pr.height*100;
+        }
       };
 
       ta.addEventListener("pointerdown",e=>{e.stopPropagation();});
@@ -671,9 +678,22 @@
 
       updateTextbar();
       positionTextbar();
-      autosize();
+      requestAnimationFrame(()=>{
+        autosize();
+        requestAnimationFrame(()=>{
+          autosize();
+          if(!isNew){
+            ta.focus({preventScroll:true});
+            try{
+              const n=ta.value.length;
+              ta.setSelectionRange(n,n);
+            }catch(_){}
+          }
+        });
+      });
 
-      // Non forziamo la tastiera al primo tocco: la casella nasce, poi l'utente tocca dentro per scrivere.
+      // Nuova casella: resta valido il secondo tocco per iniziare a scrivere.
+      // Casella esistente: viene ricostruita con TUTTO il testo e riaperta in editing.
     }
 
     function renderCanvas(canvas, page) {
