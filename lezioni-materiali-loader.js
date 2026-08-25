@@ -272,6 +272,14 @@
       .lm-lasso-hint{position:fixed;z-index:905;display:none;left:50%;top:88px;transform:translateX(-50%);padding:7px 12px;border-radius:12px;background:rgba(255,255,255,.94);color:var(--lm-dark);font-size:13px;font-weight:800;box-shadow:0 4px 14px rgba(50,60,75,.12)}.lm-lasso-hint.aperto{display:block}
       .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}.lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}
       .lm-page-object.text.lm-textbox-editing{border:1px solid rgba(43,144,217,.38)!important;background:rgba(255,255,255,.08)!important;min-height:34px!important;padding:2px 4px!important;touch-action:auto!important;overflow:visible!important}
+      .lm-text-move-handle{
+        position:absolute;left:-10px;top:-10px;width:24px;height:24px;border-radius:50%;
+        border:1px solid rgba(43,144,217,.35);background:rgba(255,255,255,.92);
+        box-shadow:0 2px 8px rgba(0,0,0,.10);display:grid;place-items:center;
+        font-size:13px;color:#5f7184;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;
+      }
+      .lm-text-move-handle:active{cursor:grabbing}
+
       .lm-page-object.text.lm-textbox-editing .lm-native-text-editor{display:block!important;width:100%!important;min-height:30px!important;height:auto;box-sizing:border-box!important;border:0!important;outline:0!important;resize:none!important;background:transparent!important;color:inherit!important;font:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:inherit!important;font-style:inherit!important;line-height:1.2!important;text-align:inherit!important;padding:0!important;margin:0!important;overflow:hidden!important;-webkit-appearance:none!important;appearance:none!important;touch-action:auto!important;user-select:text!important;-webkit-user-select:text!important;-webkit-touch-callout:default!important;caret-color:#111!important}
 .lm-page-object.text.andika{font-feature-settings:normal;font-variant-ligatures:normal}.lm-page-object img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}.lm-page-object.file{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:#fffaf4;color:#444;box-shadow:0 3px 10px rgba(0,0,0,.07)}
       .lm-object-delete,.lm-object-resize{display:none;position:absolute;appearance:none;border:0;width:27px;height:27px;border-radius:50%;background:#fff;color:#5f7184;box-shadow:0 2px 8px rgba(0,0,0,.16);cursor:pointer}.lm-page-object.selected .lm-object-delete,.lm-page-object.selected .lm-object-resize{display:block}.lm-object-delete{right:-12px;top:-12px}.lm-object-resize{right:-12px;bottom:-12px}
@@ -579,22 +587,89 @@
     }
     function editTextInline(obj,el,isNew=false){
       if(!obj||!el)return;
-      selectedObjectId=obj.id;el.classList.add("selected","lm-textbox-editing");
-      el.style.pointerEvents="auto";el.innerHTML="";
+      selectedObjectId=obj.id;
+      el.classList.add("selected","lm-textbox-editing");
+      el.style.pointerEvents="auto";
+      el.innerHTML="";
+
+      const moveHandle=document.createElement("button");
+      moveHandle.type="button";
+      moveHandle.className="lm-text-move-handle";
+      moveHandle.textContent="↔";
+      moveHandle.setAttribute("aria-label","Sposta casella di testo");
+      el.appendChild(moveHandle);
+
       const ta=document.createElement("textarea");
-      ta.className="lm-native-text-editor";ta.rows=1;ta.value=obj.text||"";ta.spellcheck=true;
-      ta.setAttribute("aria-label","Scrivi testo");el.appendChild(ta);
-      const autosize=()=>{ta.style.height="auto";ta.style.height=Math.max(30,ta.scrollHeight)+"px";el.style.height="auto";el.style.minHeight=Math.max(34,ta.scrollHeight+4)+"px";};
-      ta.addEventListener("pointerdown",e=>e.stopPropagation());
-      ta.addEventListener("click",e=>e.stopPropagation());
+      ta.className="lm-native-text-editor";
+      ta.rows=1;
+      ta.value=obj.text||"";
+      ta.spellcheck=true;
+      ta.setAttribute("aria-label","Scrivi testo");
+      el.appendChild(ta);
+
+      const autosize=()=>{
+        ta.style.height="auto";
+        ta.style.height=Math.max(30,ta.scrollHeight)+"px";
+        el.style.height="auto";
+        el.style.minHeight=Math.max(34,ta.scrollHeight+4)+"px";
+      };
+
+      ta.addEventListener("pointerdown",e=>{e.stopPropagation();});
+      ta.addEventListener("click",e=>{
+        e.stopPropagation();
+        // Secondo tocco dentro la casella: focus esplicito.
+        ta.focus({preventScroll:true});
+        try{const n=ta.value.length;ta.setSelectionRange(n,n);}catch(_){}
+      });
       ta.addEventListener("input",()=>{obj.text=ta.value;autosize();});
+
+      // Spostamento SOLO dalla maniglia ↔.
+      moveHandle.addEventListener("pointerdown",e=>{
+        e.preventDefault();e.stopPropagation();
+        const pageEl=el.closest(".lm-page");
+        if(!pageEl)return;
+        const pageRect=pageEl.getBoundingClientRect();
+        const boxRect=el.getBoundingClientRect();
+        const dx=e.clientX-boxRect.left,dy=e.clientY-boxRect.top;
+        moveHandle.setPointerCapture?.(e.pointerId);
+        const move=ev=>{
+          ev.preventDefault();ev.stopPropagation();
+          const left=Math.max(0,Math.min(pageRect.width-boxRect.width,ev.clientX-pageRect.left-dx));
+          const top=Math.max(0,Math.min(pageRect.height-boxRect.height,ev.clientY-pageRect.top-dy));
+          obj.x=left/pageRect.width*100;
+          obj.y=top/pageRect.height*100;
+          el.style.left=`${obj.x}%`;
+          el.style.top=`${obj.y}%`;
+        };
+        const end=async ev=>{
+          try{moveHandle.releasePointerCapture?.(ev.pointerId);}catch(_){}
+          moveHandle.removeEventListener("pointermove",move);
+          moveHandle.removeEventListener("pointerup",end);
+          moveHandle.removeEventListener("pointercancel",end);
+          await persistNotebook();
+        };
+        moveHandle.addEventListener("pointermove",move);
+        moveHandle.addEventListener("pointerup",end);
+        moveHandle.addEventListener("pointercancel",end);
+      },{passive:false});
+
       ta.addEventListener("blur",async()=>{
-        obj.text=ta.value.replace(/\n+$/,"");el.classList.remove("lm-textbox-editing");
-        if(isNew&&!obj.text){const p=currentNotebookPage();if(p)p.objects=p.objects.filter(o=>o.id!==obj.id);selectedObjectId=null;}
-        await persistNotebook();renderNotebookPage();
+        obj.text=ta.value.replace(/\n+$/,"");
+        el.classList.remove("lm-textbox-editing");
+        if(isNew&&!obj.text){
+          const p=currentNotebookPage();
+          if(p)p.objects=p.objects.filter(o=>o.id!==obj.id);
+          selectedObjectId=null;
+        }
+        await persistNotebook();
+        renderNotebookPage();
       },{once:true});
-      updateTextbar();positionTextbar();autosize();
-      requestAnimationFrame(()=>{ta.focus({preventScroll:true});try{const n=ta.value.length;ta.setSelectionRange(n,n);}catch(_){}});
+
+      updateTextbar();
+      positionTextbar();
+      autosize();
+
+      // Non forziamo la tastiera al primo tocco: la casella nasce, poi l'utente tocca dentro per scrivere.
     }
 
     function renderCanvas(canvas, page) {
