@@ -276,8 +276,8 @@
       .lm-scroll-rail{position:fixed;right:max(4px,env(safe-area-inset-right));top:132px;bottom:92px;width:8px;z-index:870;display:flex;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}.lm-scroll-track{position:relative;width:2px;height:100%;border-radius:999px;background:rgba(23,63,122,.08)}.lm-scroll-thumb{position:absolute;left:50%;top:0;transform:translateX(-50%);width:5px;min-height:42px;border-radius:999px;background:color-mix(in srgb,var(--lm-color) 72%,white);box-shadow:0 1px 4px rgba(45,55,70,.12);touch-action:none}.lm-scroll-rail.hidden{display:none}
       .lm-page-nav{position:fixed;left:50%;bottom:max(28px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:875;display:flex;align-items:center;gap:10px;padding:6px 9px;border:1.5px solid color-mix(in srgb,var(--lm-color) 58%,white);border-radius:18px;background:color-mix(in srgb,var(--lm-soft) 90%,white);box-shadow:0 6px 16px rgba(80,60,45,.11)}.lm-page-nav button{appearance:none;border:0;width:34px;height:32px;background:transparent;color:var(--lm-dark);font-size:27px;cursor:pointer}.lm-page-nav span{min-width:64px;text-align:center;color:var(--lm-dark);font-weight:850;font-size:15px}
       .lm-plus-menu,.lm-more-menu{position:fixed;z-index:910;display:none;min-width:190px;padding:8px;border:1px solid color-mix(in srgb,var(--lm-color) 42%,white);border-radius:17px;background:#fffaf7;box-shadow:0 10px 30px rgba(35,45,60,.20)}.lm-plus-menu{left:max(170px,calc(env(safe-area-inset-left) + 130px));bottom:max(92px,calc(env(safe-area-inset-bottom) + 82px))}.lm-more-menu{right:max(24px,env(safe-area-inset-right));top:max(78px,calc(env(safe-area-inset-top) + 66px))}.lm-plus-menu.aperto,.lm-more-menu.aperto{display:block}.lm-plus-menu button,.lm-more-menu button{appearance:none;border:0;width:100%;padding:11px 13px;border-radius:11px;background:transparent;color:var(--lm-dark);text-align:left;font-size:15px;font-weight:750;cursor:pointer}.lm-plus-menu button:hover,.lm-more-menu button:hover{background:var(--lm-soft)}
-      .lm-transcribe{position:fixed;inset:0;z-index:960;display:none;place-items:center;background:rgba(35,42,52,.20);padding:20px}.lm-transcribe.aperto{display:grid}.lm-transcribe-card{width:min(590px,92vw);padding:18px;border-radius:20px;background:#fffaf7;border:1.5px solid color-mix(in srgb,var(--lm-color) 50%,white);box-shadow:0 18px 45px rgba(40,45,55,.20)}.lm-transcribe-title{font-weight:850;color:var(--lm-dark);margin-bottom:6px}.lm-transcribe-sub{font-size:13px;line-height:1.35;color:#66717e;margin-bottom:10px}.lm-transcribe-preview{width:100%;height:110px;display:block;border:1px solid rgba(80,90,105,.14);border-radius:13px;background:#fff;margin-bottom:10px}.lm-transcribe-input{width:100%;min-height:82px;resize:vertical;border:1.5px solid rgba(80,90,105,.18);border-radius:13px;padding:12px;font:20px Andika,Arial,sans-serif;color:#111;background:white;box-sizing:border-box}.lm-transcribe-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.lm-transcribe-actions button{appearance:none;border:0;border-radius:11px;padding:10px 14px;font-weight:800}.lm-transcribe-cancel{background:#eee;color:#536273}.lm-transcribe-ok{background:var(--lm-color);color:white}
-      .lm-textbar{position:fixed;left:50%;top:50%;transform:translate(-50%,70px);z-index:900;display:none;align-items:center;overflow:visible;border:1.5px solid color-mix(in srgb,var(--lm-color) 55%,white);border-radius:19px;background:#fffaf7;box-shadow:0 9px 24px rgba(60,50,45,.15)}.lm-textbar.aperto{display:flex}.lm-textbar select,.lm-textbar button,.lm-textbar input,.lm-font-trigger{height:50px;border:0;border-right:1px solid rgba(100,100,100,.09);background:transparent;color:var(--lm-dark);font-size:16px;font-weight:750}.lm-textbar select{padding:0 13px}.lm-font-wrap{position:relative}.lm-font-trigger{appearance:none;border:0;border-right:1px solid rgba(100,100,100,.09);background:transparent;padding:0 14px;min-width:170px;color:var(--lm-dark);font-size:16px;font-weight:600;text-align:left}.lm-font-menu{display:none;position:absolute;left:0;bottom:56px;min-width:220px;padding:7px;background:#fffaf7;border:1.5px solid color-mix(in srgb,var(--lm-color) 45%,white);border-radius:15px;box-shadow:0 9px 24px rgba(60,50,45,.16);z-index:930}.lm-font-menu.aperto{display:grid;gap:3px}.lm-font-choice{appearance:none;border:0!important;border-radius:10px;background:transparent!important;height:46px!important;padding:0 12px;text-align:left;color:#111!important;font-size:18px!important;font-weight:400!important}.lm-font-choice:hover,.lm-font-choice:focus{background:color-mix(in srgb,var(--lm-soft) 75%,white)!important}.lm-font-choice[data-font="andika"]{font-family:Andika,Arial,sans-serif}.lm-font-choice[data-font="corsivo"]{font-family:"Corsivo Primaria",cursive}.lm-font-choice[data-font="arial"]{font-family:Arial,sans-serif}.lm-textbar button{width:49px;font-size:21px;cursor:pointer}.lm-textbar input[type=color]{width:52px;padding:10px;border-right:0}
+      .lm-transcribe{position:fixed;inset:0;z-index:960;display:none;place-items:center;background:rgba(35,42,52,.20);padding:20px}.lm-transcribe.aperto{display:grid}.lm-transcribe-card{width:min(560px,92vw);padding:18px;border-radius:20px;background:#fffaf7;border:1.5px solid color-mix(in srgb,var(--lm-color) 50%,white);box-shadow:0 18px 45px rgba(40,45,55,.20)}.lm-transcribe-title{font-weight:850;color:var(--lm-dark);margin-bottom:10px}.lm-transcribe-input{width:100%;min-height:82px;resize:vertical;border:1.5px solid rgba(80,90,105,.18);border-radius:13px;padding:12px;font:20px Andika,Arial,sans-serif;color:#111;background:white;box-sizing:border-box}.lm-transcribe-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}.lm-transcribe-actions button{appearance:none;border:0;border-radius:11px;padding:10px 14px;font-weight:800}.lm-transcribe-cancel{background:#eee;color:#536273}.lm-transcribe-ok{background:var(--lm-color);color:white}
+      .lm-textbar{position:fixed;left:50%;top:50%;transform:translate(-50%,70px);z-index:900;display:none;align-items:center;overflow:visible;border:1.5px solid color-mix(in srgb,var(--lm-color) 55%,white);border-radius:19px;background:#fffaf7;box-shadow:0 9px 24px rgba(60,50,45,.15)}.lm-textbar.aperto{display:flex}.lm-textbar select,.lm-textbar button,.lm-textbar input,.lm-font-trigger{height:50px;border:0;border-right:1px solid rgba(100,100,100,.09);background:transparent;color:var(--lm-dark);font-size:16px;font-weight:750}.lm-textbar select{padding:0 13px}.lm-font-wrap{position:relative}.lm-font-trigger{appearance:none;border:0;border-right:1px solid rgba(100,100,100,.09);background:transparent;padding:0 14px;min-width:170px;color:var(--lm-dark);font-size:16px;font-weight:600;text-align:left}.lm-font-menu{display:none;position:absolute;left:0;bottom:56px;min-width:220px;padding:7px;background:#fffaf7;border:1.5px solid color-mix(in srgb,var(--lm-color) 45%,white);border-radius:15px;box-shadow:0 9px 24px rgba(60,50,45,.16);z-index:930}.lm-font-menu.aperto{display:grid;gap:3px}.lm-font-choice{appearance:none;border:0!important;border-radius:10px;background:transparent!important;height:46px!important;padding:0 12px;text-align:left;color:#111!important;font-size:18px!important;font-weight:400!important}.lm-font-choice:hover,.lm-font-choice:focus{background:color-mix(in srgb,var(--lm-soft) 75%,white)!important}.lm-font-choice[data-font="andika"]{font-family:Andika,Arial,sans-serif}.lm-font-choice[data-font="corsivo"]{font-family:"Corsivo Primaria",cursive}.lm-font-choice[data-font="arial"]{font-family:Arial,sans-serif}.lm-textbar button{width:49px;font-size:21px;cursor:pointer}.lm-textbar input[type=color]{width:52px;padding:10px;border-right:0}.lm-font-other{appearance:none;border:0!important;border-top:1px solid rgba(100,100,100,.10)!important;background:transparent!important;width:100%!important;height:42px!important;padding:0 12px!important;text-align:left;font-size:15px!important;color:#536273!important}.lm-textbar button.on{background:color-mix(in srgb,var(--lm-soft) 76%,white)}.lm-page-object.text.editing{outline:1.5px solid color-mix(in srgb,var(--lm-color) 70%,white);cursor:text;user-select:text;-webkit-user-select:text;min-height:1.5em}.lm-screen[data-notebook-tool="text"] .lm-page{cursor:text}
       .lm-notebook-file{display:none}
       @media(max-width:760px){.lm-header{gap:8px}.lm-workspace{padding:14px 10px}.lm-panel{width:96vw;padding:16px;border-width:6px}.lm-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lm-class-card,.lm-subject-card{min-height:135px;padding:12px}.lm-class-folder{width:88px;height:62px;margin-bottom:12px}.lm-class-folder::before{width:42px;height:16px;top:-13px}.lm-card-label,.lm-subject-name{font-size:15px}.lm-subject-icon{font-size:34px}.lm-choice-grid{grid-template-columns:1fr;gap:14px}.lm-choice-card{min-height:180px}.lm-choice-icon{font-size:54px}.lm-search{padding:0}.lm-title{font-size:21px}.lm-add{padding:0 10px;font-size:13px}.lm-binder-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lm-binder-head{align-items:flex-start;flex-direction:column}.lm-binder-card{padding:10px}.lm-screen.notebook .lm-workspace{padding:2px 8px 74px}.lm-screen.notebook .lm-header{min-height:78px;flex-basis:78px;padding-left:12px;padding-right:12px}.lm-screen.notebook .lm-title{font-size:21px;width:58vw}.lm-screen.notebook .lm-back,.lm-screen.notebook .lm-search,.lm-screen.notebook .lm-more{width:46px;height:46px;min-width:46px;flex-basis:46px;border-radius:15px}.lm-notebook-shell{inset:0 0 58px;padding:16px 14px 0}.lm-page{width:min(calc(100vw - 28px),calc((100dvh - 160px)*.82));max-height:calc(100dvh - 160px)}.lm-notebook-tools{left:10px;bottom:10px}.lm-page-nav{bottom:10px}}
     
@@ -333,7 +333,7 @@
       <input class="lm-notebook-file lm-notebook-any-input" type="file">
       <div class="lm-plus-menu"><button data-plus="sheet" type="button">Scheda</button><button data-plus="image" type="button">Immagine</button><button data-plus="file" type="button">File</button></div>
       <div class="lm-more-menu"><button data-more="lesson" type="button">Nuova lezione</button><button data-more="share" type="button">Condividi / Esporta</button></div>
-      <div class="lm-transcribe"><div class="lm-transcribe-card"><div class="lm-transcribe-title">Trasforma in testo digitale</div><div class="lm-transcribe-sub">Controlla la scrittura selezionata e inserisci il testo. Con Apple Pencil puoi scrivere direttamente nel campo usando Scribble.</div><canvas class="lm-transcribe-preview" aria-label="Anteprima della scrittura selezionata"></canvas><textarea class="lm-transcribe-input" autocomplete="off" autocapitalize="sentences" spellcheck="true" placeholder="Scrivi qui il testo digitale…"></textarea><div class="lm-transcribe-actions"><button class="lm-transcribe-cancel" type="button">Annulla</button><button class="lm-transcribe-ok" type="button">Digitalizza</button></div></div></div><div class="lm-lasso-hint">Scrittura selezionata: premi T per trasformarla in testo</div><div class="lm-textbar"><div class="lm-font-wrap"><button class="lm-font-trigger" type="button" aria-label="Font">Andika</button><div class="lm-font-menu"><button class="lm-font-choice" data-font="andika" data-value="'Andika', Arial, sans-serif" type="button">Andika</button><button class="lm-font-choice" data-font="corsivo" data-value="'Corsivo Primaria', cursive" type="button">Corsivo Primaria</button><button class="lm-font-choice" data-font="arial" data-value="Arial, sans-serif" type="button">Arial</button></div></div><select class="lm-size"><option>24</option><option selected>32</option><option>40</option><option>48</option><option>56</option></select><button class="lm-align" type="button">☰</button><input class="lm-color" type="color" value="#111111"></div>
+      <div class="lm-transcribe"><div class="lm-transcribe-card"><div class="lm-transcribe-title">Trasforma in testo digitale</div><textarea class="lm-transcribe-input" placeholder="Scrivi qui il testo (puoi usare anche Scribble con Apple Pencil)"></textarea><div class="lm-transcribe-actions"><button class="lm-transcribe-cancel" type="button">Annulla</button><button class="lm-transcribe-ok" type="button">Digitalizza</button></div></div></div><div class="lm-lasso-hint">Scrittura selezionata: premi T per trasformarla in testo</div><div class="lm-textbar"><div class="lm-font-wrap"><button class="lm-font-trigger" type="button" aria-label="Font">Andika</button><div class="lm-font-menu"><button class="lm-font-choice" data-font="andika" data-value="'Andika', Arial, sans-serif" type="button">Andika</button><button class="lm-font-choice" data-font="corsivo" data-value="'Corsivo Primaria', cursive" type="button">Corsivo Primaria</button><button class="lm-font-choice" data-font="arial" data-value="Arial, sans-serif" type="button">Arial</button><button class="lm-font-other" type="button">Altri font…</button></div></div><select class="lm-size"><option>18</option><option>24</option><option selected>32</option><option>40</option><option>48</option><option>56</option></select><button class="lm-bold" type="button" title="Grassetto"><b>B</b></button><button class="lm-italic" type="button" title="Corsivo"><i>I</i></button><button class="lm-align" type="button" title="Allineamento">☰</button><input class="lm-color" type="color" value="#111111" title="Colore"></div>
       <div class="lm-modal lm-sheet-modal"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Schede da stampare</h2><div class="lm-sheet-picker-grid"></div></div></div>
       <div class="lm-modal lm-share-modal"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Condividi lezione</h2><p class="lm-share-info"></p><button class="lm-share-now" type="button">Condividi / stampa</button></div></div>
       <div class="lm-modal lm-search-results"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Cerca nel quaderno</h2><input class="lm-search-input" type="search" placeholder="Cerca parola o frase..." style="width:100%;height:46px;border:1px solid #ccd8e5;border-radius:12px;padding:0 12px;font-size:16px"><div class="lm-results"></div></div></div>
@@ -555,120 +555,19 @@
       return {x:minX,y:minY,w:Math.max(.16,maxX-minX),h:Math.max(.06,maxY-minY)};
     }
 
-    function renderSelectionPreview(page, canvas) {
-      if(!canvas || !page) return;
-      const box=selectionBounds(page);
-      const rect=canvas.getBoundingClientRect();
-      const dpr=window.devicePixelRatio||1;
-      const w=Math.max(1,Math.round((rect.width||520)*dpr));
-      const h=Math.max(1,Math.round((rect.height||110)*dpr));
-      canvas.width=w; canvas.height=h;
-      const ctx=canvas.getContext("2d");
-      ctx.setTransform(dpr,0,0,dpr,0,0);
-      const cw=w/dpr, ch=h/dpr;
-      ctx.clearRect(0,0,cw,ch);
-      ctx.fillStyle="#fff";ctx.fillRect(0,0,cw,ch);
-      const pad=10;
-      const scaleX=(cw-pad*2)/Math.max(.001,box.w);
-      const scaleY=(ch-pad*2)/Math.max(.001,box.h);
-      const scale=Math.min(scaleX,scaleY);
-      ctx.lineCap="round";ctx.lineJoin="round";ctx.strokeStyle="#111";ctx.lineWidth=2.2;
-      selectedStrokeIndexes.forEach(i=>{
-        const s=page.strokes?.[i]; if(!s?.points?.length)return;
-        ctx.beginPath();
-        s.points.forEach((pt,j)=>{
-          const x=pad+(pt.x-box.x)*scale;
-          const y=pad+(pt.y-box.y)*scale;
-          if(!j)ctx.moveTo(x,y);else ctx.lineTo(x,y);
-        });
-        ctx.stroke();
-      });
+    let textDefaults={fontFamily:"'Andika', Arial, sans-serif",fontSize:32,bold:false,italic:false,align:"left",color:"#111111"};
+    function textStyleTarget(){return objectById(selectedObjectId);}
+    async function beginTextAtPoint(clientX,clientY){
+      if(notebookMode!=="text")return;const page=currentNotebookPage(),pageEl=panel.querySelector(".lm-page");if(!page||!pageEl)return;
+      const r=pageEl.getBoundingClientRect(),x=Math.max(1,Math.min(88,(clientX-r.left)/r.width*100)),y=Math.max(1,Math.min(94,(clientY-r.top)/r.height*100));
+      pushHistory();const obj={id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type:"text",text:"",x,y,w:Math.min(78,96-x),h:7,...textDefaults};
+      page.objects.push(obj);selectedObjectId=obj.id;await persistNotebook();renderNotebookPage();
+      requestAnimationFrame(()=>{const el=panel.querySelector(`.lm-page-object[data-id="${obj.id}"]`);if(el)editTextInline(obj,el,true);});
     }
-
-    async function convertSelectionToText() {
-      const page=currentNotebookPage();
-      if(!page) return;
-
-      // Se è già testo digitale, T apre semplicemente gli strumenti di formattazione.
-      if(selectedObjectId) {
-        const obj=objectById(selectedObjectId);
-        if(obj?.type==="text") { updateTextbar(); return; }
-      }
-
-      if(!selectedStrokeIndexes.size) {
-        const hint=screen.querySelector(".lm-lasso-hint");
-        if(hint){
-          hint.textContent="Prima circonda con il lazo la scrittura da trasformare";
-          hint.classList.add("aperto");
-          setTimeout(()=>hint.classList.remove("aperto"),1800);
-        }
-        return;
-      }
-
-      const modal=screen.querySelector(".lm-transcribe");
-      const input=screen.querySelector(".lm-transcribe-input");
-      const ok=screen.querySelector(".lm-transcribe-ok");
-      const cancel=screen.querySelector(".lm-transcribe-cancel");
-      const preview=screen.querySelector(".lm-transcribe-preview");
-      if(!modal||!input||!ok||!cancel)return;
-
-      renderSelectionPreview(page,preview);
-      input.value="";
-      modal.classList.add("aperto");
-      setTimeout(()=>input.focus({preventScroll:true}),60);
-
-      const digitalText=await new Promise(resolve=>{
-        const cleanup=()=>{
-          ok.removeEventListener("click",yes);
-          cancel.removeEventListener("click",no);
-          input.removeEventListener("keydown",keys);
-          modal.classList.remove("aperto");
-        };
-        const done=value=>{cleanup();resolve(value);};
-        const yes=()=>done(input.value.trim());
-        const no=()=>done("");
-        const keys=e=>{
-          if(e.key==="Escape"){e.preventDefault();no();}
-          if((e.metaKey||e.ctrlKey)&&e.key==="Enter"){e.preventDefault();yes();}
-        };
-        ok.addEventListener("click",yes);
-        cancel.addEventListener("click",no);
-        input.addEventListener("keydown",keys);
-      });
-
-      // Annulla = nessun tratto viene cancellato.
-      if(!digitalText) return;
-
-      const b=selectionBounds(page);
-      pushHistory();
-
-      // Solo dopo conferma sostituiamo i tratti selezionati col testo digitale.
-      page.strokes=(page.strokes||[]).filter((_,i)=>!selectedStrokeIndexes.has(i));
-
-      const obj={
-        id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,
-        type:"text",
-        text:digitalText,
-        x:b.x*100,
-        y:b.y*100,
-        w:Math.min(82,Math.max(24,b.w*100)),
-        h:Math.min(22,Math.max(7,b.h*100)),
-        fontFamily:"'Andika', Arial, sans-serif",
-        fontSize:32,
-        align:"left",
-        color:"#111111"
-      };
-
-      page.objects.push(obj);
-      selectedObjectId=obj.id;
-      selectedStrokeIndexes=new Set();
-      lassoPoints=[];
-      await persistNotebook();
-      renderNotebookPage();
-
-      // Il nuovo testo resta selezionato e la barra di formattazione si apre subito.
-      updateTextbar();
-      requestAnimationFrame(positionTextbar);
+    function editTextInline(obj,el,isNew=false){
+      if(!obj||!el)return;selectedObjectId=obj.id;el.classList.add("selected","editing");el.contentEditable="true";el.spellcheck=true;el.focus({preventScroll:true});
+      const s=window.getSelection(),r=document.createRange();r.selectNodeContents(el);r.collapse(false);s.removeAllRanges();s.addRange(r);updateTextbar();positionTextbar();
+      el.addEventListener("blur",async()=>{obj.text=(el.innerText||"").replace(/\n+$/,"");el.contentEditable="false";el.classList.remove("editing");if(isNew&&!obj.text){const p=currentNotebookPage();p.objects=p.objects.filter(o=>o.id!==obj.id);selectedObjectId=null;}await persistNotebook();renderNotebookPage();},{once:true});
     }
 
     function renderCanvas(canvas, page) {
@@ -696,14 +595,13 @@
     }
 
     function updateTextbar() {
-      const obj = objectById(selectedObjectId);
-      textbar.classList.toggle("aperto", !!obj && obj.type === "text");
-      if (!obj || obj.type !== "text") return;
-      screen.querySelector(".lm-size").value = String(obj.fontSize || 32);
-      const ft=screen.querySelector(".lm-font-trigger");if(ft){const target=(obj.fontFamily||"Arial, sans-serif");ft.textContent=target.includes("Corsivo")?"Corsivo Primaria":target.includes("Andika")?"Andika":"Arial";ft.style.fontFamily=target;}
-      screen.querySelector(".lm-color").value = obj.color || "#111111";
+      const obj=objectById(selectedObjectId),style=(obj&&obj.type==="text")?obj:(notebookMode==="text"?textDefaults:null);
+      textbar.classList.toggle("aperto",!!style);if(!style)return;
+      screen.querySelector(".lm-size").value=String(style.fontSize||32);screen.querySelector(".lm-color").value=style.color||"#111111";
+      const ft=screen.querySelector(".lm-font-trigger"),target=style.fontFamily||"'Andika', Arial, sans-serif";
+      ft.textContent=target.includes("Corsivo")?"Corsivo Primaria":target.includes("Andika")?"Andika":target.startsWith("Arial")?"Arial":target.split(",")[0].replaceAll("'","").replaceAll('"',"");ft.style.fontFamily=target;
+      screen.querySelector(".lm-bold")?.classList.toggle("on",!!style.bold);screen.querySelector(".lm-italic")?.classList.toggle("on",!!style.italic);
     }
-
     function makePageObjectElement(obj, layer) {
       const el = document.createElement("div");
       el.className = `lm-page-object ${obj.type}`;
@@ -715,15 +613,11 @@
         el.style.fontFamily = obj.fontFamily || "Arial, sans-serif";
         if ((obj.fontFamily || "").includes("Andika")) { el.classList.add("andika"); el.style.fontFeatureSettings="normal"; }
         el.style.fontSize = `${obj.fontSize || 32}px`;
-        el.style.fontWeight = "400";
-        el.style.fontStyle = "normal";
+        el.style.fontWeight = obj.bold ? "700" : "400";
+        el.style.fontStyle = obj.italic ? "italic" : "normal";
         el.style.textAlign = obj.align || "left";
         el.style.color = obj.color || "#111111";
-        el.addEventListener("dblclick", async () => {
-          const t = window.prompt("Modifica testo:", obj.text || "");
-          if (t === null) return;
-          pushHistory(); obj.text = t; await persistNotebook(); renderNotebookPage();
-        });
+        el.addEventListener("dblclick",event=>{event.preventDefault();event.stopPropagation();pushHistory();editTextInline(obj,el,false);});
       } else if (obj.type === "image" || obj.type === "sheet") {
         const img = document.createElement("img");
         const url = URL.createObjectURL(obj.blob); objectUrls.push(url);
@@ -736,7 +630,7 @@
       el.append(del,resize);
       if (obj.id === selectedObjectId) el.classList.add("selected");
       el.addEventListener("pointerdown", event => {
-        if (event.target === del || event.target === resize || ["pencil","eraser","lasso"].includes(notebookMode)) return;
+        if (event.target === del || event.target === resize || ["pencil","eraser"].includes(notebookMode)) return;
         event.preventDefault(); event.stopPropagation(); selectedObjectId = obj.id; renderNotebookPage();
         const pageEl = layer.parentElement, rect = pageEl.getBoundingClientRect(), er = el.getBoundingClientRect();
         const ox = event.clientX-er.left, oy=event.clientY-er.top;
@@ -765,7 +659,7 @@
       const pageEl=panel.querySelector(".lm-page");if(!pageEl)return;
       const layer=pageEl.querySelector(".lm-object-layer");layer.innerHTML="";
       (page.objects||[]).forEach(obj=>makePageObjectElement(obj,layer));
-      layer.querySelectorAll(".lm-page-object").forEach(el=>{el.style.pointerEvents=["pencil","eraser","lasso"].includes(notebookMode)?"none":"auto";});
+      layer.querySelectorAll(".lm-page-object").forEach(el=>{el.style.pointerEvents=["pencil","eraser"].includes(notebookMode)?"none":"auto";});
       const canvas=pageEl.querySelector(".lm-draw-canvas");requestAnimationFrame(()=>renderCanvas(canvas,page));
       panel.querySelector(".lm-page-counter").textContent=`${quadernoCorrente.currentPage+1} / ${quadernoCorrente.pages.length}`;
       const prev=panel.querySelector(".lm-nav-prev"),next=panel.querySelector(".lm-nav-next");prev.disabled=quadernoCorrente.currentPage===0;next.disabled=false;
@@ -934,7 +828,7 @@
       liberaObjectUrls();setBinderMode(false);setNotebookMode(true);screen.classList.add("notebook-preparing");schermata="quaderno";temaClasse(classeCorrente);title.textContent=`${materiaCorrente.toUpperCase()} — QUADERNO`;
       quadernoCorrente=await leggiQuaderno(classeCorrente.id,materiaCorrente);notebookHistory=[];notebookFuture=[];resetSelection();notebookMode="pencil";
       (quadernoCorrente.pages||[]).forEach(ensureDateObject);
-      panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-tools"><span class="lm-tools-grip" title="Sposta toolbar">≡</span><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="text" type="button" title="Testo">T</button><button class="lm-tool-eraser" data-tool="eraser" type="button" title="Gomma" aria-label="Gomma"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7.2 20.8 17.9 7.5a3 3 0 0 1 4.2-.4l3.4 2.8a3 3 0 0 1 .4 4.2L15.2 27.4H8.8l-2.4-2a3.1 3.1 0 0 1 .8-4.6Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="m13 25.8-5.5-4.5M15.3 27.3h10.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><button class="lm-tool-lasso" data-tool="lasso" type="button" title="Lazo" aria-label="Lazo"><svg viewBox="0 0 34 34" aria-hidden="true"><path d="M27.6 14.6c0 5.3-5.5 9.1-12.3 9.1S4.1 20.2 4.1 15.4 9.2 7 15.8 7s11.8 3.3 11.8 7.6Z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-dasharray="3.4 3.4"/><path d="M25.4 20.5c3.8 1.1 5 3.2 3.7 5.1-1.2 1.8-4.4 1.5-5.8-.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-scroll-rail" aria-label="Scorri la pagina"><div class="lm-scroll-track"><div class="lm-scroll-thumb"></div></div></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div>`;
+      panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-tools"><span class="lm-tools-grip" title="Sposta toolbar">≡</span><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="text" type="button" title="Testo">T</button><button class="lm-tool-eraser" data-tool="eraser" type="button" title="Gomma" aria-label="Gomma"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7.2 20.8 17.9 7.5a3 3 0 0 1 4.2-.4l3.4 2.8a3 3 0 0 1 .4 4.2L15.2 27.4H8.8l-2.4-2a3.1 3.1 0 0 1 .8-4.6Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="m13 25.8-5.5-4.5M15.3 27.3h10.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-scroll-rail" aria-label="Scorri la pagina"><div class="lm-scroll-track"><div class="lm-scroll-thumb"></div></div></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div>`;
       const restoreNotebookUI=()=>{
         const t=panel.querySelector(".lm-notebook-tools");
         const n=panel.querySelector(".lm-page-nav");
@@ -950,8 +844,8 @@
       const canvas=panel.querySelector(".lm-draw-canvas");installDrawing(canvas);
       const pageForNativeBlock=panel.querySelector(".lm-page");
       pageForNativeBlock.addEventListener("contextmenu",e=>{e.preventDefault();e.stopPropagation();},{capture:true});
-      pageForNativeBlock.addEventListener("selectstart",e=>{e.preventDefault();e.stopPropagation();},{capture:true});
-      pageForNativeBlock.addEventListener("dragstart",e=>{e.preventDefault();e.stopPropagation();},{capture:true});
+      pageForNativeBlock.addEventListener("selectstart",e=>{if(notebookMode!=="text"){e.preventDefault();e.stopPropagation();}},{capture:true});
+      pageForNativeBlock.addEventListener("dragstart",e=>{e.preventDefault();e.stopPropagation();},{capture:true});pageForNativeBlock.addEventListener("pointerdown",e=>{if(notebookMode!=="text"||e.target.closest(".lm-page-object")||e.pointerType==="pen")return;e.preventDefault();e.stopPropagation();beginTextAtPoint(e.clientX,e.clientY);},{capture:true});
       const tools=panel.querySelector(".lm-notebook-tools");tools.addEventListener("pointerdown",event=>event.stopPropagation());tools.addEventListener("click",event=>event.stopPropagation());
       // v3A.17.3 — la toolbar si sposta SOLO dal grip ≡.
       const toolsGrip=tools.querySelector(".lm-tools-grip");
@@ -1041,8 +935,8 @@
 
       panel.querySelectorAll(".lm-notebook-tools button[data-tool]").forEach(btn=>btn.addEventListener("click",async event=>{
         event.preventDefault();event.stopPropagation();const t=btn.dataset.tool;
-        if(["pencil","eraser","lasso"].includes(t)){notebookMode=t;resetSelection();renderNotebookPage();return;}
-        if(t==="text"){await convertSelectionToText();return;}
+        if(["pencil","eraser"].includes(t)){notebookMode=t;resetSelection();renderNotebookPage();return;}
+        if(t==="text"){notebookMode="text";resetSelection();renderNotebookPage();return;}
         if(t==="plus"){positionPlusMenu(btn);plusMenu.classList.toggle("aperto");moreMenu.classList.remove("aperto");return;}
         if(t==="undo"&&notebookHistory.length){notebookFuture.push(notebookSnapshot());quadernoCorrente=notebookHistory.pop();resetSelection();await persistNotebook();renderNotebookPage();return;}
         if(t==="redo"&&notebookFuture.length){notebookHistory.push(notebookSnapshot());quadernoCorrente=notebookFuture.pop();resetSelection();await persistNotebook();renderNotebookPage();}
@@ -1204,10 +1098,16 @@
     moreMenu.querySelector('[data-more="lesson"]').addEventListener("click",async()=>{if(schermata!=="quaderno")return;moreMenu.classList.remove("aperto");pushHistory();const id=`l-${Date.now()}-${Math.random().toString(36).slice(2,6)}`;quadernoCorrente.lessons.push({id,title:"",startPage:quadernoCorrente.pages.length,createdAt:Date.now()});const nuova=paginaNuova(id,true);ensureDateObject(nuova);quadernoCorrente.pages.push(nuova);quadernoCorrente.currentPage=quadernoCorrente.pages.length-1;selectedObjectId=null;await persistNotebook();renderNotebookPage();});
     moreMenu.querySelector('[data-more="share"]').addEventListener("click",()=>{moreMenu.classList.remove("aperto");const lesson=currentLesson();shareModal.querySelector(".lm-share-info").textContent=lesson?`Argomento: ${lesson.title||"senza titolo"}. Verranno considerate le pagine di questa lezione.`:"Questa pagina non appartiene ancora a una lezione.";shareModal.classList.add("aperto");});
     shareModal.querySelector(".lm-share-now").addEventListener("click",()=>{shareModal.classList.remove("aperto");window.print();});
-    const fontTrigger=screen.querySelector(".lm-font-trigger"),fontMenu=screen.querySelector(".lm-font-menu");fontTrigger.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();fontMenu.classList.toggle("aperto")});screen.querySelectorAll(".lm-font-choice").forEach(b=>b.addEventListener("click",async e=>{e.preventDefault();e.stopPropagation();const o=objectById(selectedObjectId);if(!o)return;pushHistory();o.fontFamily=b.dataset.value;fontTrigger.textContent=b.textContent;fontTrigger.style.fontFamily=b.dataset.value;fontMenu.classList.remove("aperto");await persistNotebook();renderNotebookPage();}));
-    screen.querySelector(".lm-size").addEventListener("change",async e=>{const o=objectById(selectedObjectId);if(!o)return;pushHistory();o.fontSize=Number(e.target.value);await persistNotebook();renderNotebookPage();});
-    screen.querySelector(".lm-align").addEventListener("click",async()=>{const o=objectById(selectedObjectId);if(!o)return;pushHistory();o.align=o.align==="left"?"center":o.align==="center"?"right":"left";await persistNotebook();renderNotebookPage();});
-    screen.querySelector(".lm-color").addEventListener("input",async e=>{const o=objectById(selectedObjectId);if(!o)return;o.color=e.target.value;await persistNotebook();renderNotebookPage();});
+    const fontTrigger=screen.querySelector(".lm-font-trigger"),fontMenu=screen.querySelector(".lm-font-menu");
+    fontTrigger.addEventListener("click",e=>{e.preventDefault();e.stopPropagation();fontMenu.classList.toggle("aperto")});
+    async function applyTextStyle(prop,value){const o=textStyleTarget();if(o&&o.type==="text"){pushHistory();o[prop]=value;await persistNotebook();renderNotebookPage();}else{textDefaults[prop]=value;updateTextbar();}}
+    screen.querySelectorAll(".lm-font-choice").forEach(b=>b.addEventListener("click",async e=>{e.preventDefault();e.stopPropagation();await applyTextStyle("fontFamily",b.dataset.value);fontMenu.classList.remove("aperto");}));
+    screen.querySelector(".lm-font-other").addEventListener("click",async e=>{e.preventDefault();e.stopPropagation();const name=window.prompt("Nome del font installato sull’iPad:");if(!name)return;await applyTextStyle("fontFamily",`'${name.replaceAll("'","")}', Arial, sans-serif`);fontMenu.classList.remove("aperto");});
+    screen.querySelector(".lm-size").addEventListener("change",async e=>applyTextStyle("fontSize",Number(e.target.value)));
+    screen.querySelector(".lm-bold").addEventListener("click",async()=>{const s=textStyleTarget()||textDefaults;await applyTextStyle("bold",!s.bold)});
+    screen.querySelector(".lm-italic").addEventListener("click",async()=>{const s=textStyleTarget()||textDefaults;await applyTextStyle("italic",!s.italic)});
+    screen.querySelector(".lm-align").addEventListener("click",async()=>{const s=textStyleTarget()||textDefaults;await applyTextStyle("align",s.align==="left"?"center":s.align==="center"?"right":"left")});
+    screen.querySelector(".lm-color").addEventListener("input",async e=>applyTextStyle("color",e.target.value));
 
     search.addEventListener("click", () => {
       if (schermata !== "quaderno") { searchPop.classList.add("aperto"); return; }
