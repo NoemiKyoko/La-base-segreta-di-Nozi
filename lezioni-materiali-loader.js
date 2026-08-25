@@ -336,7 +336,7 @@
       <input class="lm-notebook-file lm-notebook-any-input" type="file">
       <div class="lm-plus-menu"><button data-plus="sheet" type="button">Scheda</button><button data-plus="image" type="button">Immagine</button><button data-plus="file" type="button">File</button></div>
       <div class="lm-more-menu"><button data-more="lesson" type="button">Nuova lezione</button><button data-more="share" type="button">Condividi / Esporta</button></div>
-      <div class="lm-transcribe"><div class="lm-transcribe-card"><div class="lm-transcribe-title">Trasforma in testo digitale</div><textarea class="lm-transcribe-input" placeholder="Scrivi qui il testo (puoi usare anche Scribble con Apple Pencil)"></textarea><div class="lm-transcribe-actions"><button class="lm-transcribe-cancel" type="button">Annulla</button><button class="lm-transcribe-ok" type="button">Digitalizza</button></div></div></div><div class="lm-lasso-hint">Scrittura selezionata: premi T per trasformarla in testo</div><div class="lm-textbar"><div class="lm-font-wrap"><button class="lm-font-trigger" type="button" aria-label="Font">Andika</button><div class="lm-font-menu"><button class="lm-font-choice" data-font="andika" data-value="'Andika', Arial, sans-serif" type="button">Andika</button><button class="lm-font-choice" data-font="corsivo" data-value="'Corsivo Primaria', cursive" type="button">Corsivo Primaria</button><button class="lm-font-choice" data-font="arial" data-value="Arial, sans-serif" type="button">Arial</button><button class="lm-font-other" type="button">Altri font…</button></div></div><select class="lm-size"><option>18</option><option>24</option><option selected>32</option><option>40</option><option>48</option><option>56</option></select><button class="lm-bold" type="button" title="Grassetto"><b>B</b></button><button class="lm-italic" type="button" title="Corsivo"><i>I</i></button><button class="lm-align" type="button" title="Allineamento">☰</button><input class="lm-color" type="color" value="#111111" title="Colore"></div>
+      <div class="lm-transcribe"><div class="lm-transcribe-card"><div class="lm-transcribe-title">Trasforma in testo digitale</div><textarea class="lm-transcribe-input" placeholder="Scrivi qui il testo (puoi usare anche Scribble con Apple Pencil)"></textarea><div class="lm-transcribe-actions"><button class="lm-transcribe-cancel" type="button">Annulla</button><button class="lm-transcribe-ok" type="button">Digitalizza</button></div></div></div><div class="lm-lasso-hint">Scrittura selezionata: premi T per trasformarla in testo</div><div class="lm-textbar"><div class="lm-font-wrap"><button class="lm-font-trigger" type="button" aria-label="Font">Andika</button><div class="lm-font-menu"><button class="lm-font-choice" data-font="andika" data-value="'Andika', Arial, sans-serif" type="button">Andika</button><button class="lm-font-choice" data-font="corsivo" data-value="'Corsivo Primaria', cursive" type="button">Corsivo Primaria</button><button class="lm-font-choice" data-font="arial" data-value="Arial, sans-serif" type="button">Arial</button><button class="lm-font-other" type="button">Altri font…</button></div></div><select class="lm-size"><option>18</option><option>24</option><option selected>32</option><option>40</option><option>48</option><option>56</option></select><button class="lm-align" type="button" title="Allineamento">☰</button><input class="lm-color" type="color" value="#111111" title="Colore"></div>
       <div class="lm-modal lm-sheet-modal"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Schede da stampare</h2><div class="lm-sheet-picker-grid"></div></div></div>
       <div class="lm-modal lm-share-modal"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Condividi lezione</h2><p class="lm-share-info"></p><button class="lm-share-now" type="button">Condividi / stampa</button></div></div>
       <div class="lm-modal lm-search-results"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Cerca nel quaderno</h2><input class="lm-search-input" type="search" placeholder="Cerca parola o frase..." style="width:100%;height:46px;border:1px solid #ccd8e5;border-radius:12px;padding:0 12px;font-size:16px"><div class="lm-results"></div></div></div>
@@ -560,67 +560,69 @@
 
     let textDefaults={fontFamily:"'Andika', Arial, sans-serif",fontSize:32,bold:false,italic:false,align:"left",color:"#111111"};
     function textStyleTarget(){return objectById(selectedObjectId);}
+    let persistentTextEditor=null,persistentTextObject=null,persistentTextIsNew=false;
+    function ensurePersistentTextEditor(){
+      if(persistentTextEditor && persistentTextEditor.isConnected)return persistentTextEditor;
+      const layer=panel.querySelector(".lm-page-objects");
+      if(!layer)return null;
+      const ta=document.createElement("textarea");
+      ta.className="lm-native-text-editor lm-persistent-text-editor";
+      ta.rows=1;ta.spellcheck=true;ta.setAttribute("aria-label","Testo");
+      ta.style.position="absolute";ta.style.display="none";ta.style.zIndex="50";
+      layer.appendChild(ta);
+      ta.addEventListener("input",()=>{
+        if(!persistentTextObject)return;
+        persistentTextObject.text=ta.value;
+        ta.style.height="auto";ta.style.height=Math.max(32,ta.scrollHeight)+"px";
+      });
+      ta.addEventListener("blur",async()=>{
+        if(!persistentTextObject)return;
+        const obj=persistentTextObject,isNew=persistentTextIsNew;
+        obj.text=ta.value.replace(/\n+$/,"");
+        if(isNew&&!obj.text){
+          const p=currentNotebookPage();
+          if(p)p.objects=p.objects.filter(o=>o.id!==obj.id);
+          selectedObjectId=null;
+        }
+        persistentTextObject=null;persistentTextIsNew=false;
+        ta.style.display="none";ta.value="";
+        await persistNotebook();renderNotebookPage();
+      });
+      persistentTextEditor=ta;
+      return ta;
+    }
+    function activatePersistentTextEditor(obj,isNew=false){
+      const ta=ensurePersistentTextEditor();if(!ta||!obj)return;
+      persistentTextObject=obj;persistentTextIsNew=isNew;selectedObjectId=obj.id;
+      ta.value=obj.text||"";
+      ta.style.left=(obj.x||0)+"%";ta.style.top=(obj.y||0)+"%";
+      ta.style.width=(obj.w||70)+"%";ta.style.minHeight="36px";
+      ta.style.fontFamily=obj.fontFamily||textDefaults.fontFamily;
+      ta.style.fontSize=(obj.fontSize||textDefaults.fontSize||32)+"px";
+      ta.style.fontWeight=obj.bold?"700":"400";ta.style.fontStyle=obj.italic?"italic":"normal";
+      ta.style.textAlign=obj.align||"left";ta.style.color=obj.color||"#111111";
+      ta.style.display="block";
+      updateTextbar();positionTextbar();
+      ta.focus({preventScroll:true});
+      try{const n=ta.value.length;ta.setSelectionRange(n,n);}catch(_){}
+    }
+
     async function beginTextAtPoint(clientX,clientY){
       if(notebookMode!=="text")return;
-      const page=currentNotebookPage(),pageEl=panel.querySelector(".lm-page"),layer=panel.querySelector(".lm-page-objects");
-      if(!page||!pageEl||!layer)return;
+      const page=currentNotebookPage(),pageEl=panel.querySelector(".lm-page");
+      if(!page||!pageEl)return;
       const r=pageEl.getBoundingClientRect();
       const x=Math.max(1,Math.min(88,(clientX-r.left)/r.width*100));
       const y=Math.max(1,Math.min(94,(clientY-r.top)/r.height*100));
       pushHistory();
       const obj={id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type:"text",text:"",x,y,w:Math.min(78,96-x),h:7,...textDefaults};
-      page.objects.push(obj);selectedObjectId=obj.id;
-      const el=makePageObjectElement(obj);
-      layer.appendChild(el);
-      editTextInline(obj,el,true);
+      page.objects.push(obj);
+      activatePersistentTextEditor(obj,true);
       persistNotebook();
     }
     function editTextInline(obj,el,isNew=false){
-      if(!obj||!el)return;
-      selectedObjectId=obj.id;
-      el.classList.add("selected","editing");
-      el.innerHTML="";
-      const editor=document.createElement("textarea");
-      editor.className="lm-native-text-editor";
-      editor.value=obj.text||"";
-      editor.rows=1;
-      editor.setAttribute("aria-label","Testo");
-      editor.spellcheck=true;
-      el.appendChild(editor);
-
-      const autosize=()=>{
-        editor.style.height="auto";
-        editor.style.height=Math.max(32,editor.scrollHeight)+"px";
-        el.style.height="auto";
-        el.style.minHeight=editor.style.height;
-      };
-      editor.addEventListener("input",()=>{
-        obj.text=editor.value;
-        autosize();
-      });
-      editor.addEventListener("keydown",e=>{
-        if(e.key==="Escape"){editor.blur();}
-      });
-      editor.addEventListener("blur",async()=>{
-        obj.text=editor.value.replace(/\n+$/,"");
-        el.classList.remove("editing");
-        if(isNew&&!obj.text){
-          const p=currentNotebookPage();
-          p.objects=p.objects.filter(o=>o.id!==obj.id);
-          selectedObjectId=null;
-        }
-        await persistNotebook();
-        renderNotebookPage();
-      },{once:true});
-
-      updateTextbar();
-      positionTextbar();
-      autosize();
-
-      // Focus nativo: caret e tastiera iPad.
-      editor.focus({preventScroll:true});
-      const n=editor.value.length;
-      try{editor.setSelectionRange(n,n);}catch(_){}
+      if(el)el.style.visibility="hidden";
+      activatePersistentTextEditor(obj,isNew);
     }
 
     function renderCanvas(canvas, page) {
@@ -653,7 +655,6 @@
       screen.querySelector(".lm-size").value=String(style.fontSize||32);screen.querySelector(".lm-color").value=style.color||"#111111";
       const ft=screen.querySelector(".lm-font-trigger"),target=style.fontFamily||"'Andika', Arial, sans-serif";
       ft.textContent=target.includes("Corsivo")?"Corsivo Primaria":target.includes("Andika")?"Andika":target.startsWith("Arial")?"Arial":target.split(",")[0].replaceAll("'","").replaceAll('"',"");ft.style.fontFamily=target;
-      screen.querySelector(".lm-bold")?.classList.toggle("on",!!style.bold);screen.querySelector(".lm-italic")?.classList.toggle("on",!!style.italic);
     }
     function makePageObjectElement(obj, layer) {
       const el = document.createElement("div");
@@ -1157,8 +1158,6 @@
     screen.querySelectorAll(".lm-font-choice").forEach(b=>b.addEventListener("click",async e=>{e.preventDefault();e.stopPropagation();await applyTextStyle("fontFamily",b.dataset.value);fontMenu.classList.remove("aperto");}));
     screen.querySelector(".lm-font-other").addEventListener("click",async e=>{e.preventDefault();e.stopPropagation();const name=window.prompt("Nome del font installato sull’iPad:");if(!name)return;await applyTextStyle("fontFamily",`'${name.replaceAll("'","")}', Arial, sans-serif`);fontMenu.classList.remove("aperto");});
     screen.querySelector(".lm-size").addEventListener("change",async e=>applyTextStyle("fontSize",Number(e.target.value)));
-    screen.querySelector(".lm-bold").addEventListener("click",async()=>{const s=textStyleTarget()||textDefaults;await applyTextStyle("bold",!s.bold)});
-    screen.querySelector(".lm-italic").addEventListener("click",async()=>{const s=textStyleTarget()||textDefaults;await applyTextStyle("italic",!s.italic)});
     screen.querySelector(".lm-align").addEventListener("click",async()=>{const s=textStyleTarget()||textDefaults;await applyTextStyle("align",s.align==="left"?"center":s.align==="center"?"right":"left")});
     screen.querySelector(".lm-color").addEventListener("input",async e=>applyTextStyle("color",e.target.value));
 
