@@ -587,6 +587,10 @@
       persistNotebook();
     }
     function editTextInline(obj,el,isNew=false){
+      if(obj?.fontFamily==="Andika" || obj?.font==="Andika"){
+        el.style.fontFamily='Arial,"Helvetica Neue",sans-serif';
+      }
+
       if(!obj||!el)return;
       selectedObjectId=obj.id;
       el.classList.add("selected","lm-textbox-editing");
@@ -751,6 +755,20 @@
       });
       del.addEventListener("click", async e => { e.stopPropagation(); pushHistory(); const p=currentNotebookPage();p.objects=p.objects.filter(x=>x.id!==obj.id);if(obj.role==="date")p.date="";selectedObjectId=null;await persistNotebook();renderNotebookPage(); });
       layer.appendChild(el);
+      if(obj.type==="text"){
+        const reopen=(e)=>{
+          if(notebookMode!=="text")return;
+          if(e.target?.closest?.(".lm-text-move-handle,.lm-object-delete,.lm-object-resize"))return;
+          e.preventDefault();e.stopPropagation();
+          editTextInline(obj,el,false);
+        };
+        el.addEventListener("dblclick",reopen);
+        el.addEventListener("click",e=>{
+          if(notebookMode!=="text")return;
+          // Su iPad non aspettiamo il dblclick: un tap sul testo esistente riapre l'editing.
+          reopen(e);
+        });
+      }
     }
 
     function renderNotebookPage() {
