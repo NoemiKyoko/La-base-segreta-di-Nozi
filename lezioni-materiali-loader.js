@@ -252,7 +252,10 @@
       .lm-screen.notebook .lm-panel{width:100%;height:100%;max-width:none;margin:0;padding:0;border:0;background:transparent;box-shadow:none}.lm-screen.notebook.notebook-preparing .lm-panel{visibility:hidden}.lm-screen.notebook .lm-panel{transition:none}
       .lm-screen.notebook .lm-workspace{position:relative;flex:1;min-height:0;padding:4px 18px 78px;overflow:hidden;background:transparent}
       .lm-notebook-shell{position:absolute;inset:0 0 66px;display:flex;align-items:flex-start;justify-content:center;padding:22px 28px 22px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:none}
-      .lm-page{position:relative;width:min(calc(100vw - 56px),calc((100dvh - 190px)*.82));height:auto;max-width:none;max-height:calc(100dvh - 190px);aspect-ratio:.82;background:#fff;box-shadow:0 10px 28px rgba(55,60,70,.17);border-radius:10px;overflow:hidden;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}.lm-page,.lm-page *{user-select:none!important;-webkit-user-select:none!important;-webkit-touch-callout:none!important;-webkit-user-drag:none!important}
+      .lm-page{position:relative;width:min(calc(100vw - 56px),calc((100dvh - 190px)*.82));height:auto;max-width:none;max-height:calc(100dvh - 190px);aspect-ratio:.82;background:#fff;box-shadow:0 10px 28px rgba(55,60,70,.17);border-radius:10px;overflow:hidden;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+      /* v3A.19 — pagina più grande, stessa proporzione */
+      .lm-page{width:min(92vw,820px)!important;max-width:820px!important}
+.lm-page,.lm-page *{user-select:none!important;-webkit-user-select:none!important;-webkit-touch-callout:none!important;-webkit-user-drag:none!important}
       .lm-page-paper{position:absolute;inset:0;background-color:#fff;background-image:linear-gradient(to right,rgba(89,130,170,.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.12) 1px,transparent 1px);background-size:24px 24px}
       .lm-page-paper.paper-grid-1cm{background-image:linear-gradient(to right,rgba(89,130,170,.14) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.14) 1px,transparent 1px);background-size:48px 48px}
       .lm-page-paper.paper-grid-05cm{background-image:linear-gradient(to right,rgba(89,130,170,.12) 1px,transparent 1px),linear-gradient(to bottom,rgba(89,130,170,.12) 1px,transparent 1px);background-size:24px 24px}
@@ -347,7 +350,7 @@
       <input class="lm-notebook-file lm-notebook-any-input" type="file">
       <div class="lm-plus-menu"><button data-plus="sheet" type="button">Scheda</button><button data-plus="image" type="button">Immagine</button><button data-plus="file" type="button">File</button></div>
       <div class="lm-more-menu"><button data-more="lesson" type="button">Nuova lezione</button><button data-more="share" type="button">Condividi / Esporta</button></div>
-      <div class="lm-transcribe"><div class="lm-transcribe-card"><div class="lm-transcribe-title">Trasforma in testo digitale</div><textarea class="lm-transcribe-input" placeholder="Scrivi qui il testo (puoi usare anche Scribble con Apple Pencil)"></textarea><div class="lm-transcribe-actions"><button class="lm-transcribe-cancel" type="button">Annulla</button><button class="lm-transcribe-ok" type="button">Digitalizza</button></div></div></div><div class="lm-lasso-hint">Scrittura selezionata: premi T per trasformarla in testo</div><div class="lm-textbar"><div class="lm-font-wrap"><button class="lm-font-trigger" type="button" aria-label="Font">Andika</button><div class="lm-font-menu"><button class="lm-font-choice" data-font="andika" data-value="'Andika', Arial, sans-serif" type="button">Andika</button><button class="lm-font-choice" data-font="corsivo" data-value="'Corsivo Primaria', cursive" type="button">Corsivo Primaria</button><button class="lm-font-choice" data-font="arial" data-value="Arial, sans-serif" type="button">Arial</button><button class="lm-font-other" type="button">Altri font…</button></div></div><select class="lm-size"><option>18</option><option>24</option><option selected>32</option><option>40</option><option>48</option><option>56</option></select><button class="lm-align" type="button" title="Allineamento">☰</button><input class="lm-color" type="color" value="#111111" title="Colore"></div>
+      <div class="lm-transcribe"><div class="lm-transcribe-card"><div class="lm-transcribe-title">Trasforma in testo digitale</div><textarea class="lm-transcribe-input" placeholder="Scrivi qui il testo (puoi usare anche Scribble con Apple Pencil)"></textarea><div class="lm-transcribe-actions"><button class="lm-transcribe-cancel" type="button">Annulla</button><button class="lm-transcribe-ok" type="button">Digitalizza</button></div></div></div><div class="lm-lasso-hint">Scrittura selezionata: premi T per trasformarla in testo</div><div class="lm-textbar"><div class="lm-font-wrap"><button class="lm-font-trigger" type="button" aria-label="Font">Andika</button><div class="lm-font-menu"><button class="lm-font-choice" data-font="andika" data-value="'Andika', Arial, sans-serif" type="button">Andika</button><button class="lm-font-choice" data-font="corsivo" data-value="'Corsivo Primaria', cursive" type="button">Corsivo Primaria</button><button class="lm-font-choice" data-font="arial" data-value="Arial, sans-serif" type="button">Arial</button><button class="lm-font-other" type="button">Altri font…</button></div></div><select class="lm-size"><option>12</option><option>24</option><option selected>32</option><option>40</option><option>48</option><option>56</option></select><button class="lm-align" type="button" title="Allineamento">☰</button><input class="lm-color" type="color" value="#111111" title="Colore"></div>
       <div class="lm-modal lm-sheet-modal"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Schede da stampare</h2><div class="lm-sheet-picker-grid"></div></div></div>
       <div class="lm-modal lm-share-modal"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Condividi lezione</h2><p class="lm-share-info"></p><button class="lm-share-now" type="button">Condividi / stampa</button></div></div>
       <div class="lm-modal lm-search-results"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Cerca nel quaderno</h2><input class="lm-search-input" type="search" placeholder="Cerca parola o frase..." style="width:100%;height:46px;border:1px solid #ccd8e5;border-radius:12px;padding:0 12px;font-size:16px"><div class="lm-results"></div></div></div>
@@ -738,7 +741,7 @@
         if (event.target === del || event.target === resize || ["pencil","eraser"].includes(notebookMode)) return;
         // In modalità T, un testo già esistente NON deve entrare nel drag generico:
         // il tap deve poter arrivare all'handler che riapre davvero l'editor.
-        if (obj.type === "text" && notebookMode === "text") {
+        if (obj.role === "date" || (obj.type === "text" && notebookMode === "text")) {
           event.stopPropagation();
           return;
         }
@@ -761,7 +764,18 @@
       del.addEventListener("click", async e => { e.stopPropagation(); pushHistory(); const p=currentNotebookPage();p.objects=p.objects.filter(x=>x.id!==obj.id);if(obj.role==="date")p.date="";selectedObjectId=null;await persistNotebook();renderNotebookPage(); });
       layer.appendChild(el);
       if(obj.type==="text"){
-        const reopen=(e)=>{
+        const reopen=async(e)=>{
+          if(obj.role==="date"){
+            e.preventDefault();e.stopPropagation();
+            const next=window.prompt("Modifica la data",String(obj.text||""));
+            if(next===null)return;
+            pushHistory();
+            obj.text=next.trim();
+            // La data manuale non viene rigenerata: resta il testo scelto.
+            await persistNotebook();
+            renderNotebookPage();
+            return;
+          }
           if(notebookMode!=="text")return;
           if(e.target?.closest?.(".lm-text-move-handle,.lm-object-delete,.lm-object-resize"))return;
           e.preventDefault();e.stopPropagation();
@@ -769,11 +783,11 @@
         };
         el.addEventListener("dblclick",reopen);
         el.addEventListener("pointerup",e=>{
-          if(notebookMode!=="text")return;
+          if(obj.role!=="date" && notebookMode!=="text")return;
           reopen(e);
         });
         el.addEventListener("click",e=>{
-          if(notebookMode!=="text")return;
+          if(obj.role!=="date" && notebookMode!=="text")return;
           reopen(e);
         });
       }
