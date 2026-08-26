@@ -661,7 +661,7 @@
         pushHistory();
         let value=input.value.trim();
         obj.dateWriting=mode;
-        obj.fontSize=16;
+        obj.fontSize=24;
         if(mode==="upper"){
           obj.text=value.toLocaleUpperCase("it-IT");
           obj.fontFamily="Arial, sans-serif";
@@ -880,6 +880,13 @@
     }
 
     function renderNotebookPage() {
+      // v3A.19.2.1 — data garantita su ogni pagina/classe, inclusa la 5ª.
+      const __pageForDate=currentNotebookPage();
+      if(__pageForDate){
+        if(!__pageForDate.date) __pageForDate.date=oggiISO();
+        ensureDateObject(__pageForDate);
+      }
+
       liberaObjectUrls();
       const page=currentNotebookPage();if(!page)return;
       ensureDateObject(page);
