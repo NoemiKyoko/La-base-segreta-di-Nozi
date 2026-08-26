@@ -316,7 +316,7 @@
       }
       .lm-text-move-handle:active{cursor:grabbing}
 
-      .lm-page-object.text.lm-textbox-editing .lm-native-text-editor{display:block!important;width:100%!important;min-height:30px!important;height:auto;box-sizing:border-box!important;border:0!important;outline:0!important;resize:none!important;background:transparent!important;color:inherit!important;font:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:inherit!important;font-style:inherit!important;line-height:1.2!important;text-align:inherit!important;padding:0!important;margin:0!important;overflow:hidden!important;-webkit-appearance:none!important;appearance:none!important;touch-action:auto!important;user-select:text!important;-webkit-user-select:text!important;-webkit-touch-callout:default!important;caret-color:#111!important}
+      .lm-page-object.text.lm-textbox-editing .lm-native-text-editor{display:block!important;width:100%!important;min-height:30px!important;height:auto;box-sizing:border-box!important;border:0!important;outline:0!important;resize:none!important;background:transparent!important;color:inherit!important;font:inherit!important;font-family:inherit!important;font-size:inherit!important;font-weight:inherit!important;font-style:inherit!important;line-height:1.2!important;text-align:inherit!important;padding:0!important;margin:0!important;overflow:hidden!important;-webkit-appearance:none!important;appearance:none!important;touch-action:auto!important;user-select:text!important;-webkit-user-select:text!important;-webkit-touch-callout:default!important;caret-color:#111!important;cursor:text!important;pointer-events:auto!important;opacity:1!important}
 .lm-page-object.text.andika{font-feature-settings:normal;font-variant-ligatures:normal}.lm-page-object img{display:block;width:100%;height:100%;object-fit:contain;pointer-events:none;-webkit-user-drag:none}.lm-page-object.file{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:10px;background:#fffaf4;color:#444;box-shadow:0 3px 10px rgba(0,0,0,.07)}
       .lm-object-delete,.lm-object-resize{display:none;position:absolute;appearance:none;border:0;width:27px;height:27px;border-radius:50%;background:#fff;color:#5f7184;box-shadow:0 2px 8px rgba(0,0,0,.16);cursor:pointer}.lm-page-object.selected .lm-object-delete,.lm-page-object.selected .lm-object-resize{display:block}.lm-object-delete{right:-12px;top:-12px}.lm-object-resize{right:-12px;bottom:-12px}
       .lm-notebook-tools{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));z-index:880;display:flex;align-items:center;gap:1px;padding:6px 7px 6px 22px;border:1.25px solid color-mix(in srgb,var(--lm-color) 62%,white);border-radius:17px;background:color-mix(in srgb,var(--lm-soft) 88%,white);box-shadow:0 5px 14px rgba(80,60,45,.12);touch-action:none;user-select:none;-webkit-user-select:none}.lm-tools-grip{position:absolute;left:5px;top:50%;transform:translateY(-50%);width:16px;height:29px;display:grid;place-items:center;color:color-mix(in srgb,var(--lm-dark) 62%,white);font-weight:900;font-size:14px;cursor:grab;touch-action:none}.lm-tools-grip:active{cursor:grabbing}.lm-notebook-tools button{appearance:none;border:0;width:34px;height:34px;border-radius:9px;background:transparent;color:var(--lm-dark);font-size:17px;font-weight:800;cursor:pointer;touch-action:manipulation}.lm-notebook-tools button.active{background:white;box-shadow:0 2px 7px rgba(45,50,60,.09)}.lm-notebook-tools button:disabled{opacity:.28}.lm-tool-eraser,.lm-tool-lasso{display:grid!important;place-items:center}.lm-tool-eraser svg,.lm-tool-lasso svg{width:18px;height:18px;display:block;overflow:visible}.lm-tool-eraser svg{width:19px;height:19px}.lm-tool-lasso svg{width:20px;height:20px}
@@ -744,11 +744,14 @@
         }
       };
 
-      ta.addEventListener("pointerdown",e=>{e.stopPropagation();});
+      ta.addEventListener("pointerdown",e=>{
+        e.stopPropagation();
+        // Su iPad il focus deve partire dentro il gesto reale dell'utente.
+        if(document.activeElement!==ta) ta.focus({preventScroll:true});
+      });
       ta.addEventListener("click",e=>{
         e.stopPropagation();
-        // Manteniamo la posizione scelta dall'utente: niente salto forzato in fondo.
-        ta.focus({preventScroll:true});
+        if(document.activeElement!==ta) ta.focus({preventScroll:true});
       });
       ta.addEventListener("input",()=>{obj.text=ta.value.replace(/\r\n?/g,"\n");autosize();});
 
@@ -798,7 +801,17 @@
       positionTextbar();
       autosize();
 
-      // Non forziamo la tastiera al primo tocco: la casella nasce, poi l'utente tocca dentro per scrivere.
+      // v3A.19.5.1 — il cursore deve comparire subito.
+      // Focus sincrono per iPad/Chrome; un secondo tentativo al frame successivo
+      // evita che il gesto che ha aperto l'editor si riprenda il focus.
+      ta.focus({preventScroll:true});
+      if(isNew){
+        try{ta.setSelectionRange(0,0);}catch(_){}
+      }
+      requestAnimationFrame(()=>{
+        if(!ta.isConnected)return;
+        if(document.activeElement!==ta) ta.focus({preventScroll:true});
+      });
     }
 
     function renderCanvas(canvas, page) {
