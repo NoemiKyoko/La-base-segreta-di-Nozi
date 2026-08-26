@@ -4578,6 +4578,14 @@
     }
 
 
+
+    /* v3A.19.3.3 — ponte Quaderno <-> raccolta sticker Nozi */
+    window.addEventListener("nozi:open-stickers", (event) => {
+      const d = event.detail || {};
+      if (d.destination !== "lezioni-materiali") return;
+      stickersScreen.classList.add("aperto");
+    });
+
     function apriSticker(
       sticker
     ) {
@@ -4927,6 +4935,25 @@
           return;
         }
 
+
+        let ritornoQuaderno = null;
+        try {
+          ritornoQuaderno = JSON.parse(sessionStorage.getItem("noziStickerReturn") || "null");
+        } catch (_) {}
+
+        if (ritornoQuaderno?.area === "lezioni-materiali") {
+          window.dispatchEvent(new CustomEvent("nozi:insert-sticker", {
+            detail: {
+              url: `assets/${stickerSelezionato.file}`,
+              name: stickerSelezionato.label
+            }
+          }));
+          try { sessionStorage.removeItem("noziStickerReturn"); } catch (_) {}
+          stickerViewer.classList.remove("aperto");
+          stickersScreen.classList.remove("aperto");
+          stickerSelezionato = null;
+          return;
+        }
 
         destinationOverlay
           .classList

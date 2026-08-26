@@ -852,7 +852,8 @@
       el.append(del,resize);
       if (obj.id === selectedObjectId) el.classList.add("selected");
       el.addEventListener("pointerdown", event => {
-        if (event.target === del || event.target === resize || ["pencil","eraser"].includes(notebookMode)) return;
+        if (event.target === del || event.target === resize) return;
+        if (["pencil","eraser"].includes(notebookMode) && !["image","sheet","sticker"].includes(obj.type)) return;
         // In modalità T, un testo già esistente NON deve entrare nel drag generico:
         // il tap deve poter arrivare all'handler che riapre davvero l'editor.
         if (obj.role === "date" || (obj.type === "text" && notebookMode === "text")) {
@@ -926,7 +927,11 @@
       const pageEl=panel.querySelector(".lm-page");if(!pageEl)return;
       const layer=pageEl.querySelector(".lm-object-layer");layer.innerHTML="";
       (page.objects||[]).forEach(obj=>makePageObjectElement(obj,layer));
-      layer.querySelectorAll(".lm-page-object").forEach(el=>{el.style.pointerEvents=["pencil","eraser"].includes(notebookMode)?"none":"auto";});
+      layer.querySelectorAll(".lm-page-object").forEach(el=>{
+        const obj=objectById(el.dataset.id);
+        const manipolabile=obj && ["image","sheet","sticker"].includes(obj.type);
+        el.style.pointerEvents=manipolabile ? "auto" : (["pencil","eraser"].includes(notebookMode)?"none":"auto");
+      });
       const canvas=pageEl.querySelector(".lm-draw-canvas");requestAnimationFrame(()=>renderCanvas(canvas,page));
       panel.querySelector(".lm-page-counter").textContent=`${quadernoCorrente.currentPage+1} / ${quadernoCorrente.pages.length}`;
       const prev=panel.querySelector(".lm-nav-prev"),next=panel.querySelector(".lm-nav-next");prev.disabled=quadernoCorrente.currentPage===0;next.disabled=false;
@@ -939,7 +944,9 @@
     async function addBlobObject(blob, name, type) {
       const page=currentNotebookPage(); pushHistory();
       const isSticker=type==="sticker";
-      page.objects.push({id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type,blob,name,x:isSticker?38:12,y:isSticker?28:22,w:type==="file"?38:(isSticker?24:68),h:type==="file"?8:(isSticker?24:30)});
+      const nuovo={id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type,blob,name,x:isSticker?38:12,y:isSticker?28:22,w:type==="file"?38:(isSticker?24:68),h:type==="file"?8:(isSticker?24:30)};
+      page.objects.push(nuovo);
+      selectedObjectId=nuovo.id;
       await persistNotebook(); renderNotebookPage();
     }
 
@@ -1365,13 +1372,13 @@
       try{
         sessionStorage.setItem("noziStickerReturn",JSON.stringify({
           area:"lezioni-materiali", classe:classeCorrente, materia:materiaCorrente,
-          page:currentPageIndex, requestedAt:Date.now()
+          page:quadernoCorrente?.currentPage ?? 0, requestedAt:Date.now()
         }));
       }catch(_){}
 
       // Chiede alla raccolta Nozi già esistente di aprirsi: niente secondo importatore.
       window.dispatchEvent(new CustomEvent("nozi:open-stickers",{
-        detail:{destination:"lezioni-materiali",classe:classeCorrente,materia:materiaCorrente,page:currentPageIndex}
+        detail:{destination:"lezioni-materiali",classe:classeCorrente,materia:materiaCorrente,page:quadernoCorrente?.currentPage ?? 0}
       }));
 
       // Compatibilità con l'interfaccia sticker esistente se è già montata nel DOM.
