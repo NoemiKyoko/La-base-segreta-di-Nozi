@@ -507,10 +507,12 @@
       return structuredClone(quadernoCorrente);
     }
 
+    // v3A.19.3.4 — cronologia completa della sessione.
+    // Prima venivano conservati solo 30 stati: superato il limite, Undo
+    // non poteva più tornare all'inizio del lavoro.
     function pushHistory() {
       if (!quadernoCorrente) return;
       notebookHistory.push(notebookSnapshot());
-      if (notebookHistory.length > 30) notebookHistory.shift();
       notebookFuture = [];
     }
 
