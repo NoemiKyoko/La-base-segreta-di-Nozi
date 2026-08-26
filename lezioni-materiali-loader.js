@@ -303,7 +303,10 @@
       .lm-draw-canvas{position:absolute;inset:0;z-index:4;width:100%;height:100%;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
       .lm-object-layer{position:absolute;inset:0;z-index:5;pointer-events:none}
       .lm-lasso-hint{position:fixed;z-index:905;display:none;left:50%;top:88px;transform:translateX(-50%);padding:7px 12px;border-radius:12px;background:rgba(255,255,255,.94);color:var(--lm-dark);font-size:13px;font-weight:800;box-shadow:0 4px 14px rgba(50,60,75,.12)}.lm-lasso-hint.aperto{display:block}
-      .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}.lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}
+      .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}
+      .lm-page-object.image img,.lm-page-object.sheet img,.lm-page-object.sticker img{width:100%;height:100%;display:block;object-fit:contain;pointer-events:none;user-select:none;-webkit-user-select:none}
+      .lm-page-object.sticker{background:transparent}
+.lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}
       .lm-page-object.text.lm-textbox-editing{border:1px solid rgba(43,144,217,.38)!important;background:rgba(255,255,255,.08)!important;min-height:34px!important;padding:2px 4px!important;touch-action:auto!important;overflow:visible!important}
       .lm-text-move-handle{
         position:absolute;left:-10px;top:-10px;width:24px;height:24px;border-radius:50%;
@@ -378,7 +381,7 @@
       <input class="lm-file-input" type="file" multiple accept="image/*,application/pdf,.doc,.docx,.odt,.ppt,.pptx">
       <input class="lm-notebook-file lm-notebook-image-input" type="file" accept="image/*">
       <input class="lm-notebook-file lm-notebook-any-input" type="file">
-      <div class="lm-plus-menu"><button data-plus="sheet" type="button">Scheda</button><button data-plus="image" type="button">Immagine</button><button data-plus="file" type="button">File</button></div>
+      <div class="lm-plus-menu"><button data-plus="sheet" type="button">Scheda</button><button data-plus="image" type="button">Foto</button><button data-plus="sticker" type="button">Sticker</button><button data-plus="file" type="button">File</button></div>
       <div class="lm-more-menu"><button data-more="lesson" type="button">Nuova lezione</button><button data-more="share" type="button">Condividi / Esporta</button></div>
       <div class="lm-transcribe"><div class="lm-transcribe-card"><div class="lm-transcribe-title">Trasforma in testo digitale</div><textarea class="lm-transcribe-input" placeholder="Scrivi qui il testo (puoi usare anche Scribble con Apple Pencil)"></textarea><div class="lm-transcribe-actions"><button class="lm-transcribe-cancel" type="button">Annulla</button><button class="lm-transcribe-ok" type="button">Digitalizza</button></div></div></div><div class="lm-lasso-hint">Scrittura selezionata: premi T per trasformarla in testo</div><div class="lm-textbar"><div class="lm-font-wrap"><button class="lm-font-trigger" type="button" aria-label="Font">Andika</button><div class="lm-font-menu"><button class="lm-font-choice" data-font="andika" data-value="'Andika', Arial, sans-serif" type="button">Andika</button><button class="lm-font-choice" data-font="corsivo" data-value="'Corsivo Primaria', cursive" type="button">Corsivo Primaria</button><button class="lm-font-choice" data-font="arial" data-value="Arial, sans-serif" type="button">Arial</button><button class="lm-font-other" type="button">Altri font…</button></div></div><select class="lm-size"><option>12</option><option>24</option><option selected>32</option><option>40</option><option>48</option><option>56</option></select><button class="lm-align" type="button" title="Allineamento">☰</button><input class="lm-color" type="color" value="#111111" title="Colore"></div>
       <div class="lm-modal lm-sheet-modal"><div class="lm-modal-card"><button class="lm-modal-close" type="button">×</button><h2>Schede da stampare</h2><div class="lm-sheet-picker-grid"></div></div></div>
@@ -619,6 +622,25 @@
       if(el) editTextInline(obj,el,true);
     }
 
+
+    // v3A.19.3.1 — ponte unico tra raccolta Nozi e Quaderno.
+    // La raccolta centrale può consegnare lo sticker con:
+    // window.dispatchEvent(new CustomEvent("nozi:insert-sticker",{detail:{blob,name}}))
+    window.addEventListener("nozi:insert-sticker",async(e)=>{
+      if(schermata!=="quaderno") return;
+      const d=e.detail||{};
+      try{
+        let file=d.blob||null;
+        if(!file && d.dataUrl){
+          const r=await fetch(d.dataUrl); file=await r.blob();
+        }
+        if(!file && d.url){
+          const r=await fetch(d.url); file=await r.blob();
+        }
+        if(file) await addBlobObject(file,d.name||"Sticker Nozi","sticker");
+      }catch(err){ console.error("Sticker Nozi:",err); }
+    });
+
     function openDateEditor(obj){
       document.querySelector(".lm-date-editor-backdrop")?.remove();
 
@@ -818,7 +840,7 @@
         el.style.textAlign = obj.align || "left";
         el.style.color = obj.color || "#111111";
         el.addEventListener("dblclick",event=>{event.preventDefault();event.stopPropagation();pushHistory();editTextInline(obj,el,false);});
-      } else if (obj.type === "image" || obj.type === "sheet") {
+      } else if (obj.type === "image" || obj.type === "sheet" || obj.type === "sticker") {
         const img = document.createElement("img");
         const url = URL.createObjectURL(obj.blob); objectUrls.push(url);
         img.src = url; img.alt = obj.name || ""; el.appendChild(img);
@@ -837,7 +859,9 @@
           event.stopPropagation();
           return;
         }
-        event.preventDefault(); event.stopPropagation(); selectedObjectId = obj.id; renderNotebookPage();
+        event.preventDefault(); event.stopPropagation(); selectedObjectId = obj.id;
+        layer.querySelectorAll(".lm-page-object.selected").forEach(n=>n.classList.remove("selected"));
+        el.classList.add("selected");
         const pageEl = layer.parentElement, rect = pageEl.getBoundingClientRect(), er = el.getBoundingClientRect();
         const ox = event.clientX-er.left, oy=event.clientY-er.top;
         el.setPointerCapture(event.pointerId); pushHistory();
@@ -849,7 +873,15 @@
         event.preventDefault();event.stopPropagation();selectedObjectId=obj.id;pushHistory();
         const pageEl=layer.parentElement, rect=pageEl.getBoundingClientRect(), er=el.getBoundingClientRect(), left=er.left-rect.left;
         resize.setPointerCapture(event.pointerId);
-        const move=e=>{obj.w=Math.max(8,Math.min(92-obj.x,(e.clientX-rect.left-left)/rect.width*100));el.style.width=`${obj.w}%`;};
+        const top=er.top-rect.top;
+        const move=e=>{
+          obj.w=Math.max(8,Math.min(92-obj.x,(e.clientX-rect.left-left)/rect.width*100));
+          el.style.width=`${obj.w}%`;
+          if(["image","sheet","sticker"].includes(obj.type)){
+            obj.h=Math.max(6,Math.min(94-obj.y,(e.clientY-rect.top-top)/rect.height*100));
+            el.style.height=`${obj.h}%`;
+          }
+        };
         const end=async e=>{try{resize.releasePointerCapture(e.pointerId)}catch(_){ } resize.removeEventListener("pointermove",move);resize.removeEventListener("pointerup",end);resize.removeEventListener("pointercancel",end);await persistNotebook();};
         resize.addEventListener("pointermove",move);resize.addEventListener("pointerup",end);resize.addEventListener("pointercancel",end);
       });
@@ -906,7 +938,8 @@
 
     async function addBlobObject(blob, name, type) {
       const page=currentNotebookPage(); pushHistory();
-      page.objects.push({id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type,blob,name,x:12,y:22,w:type==="file"?38:68,h:type==="file"?8:30});
+      const isSticker=type==="sticker";
+      page.objects.push({id:`o-${Date.now()}-${Math.random().toString(36).slice(2,6)}`,type,blob,name,x:isSticker?38:12,y:isSticker?28:22,w:type==="file"?38:(isSticker?24:68),h:type==="file"?8:(isSticker?24:30)});
       await persistNotebook(); renderNotebookPage();
     }
 
@@ -1326,6 +1359,27 @@
     more.addEventListener("click", event => { if (schermata!=="quaderno") return; event.stopPropagation(); moreMenu.classList.toggle("aperto"); plusMenu.classList.remove("aperto"); });
     plusMenu.querySelector('[data-plus="sheet"]').addEventListener("click",()=>{plusMenu.classList.remove("aperto");openSheetPicker();});
     plusMenu.querySelector('[data-plus="image"]').addEventListener("click",()=>{plusMenu.classList.remove("aperto");notebookImageInput.click();});
+    plusMenu.querySelector('[data-plus="sticker"]').addEventListener("click",()=>{
+      plusMenu.classList.remove("aperto");
+      // Ricorda esattamente da quale Quaderno siamo partiti.
+      try{
+        sessionStorage.setItem("noziStickerReturn",JSON.stringify({
+          area:"lezioni-materiali", classe:classeCorrente, materia:materiaCorrente,
+          page:currentPageIndex, requestedAt:Date.now()
+        }));
+      }catch(_){}
+
+      // Chiede alla raccolta Nozi già esistente di aprirsi: niente secondo importatore.
+      window.dispatchEvent(new CustomEvent("nozi:open-stickers",{
+        detail:{destination:"lezioni-materiali",classe:classeCorrente,materia:materiaCorrente,page:currentPageIndex}
+      }));
+
+      // Compatibilità con l'interfaccia sticker esistente se è già montata nel DOM.
+      const existing=document.querySelector(
+        '[data-action="sticker"],[data-open="stickers"],[data-open-stickers],.sticker-button,.sticker-btn,#stickerBtn'
+      );
+      if(existing && !screen.contains(existing)) existing.click();
+    });
     plusMenu.querySelector('[data-plus="file"]').addEventListener("click",()=>{plusMenu.classList.remove("aperto");notebookAnyInput.click();});
     notebookImageInput.addEventListener("change",async()=>{const f=notebookImageInput.files?.[0];notebookImageInput.value="";if(f&&schermata==="quaderno")await addBlobObject(f,f.name,"image");});
     notebookAnyInput.addEventListener("change",async()=>{const f=notebookAnyInput.files?.[0];notebookAnyInput.value="";if(f&&schermata==="quaderno")await addBlobObject(f,f.name,f.type?.startsWith("image/")?"image":"file");});
