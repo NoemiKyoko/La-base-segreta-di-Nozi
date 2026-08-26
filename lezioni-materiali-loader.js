@@ -251,8 +251,8 @@
       .lm-screen.notebook .lm-search{margin-left:auto;width:52px;height:52px;min-width:52px;border-radius:18px;z-index:2}.lm-screen.notebook .lm-search svg{width:31px;height:31px}
       .lm-screen.notebook .lm-panel{width:100%;height:100%;max-width:none;margin:0;padding:0;border:0;background:transparent;box-shadow:none}.lm-screen.notebook.notebook-preparing .lm-panel{visibility:hidden}.lm-screen.notebook .lm-panel{transition:none}
       .lm-screen.notebook .lm-workspace{position:relative;flex:1;min-height:0;padding:4px 18px 78px;overflow:hidden;background:transparent}
-      .lm-notebook-shell{position:absolute;inset:0 0 66px;display:flex;align-items:flex-start;justify-content:center;padding:22px 28px 22px;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-x pan-y}
-      .lm-page{position:relative;width:min(calc(100vw - 56px),calc((100dvh - 190px)*.82));height:auto;max-width:none;max-height:calc(100dvh - 190px);aspect-ratio:.82;background:#fff;box-shadow:0 10px 28px rgba(55,60,70,.17);border-radius:10px;overflow:hidden;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;pointer-events:auto!important}
+      .lm-notebook-shell{position:absolute;inset:0 0 66px;display:flex;align-items:flex-start;justify-content:center;padding:22px 28px 22px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:none}
+      .lm-page{position:relative;width:min(calc(100vw - 56px),calc((100dvh - 190px)*.82));height:auto;max-width:none;max-height:calc(100dvh - 190px);aspect-ratio:.82;background:#fff;box-shadow:0 10px 28px rgba(55,60,70,.17);border-radius:10px;overflow:hidden;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
       /* v3A.19 — pagina più grande, stessa proporzione */
       .lm-page{width:min(92vw,820px)!important;max-width:820px!important}
 
@@ -306,11 +306,6 @@
       .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}
       .lm-page-object.image img,.lm-page-object.sheet img,.lm-page-object.sticker img{width:100%;height:100%;display:block;object-fit:contain;pointer-events:none;user-select:none;-webkit-user-select:none}
       .lm-page-object.sticker{background:transparent}
-      .lm-zoom-control{position:fixed!important;right:max(18px,env(safe-area-inset-right))!important;bottom:max(18px,env(safe-area-inset-bottom))!important;z-index:2147483000!important;display:flex!important;visibility:visible!important;opacity:1!important;align-items:center;gap:5px;padding:5px 6px;border-radius:999px;background:var(--lm-soft);border:2px solid var(--lm-color);box-shadow:0 4px 14px rgba(0,0,0,.14);user-select:none;-webkit-user-select:none}
-      .lm-zoom-control button{border:0;margin:0;min-width:34px;height:34px;border-radius:999px;background:var(--lm-color);color:var(--lm-dark);font:700 18px/1 Arial,sans-serif;display:flex;align-items:center;justify-content:center}
-      .lm-zoom-control .lm-zoom-value{min-width:58px;padding:0 8px;background:transparent;color:var(--lm-dark);font-size:14px}
-      .lm-zoom-control button:disabled{opacity:.35}
-
 .lm-page-object.text{padding:4px 7px;color:#111;white-space:pre-wrap;line-height:1.2}
       .lm-page-object.text.lm-textbox-editing{border:1px solid rgba(43,144,217,.38)!important;background:rgba(255,255,255,.08)!important;min-height:34px!important;padding:2px 4px!important;touch-action:auto!important;overflow:visible!important}
       .lm-text-move-handle{
@@ -418,8 +413,6 @@
     let lassoPoints = [];
     let notebookHistory = [];
     let notebookFuture = [];
-    let notebookZoom=100;
-    const notebookZoomLevels=[75,100,125,150,175,200];
 
     function liberaObjectUrls() {
       objectUrls.forEach(url => URL.revokeObjectURL(url));
@@ -732,26 +725,32 @@
       const ta=document.createElement("textarea");
       ta.className="lm-native-text-editor";
       ta.rows=1;
-      ta.value=obj.text||"";
+      ta.wrap="soft";
+      ta.value=String(obj.text??"").replace(/\r\n?/g,"\n");
       ta.spellcheck=true;
       ta.setAttribute("aria-label","Scrivi testo");
       el.appendChild(ta);
 
       const autosize=()=>{
         ta.style.height="auto";
-        ta.style.height=Math.max(30,ta.scrollHeight)+"px";
-        el.style.height="auto";
-        el.style.minHeight=Math.max(34,ta.scrollHeight+4)+"px";
+        const needed=Math.max(30,ta.scrollHeight);
+        ta.style.height=needed+"px";
+        el.style.height=(needed+4)+"px";
+        el.style.minHeight=(needed+4)+"px";
+        const pageEl=el.closest(".lm-page");
+        if(pageEl){
+          const pr=pageEl.getBoundingClientRect();
+          if(pr.height>0) obj.h=(needed+4)/pr.height*100;
+        }
       };
 
       ta.addEventListener("pointerdown",e=>{e.stopPropagation();});
       ta.addEventListener("click",e=>{
         e.stopPropagation();
-        // Secondo tocco dentro la casella: focus esplicito.
+        // Manteniamo la posizione scelta dall'utente: niente salto forzato in fondo.
         ta.focus({preventScroll:true});
-        try{const n=ta.value.length;ta.setSelectionRange(n,n);}catch(_){}
       });
-      ta.addEventListener("input",()=>{obj.text=ta.value;autosize();});
+      ta.addEventListener("input",()=>{obj.text=ta.value.replace(/\r\n?/g,"\n");autosize();});
 
       // Spostamento SOLO dalla maniglia ↔.
       moveHandle.addEventListener("pointerdown",e=>{
@@ -784,7 +783,7 @@
       },{passive:false});
 
       ta.addEventListener("blur",async()=>{
-        obj.text=ta.value.replace(/\n+$/,"");
+        obj.text=ta.value.replace(/\r\n?/g,"\n");
         el.classList.remove("lm-textbox-editing");
         if(isNew&&!obj.text){
           const p=currentNotebookPage();
@@ -862,7 +861,6 @@
       if (obj.id === selectedObjectId) el.classList.add("selected");
       el.addEventListener("pointerdown", event => {
         if (event.target === del || event.target === resize) return;
-        if (event.pointerType==="touch" && notebookZoom>100) return;
         if (["pencil","eraser"].includes(notebookMode) && !["image","sheet","sticker"].includes(obj.type)) return;
         // In modalità T, un testo già esistente NON deve entrare nel drag generico:
         // il tap deve poter arrivare all'handler che riapre davvero l'editor.
@@ -949,7 +947,6 @@
       screen.dataset.notebookTool=notebookMode;
       const hint=screen.querySelector(".lm-lasso-hint");if(hint)hint.classList.toggle("aperto",selectedStrokeIndexes.size>0);
       updateTextbar();
-      applyNotebookZoom();
     }
 
     async function addBlobObject(blob, name, type) {
@@ -976,18 +973,12 @@
       // v3A.14: sul canvas lavora solo la Pencil. Dito/palmo vengono neutralizzati
       // esclusivamente qui, senza blocchi globali sulla schermata o sulla toolbar.
       const isTouch=e=>e.pointerType==="touch";
-      const blockTouch=e=>{
-        if(isTouch(e) && notebookZoom<=100){
-          e.preventDefault();e.stopPropagation();
-        }
-      };
+      const blockTouch=e=>{if(isTouch(e)){e.preventDefault();e.stopPropagation();}};
       canvas.addEventListener("contextmenu",e=>e.preventDefault());
       canvas.addEventListener("dragstart",e=>e.preventDefault());
       canvas.addEventListener("selectstart",e=>e.preventDefault());
       ["pointerdown","pointermove","pointerup","pointercancel"].forEach(type=>canvas.addEventListener(type,blockTouch,{capture:true,passive:false}));
-      ["touchstart","touchmove","touchend","touchcancel"].forEach(type=>canvas.addEventListener(type,e=>{
-        if(notebookZoom<=100){e.preventDefault();e.stopPropagation();}
-      },{capture:true,passive:false}));
+      ["touchstart","touchmove","touchend","touchcancel"].forEach(type=>canvas.addEventListener(type,e=>{e.preventDefault();e.stopPropagation();},{capture:true,passive:false}));
       const norm=(ev,rect)=>({x:(ev.clientX-rect.left)/rect.width,y:(ev.clientY-rect.top)/rect.height});
 
       canvas.addEventListener("pointerdown",e=>{
@@ -1116,43 +1107,11 @@
       });
     }
 
-    function applyNotebookZoom(){
-      const pageEl=panel.querySelector(".lm-page");
-      const shell=panel.querySelector(".lm-notebook-shell");
-      if(pageEl) pageEl.style.zoom=String(notebookZoom/100);
-
-      if(shell){
-        const enlarged=notebookZoom>100;
-        shell.style.overflow="auto";
-        shell.style.touchAction="pan-x pan-y";
-        shell.style.justifyContent=enlarged ? "flex-start" : "center";
-        shell.style.alignItems="flex-start";
-        if(!enlarged){
-          shell.scrollLeft=0;
-          shell.scrollTop=0;
-        }
-      }
-
-      const value=screen.querySelector(".lm-zoom-value");
-      const minus=screen.querySelector(".lm-zoom-minus");
-      const plus=screen.querySelector(".lm-zoom-plus");
-      if(value)value.textContent=`${notebookZoom}%`;
-      if(minus)minus.disabled=notebookZoom<=75;
-      if(plus)plus.disabled=notebookZoom>=200;
-    }
-    function setNotebookZoom(v){notebookZoom=Math.max(75,Math.min(200,v));applyNotebookZoom();}
-
     async function renderQuaderno() {
       liberaObjectUrls();setBinderMode(false);setNotebookMode(true);screen.classList.add("notebook-preparing");schermata="quaderno";temaClasse(classeCorrente);title.textContent=`${materiaCorrente.toUpperCase()} — QUADERNO`;
-      quadernoCorrente=await leggiQuaderno(classeCorrente.id,materiaCorrente);notebookHistory=[];notebookFuture=[];notebookZoom=100;resetSelection();notebookMode="pencil";
+      quadernoCorrente=await leggiQuaderno(classeCorrente.id,materiaCorrente);notebookHistory=[];notebookFuture=[];resetSelection();notebookMode="pencil";
       (quadernoCorrente.pages||[]).forEach(ensureDateObject);
       panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-tools"><span class="lm-tools-grip" title="Sposta toolbar">≡</span><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="text" type="button" title="Testo">T</button><button class="lm-tool-eraser" data-tool="eraser" type="button" title="Gomma" aria-label="Gomma"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7.2 20.8 17.9 7.5a3 3 0 0 1 4.2-.4l3.4 2.8a3 3 0 0 1 .4 4.2L15.2 27.4H8.8l-2.4-2a3.1 3.1 0 0 1 .8-4.6Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="m13 25.8-5.5-4.5M15.3 27.3h10.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-scroll-rail" aria-label="Scorri la pagina"><div class="lm-scroll-track"><div class="lm-scroll-thumb"></div></div></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div>`;
-      screen.querySelector(".lm-zoom-control")?.remove();
-      const zoomControl=document.createElement("div");
-      zoomControl.className="lm-zoom-control";
-      zoomControl.innerHTML='<button class="lm-zoom-minus" type="button" aria-label="Riduci zoom">−</button><button class="lm-zoom-value" type="button" title="Torna al 100%">100%</button><button class="lm-zoom-plus" type="button" aria-label="Aumenta zoom">＋</button>';
-      screen.appendChild(zoomControl);
-
       const restoreNotebookUI=()=>{
         const t=panel.querySelector(".lm-notebook-tools");
         const n=panel.querySelector(".lm-page-nav");
@@ -1162,10 +1121,6 @@
       restoreNotebookUI();
       requestAnimationFrame(restoreNotebookUI);
       setTimeout(restoreNotebookUI,120);
-      screen.querySelector(".lm-zoom-minus")?.addEventListener("click",e=>{e.stopPropagation();const i=notebookZoomLevels.indexOf(notebookZoom);setNotebookZoom(notebookZoomLevels[Math.max(0,i-1)]);});
-      screen.querySelector(".lm-zoom-plus")?.addEventListener("click",e=>{e.stopPropagation();const i=notebookZoomLevels.indexOf(notebookZoom);setNotebookZoom(notebookZoomLevels[Math.min(notebookZoomLevels.length-1,i+1)]);});
-      screen.querySelector(".lm-zoom-value")?.addEventListener("click",e=>{e.stopPropagation();setNotebookZoom(100);});
-      applyNotebookZoom();
       applyNotebookPaper();
       await chooseNotebookPaperIfNeeded();
 
