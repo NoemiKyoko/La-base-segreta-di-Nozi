@@ -252,7 +252,7 @@
       .lm-screen.notebook .lm-panel{width:100%;height:100%;max-width:none;margin:0;padding:0;border:0;background:transparent;box-shadow:none}.lm-screen.notebook.notebook-preparing .lm-panel{visibility:hidden}.lm-screen.notebook .lm-panel{transition:none}
       .lm-screen.notebook .lm-workspace{position:relative;flex:1;min-height:0;padding:4px 18px 78px;overflow:hidden;background:transparent}
       .lm-notebook-shell{position:absolute;inset:0 0 66px;display:flex;align-items:flex-start;justify-content:center;padding:22px 28px 22px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:none}
-      .lm-page{position:relative;width:min(calc(100vw - 56px),calc((100dvh - 190px)*.82));height:auto;max-width:none;max-height:calc(100dvh - 190px);aspect-ratio:.82;background:#fff;box-shadow:0 10px 28px rgba(55,60,70,.17);border-radius:10px;overflow:hidden;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+      .lm-page{position:relative;width:min(calc(100vw - 56px),calc((100dvh - 190px)*.82));height:auto;max-width:none;max-height:calc(100dvh - 190px);aspect-ratio:.82;background:#fff;box-shadow:0 10px 28px rgba(55,60,70,.17);border-radius:10px;overflow:hidden;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;pointer-events:auto!important}
       /* v3A.19 — pagina più grande, stessa proporzione */
       .lm-page{width:min(92vw,820px)!important;max-width:820px!important}
 
@@ -306,7 +306,7 @@
       .lm-page-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;min-width:45px;min-height:28px}.lm-page-object.selected{border-color:#2b90d9;background:rgba(255,255,255,.15)}
       .lm-page-object.image img,.lm-page-object.sheet img,.lm-page-object.sticker img{width:100%;height:100%;display:block;object-fit:contain;pointer-events:none;user-select:none;-webkit-user-select:none}
       .lm-page-object.sticker{background:transparent}
-      .lm-zoom-control{position:fixed;right:18px;bottom:18px;z-index:10050;display:flex;align-items:center;gap:5px;padding:5px 6px;border-radius:999px;background:var(--lm-soft);border:2px solid var(--lm-color);box-shadow:0 4px 14px rgba(0,0,0,.14);user-select:none;-webkit-user-select:none}
+      .lm-zoom-control{position:fixed!important;right:max(18px,env(safe-area-inset-right))!important;bottom:max(18px,env(safe-area-inset-bottom))!important;z-index:2147483000!important;display:flex!important;visibility:visible!important;opacity:1!important;align-items:center;gap:5px;padding:5px 6px;border-radius:999px;background:var(--lm-soft);border:2px solid var(--lm-color);box-shadow:0 4px 14px rgba(0,0,0,.14);user-select:none;-webkit-user-select:none}
       .lm-zoom-control button{border:0;margin:0;min-width:34px;height:34px;border-radius:999px;background:var(--lm-color);color:var(--lm-dark);font:700 18px/1 Arial,sans-serif;display:flex;align-items:center;justify-content:center}
       .lm-zoom-control .lm-zoom-value{min-width:58px;padding:0 8px;background:transparent;color:var(--lm-dark);font-size:14px}
       .lm-zoom-control button:disabled{opacity:.35}
@@ -1112,9 +1112,9 @@
     function applyNotebookZoom(){
       const pageEl=panel.querySelector(".lm-page");
       if(pageEl) pageEl.style.zoom=String(notebookZoom/100);
-      const value=panel.querySelector(".lm-zoom-value");
-      const minus=panel.querySelector(".lm-zoom-minus");
-      const plus=panel.querySelector(".lm-zoom-plus");
+      const value=screen.querySelector(".lm-zoom-value");
+      const minus=screen.querySelector(".lm-zoom-minus");
+      const plus=screen.querySelector(".lm-zoom-plus");
       if(value)value.textContent=`${notebookZoom}%`;
       if(minus)minus.disabled=notebookZoom<=75;
       if(plus)plus.disabled=notebookZoom>=200;
@@ -1125,7 +1125,13 @@
       liberaObjectUrls();setBinderMode(false);setNotebookMode(true);screen.classList.add("notebook-preparing");schermata="quaderno";temaClasse(classeCorrente);title.textContent=`${materiaCorrente.toUpperCase()} — QUADERNO`;
       quadernoCorrente=await leggiQuaderno(classeCorrente.id,materiaCorrente);notebookHistory=[];notebookFuture=[];notebookZoom=100;resetSelection();notebookMode="pencil";
       (quadernoCorrente.pages||[]).forEach(ensureDateObject);
-      panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-tools"><span class="lm-tools-grip" title="Sposta toolbar">≡</span><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="text" type="button" title="Testo">T</button><button class="lm-tool-eraser" data-tool="eraser" type="button" title="Gomma" aria-label="Gomma"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7.2 20.8 17.9 7.5a3 3 0 0 1 4.2-.4l3.4 2.8a3 3 0 0 1 .4 4.2L15.2 27.4H8.8l-2.4-2a3.1 3.1 0 0 1 .8-4.6Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="m13 25.8-5.5-4.5M15.3 27.3h10.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-scroll-rail" aria-label="Scorri la pagina"><div class="lm-scroll-track"><div class="lm-scroll-thumb"></div></div></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div><div class="lm-zoom-control"><button class="lm-zoom-minus" type="button">−</button><button class="lm-zoom-value" type="button" title="Torna al 100%">100%</button><button class="lm-zoom-plus" type="button">＋</button></div>`;
+      panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-tools"><span class="lm-tools-grip" title="Sposta toolbar">≡</span><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="text" type="button" title="Testo">T</button><button class="lm-tool-eraser" data-tool="eraser" type="button" title="Gomma" aria-label="Gomma"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7.2 20.8 17.9 7.5a3 3 0 0 1 4.2-.4l3.4 2.8a3 3 0 0 1 .4 4.2L15.2 27.4H8.8l-2.4-2a3.1 3.1 0 0 1 .8-4.6Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="m13 25.8-5.5-4.5M15.3 27.3h10.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-scroll-rail" aria-label="Scorri la pagina"><div class="lm-scroll-track"><div class="lm-scroll-thumb"></div></div></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div>`;
+      screen.querySelector(".lm-zoom-control")?.remove();
+      const zoomControl=document.createElement("div");
+      zoomControl.className="lm-zoom-control";
+      zoomControl.innerHTML='<button class="lm-zoom-minus" type="button" aria-label="Riduci zoom">−</button><button class="lm-zoom-value" type="button" title="Torna al 100%">100%</button><button class="lm-zoom-plus" type="button" aria-label="Aumenta zoom">＋</button>';
+      screen.appendChild(zoomControl);
+
       const restoreNotebookUI=()=>{
         const t=panel.querySelector(".lm-notebook-tools");
         const n=panel.querySelector(".lm-page-nav");
@@ -1135,9 +1141,9 @@
       restoreNotebookUI();
       requestAnimationFrame(restoreNotebookUI);
       setTimeout(restoreNotebookUI,120);
-      panel.querySelector(".lm-zoom-minus")?.addEventListener("click",e=>{e.stopPropagation();const i=notebookZoomLevels.indexOf(notebookZoom);setNotebookZoom(notebookZoomLevels[Math.max(0,i-1)]);});
-      panel.querySelector(".lm-zoom-plus")?.addEventListener("click",e=>{e.stopPropagation();const i=notebookZoomLevels.indexOf(notebookZoom);setNotebookZoom(notebookZoomLevels[Math.min(notebookZoomLevels.length-1,i+1)]);});
-      panel.querySelector(".lm-zoom-value")?.addEventListener("click",e=>{e.stopPropagation();setNotebookZoom(100);});
+      screen.querySelector(".lm-zoom-minus")?.addEventListener("click",e=>{e.stopPropagation();const i=notebookZoomLevels.indexOf(notebookZoom);setNotebookZoom(notebookZoomLevels[Math.max(0,i-1)]);});
+      screen.querySelector(".lm-zoom-plus")?.addEventListener("click",e=>{e.stopPropagation();const i=notebookZoomLevels.indexOf(notebookZoom);setNotebookZoom(notebookZoomLevels[Math.min(notebookZoomLevels.length-1,i+1)]);});
+      screen.querySelector(".lm-zoom-value")?.addEventListener("click",e=>{e.stopPropagation();setNotebookZoom(100);});
       applyNotebookZoom();
       applyNotebookPaper();
       await chooseNotebookPaperIfNeeded();
