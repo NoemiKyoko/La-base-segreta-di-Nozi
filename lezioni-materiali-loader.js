@@ -621,7 +621,16 @@
       page.objects.push(obj);selectedObjectId=obj.id;
       makePageObjectElement(obj,layer);
       const el=layer.querySelector(`.lm-page-object[data-id="${obj.id}"]`);
-      if(el) editTextInline(obj,el,true);
+      if(el){
+        editTextInline(obj,el,true);
+        const focusOnRelease=()=>{
+          const ta=el.querySelector(".lm-native-text-editor");
+          if(!ta?.isConnected)return;
+          ta.focus({preventScroll:true});
+          try{ta.setSelectionRange(0,0);}catch(_){}
+        };
+        pageEl.addEventListener("pointerup",focusOnRelease,{once:true,capture:true});
+      }
     }
 
 
@@ -746,13 +755,10 @@
 
       ta.addEventListener("pointerdown",e=>{
         e.stopPropagation();
-        // Su iPad il focus deve partire dentro il gesto reale dell'utente.
         if(document.activeElement!==ta) ta.focus({preventScroll:true});
       });
-      ta.addEventListener("click",e=>{
-        e.stopPropagation();
-        if(document.activeElement!==ta) ta.focus({preventScroll:true});
-      });
+      ta.addEventListener("pointerup",e=>e.stopPropagation());
+      ta.addEventListener("click",e=>e.stopPropagation());
       ta.addEventListener("input",()=>{obj.text=ta.value.replace(/\r\n?/g,"\n");autosize();});
 
       // Spostamento SOLO dalla maniglia ↔.
@@ -922,11 +928,7 @@
           editTextInline(obj,el,false);
         };
         el.addEventListener("dblclick",reopen);
-        el.addEventListener("pointerup",e=>{
-          if(obj.role!=="date" && notebookMode!=="text")return;
-          reopen(e);
-        });
-        el.addEventListener("click",e=>{
+        el.addEventListener("pointerdown",e=>{
           if(obj.role!=="date" && notebookMode!=="text")return;
           reopen(e);
         });
