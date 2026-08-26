@@ -251,7 +251,7 @@
       .lm-screen.notebook .lm-search{margin-left:auto;width:52px;height:52px;min-width:52px;border-radius:18px;z-index:2}.lm-screen.notebook .lm-search svg{width:31px;height:31px}
       .lm-screen.notebook .lm-panel{width:100%;height:100%;max-width:none;margin:0;padding:0;border:0;background:transparent;box-shadow:none}.lm-screen.notebook.notebook-preparing .lm-panel{visibility:hidden}.lm-screen.notebook .lm-panel{transition:none}
       .lm-screen.notebook .lm-workspace{position:relative;flex:1;min-height:0;padding:4px 18px 78px;overflow:hidden;background:transparent}
-      .lm-notebook-shell{position:absolute;inset:0 0 66px;display:flex;align-items:flex-start;justify-content:center;padding:22px 28px 22px;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;touch-action:none}
+      .lm-notebook-shell{position:absolute;inset:0 0 66px;display:flex;align-items:flex-start;justify-content:center;padding:22px 28px 22px;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-x pan-y}
       .lm-page{position:relative;width:min(calc(100vw - 56px),calc((100dvh - 190px)*.82));height:auto;max-width:none;max-height:calc(100dvh - 190px);aspect-ratio:.82;background:#fff;box-shadow:0 10px 28px rgba(55,60,70,.17);border-radius:10px;overflow:hidden;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;pointer-events:auto!important}
       /* v3A.19 — pagina più grande, stessa proporzione */
       .lm-page{width:min(92vw,820px)!important;max-width:820px!important}
@@ -862,6 +862,7 @@
       if (obj.id === selectedObjectId) el.classList.add("selected");
       el.addEventListener("pointerdown", event => {
         if (event.target === del || event.target === resize) return;
+        if (event.pointerType==="touch" && notebookZoom>100) return;
         if (["pencil","eraser"].includes(notebookMode) && !["image","sheet","sticker"].includes(obj.type)) return;
         // In modalità T, un testo già esistente NON deve entrare nel drag generico:
         // il tap deve poter arrivare all'handler che riapre davvero l'editor.
@@ -975,12 +976,18 @@
       // v3A.14: sul canvas lavora solo la Pencil. Dito/palmo vengono neutralizzati
       // esclusivamente qui, senza blocchi globali sulla schermata o sulla toolbar.
       const isTouch=e=>e.pointerType==="touch";
-      const blockTouch=e=>{if(isTouch(e)){e.preventDefault();e.stopPropagation();}};
+      const blockTouch=e=>{
+        if(isTouch(e) && notebookZoom<=100){
+          e.preventDefault();e.stopPropagation();
+        }
+      };
       canvas.addEventListener("contextmenu",e=>e.preventDefault());
       canvas.addEventListener("dragstart",e=>e.preventDefault());
       canvas.addEventListener("selectstart",e=>e.preventDefault());
       ["pointerdown","pointermove","pointerup","pointercancel"].forEach(type=>canvas.addEventListener(type,blockTouch,{capture:true,passive:false}));
-      ["touchstart","touchmove","touchend","touchcancel"].forEach(type=>canvas.addEventListener(type,e=>{e.preventDefault();e.stopPropagation();},{capture:true,passive:false}));
+      ["touchstart","touchmove","touchend","touchcancel"].forEach(type=>canvas.addEventListener(type,e=>{
+        if(notebookZoom<=100){e.preventDefault();e.stopPropagation();}
+      },{capture:true,passive:false}));
       const norm=(ev,rect)=>({x:(ev.clientX-rect.left)/rect.width,y:(ev.clientY-rect.top)/rect.height});
 
       canvas.addEventListener("pointerdown",e=>{
@@ -1111,7 +1118,21 @@
 
     function applyNotebookZoom(){
       const pageEl=panel.querySelector(".lm-page");
+      const shell=panel.querySelector(".lm-notebook-shell");
       if(pageEl) pageEl.style.zoom=String(notebookZoom/100);
+
+      if(shell){
+        const enlarged=notebookZoom>100;
+        shell.style.overflow="auto";
+        shell.style.touchAction="pan-x pan-y";
+        shell.style.justifyContent=enlarged ? "flex-start" : "center";
+        shell.style.alignItems="flex-start";
+        if(!enlarged){
+          shell.scrollLeft=0;
+          shell.scrollTop=0;
+        }
+      }
+
       const value=screen.querySelector(".lm-zoom-value");
       const minus=screen.querySelector(".lm-zoom-minus");
       const plus=screen.querySelector(".lm-zoom-plus");
