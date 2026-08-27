@@ -76,6 +76,8 @@
       .stupidera-picker-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}.stupidera-picker-head h2{flex:1;margin:0;color:#4c4274;font-size:22px}.stupidera-picker-close{border:0;width:40px;height:40px;border-radius:13px;background:#edf3fa;color:#4c4274;font-size:22px}
       .stupidera-picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px}.stupidera-picker-item{border:1px solid rgba(76,66,116,.1);border-radius:18px;background:#f8f7fb;padding:9px;color:#4c4274;font-weight:600}.stupidera-picker-item img{display:block;width:100%;aspect-ratio:1;object-fit:contain;margin-bottom:6px}
       .stupidera-file{display:none}
+      #stupideraAdd{display:none!important}
+      #stupideraGomma{display:grid!important;place-items:center}#stupideraGomma svg{width:19px;height:19px;display:block;overflow:visible}
       @media(max-width:700px){.stupidera-screen{padding:max(12px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}.stupidera-back{width:44px;height:44px;font-size:27px}.stupidera-tools{left:10px;bottom:10px}.stupidera-tool{width:34px;height:34px;font-size:16px}.stupidera-nav{bottom:max(10px,env(safe-area-inset-bottom))}.stupidera-nav button{width:35px;height:35px}}
     `;
     document.head.appendChild(style);
@@ -92,7 +94,7 @@
       <div class="stupidera-tools">
         <span class="stupidera-tools-grip" title="Sposta toolbar">≡</span>
         <button class="stupidera-tool active" id="stupideraPenna" type="button" title="Penna">✎</button>
-        <button class="stupidera-tool" id="stupideraGomma" type="button" title="Gomma">⌫</button>
+        <button class="stupidera-tool" id="stupideraGomma" type="button" title="Gomma" aria-label="Gomma"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7.2 20.8 17.9 7.5a3 3 0 0 1 4.2-.4l3.4 2.8a3 3 0 0 1 .4 4.2L15.2 27.4H8.8l-2.4-2a3.1 3.1 0 0 1 .8-4.6Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="m13 25.8-5.5-4.5M15.3 27.3h10.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button>
         <button class="stupidera-tool" id="stupideraPlus" type="button" title="Aggiungi">＋</button>
         <button class="stupidera-tool" id="stupideraUndo" type="button" title="Annulla">↶</button>
         <button class="stupidera-tool" id="stupideraRedo" type="button" title="Ripristina">↷</button>
