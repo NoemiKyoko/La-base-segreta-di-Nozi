@@ -2760,7 +2760,9 @@
 
 
           image.src =
-            `assets/${item.file}`;
+            String(item.file || "").startsWith("data:")
+              ? item.file
+              : `assets/${item.file}`;
 
 
           image.alt =
@@ -5119,6 +5121,61 @@
     );
 
   </script>
+<script>
+/* vFINAL — Idee & Ispirazioni: toolbar fluttuante senza T + scrittura a mano */
+(() => {
+  "use strict";
+  const DRAW_KEY="BaseSegretaNoziIdeeDisegniV1";
+  const IDEAS_KEY="BaseSegretaNoziIdee";
+  const INDEX_KEY="BaseSegretaNoziIdeePagina";
+  const STICKER_KEY="BaseSegretaNoziStickerInseriti";
+  let mode="pencil", history=[], future=[], drawing=null;
+  const clone=v=>JSON.parse(JSON.stringify(v));
+  const readJSON=(k,f)=>{try{const v=JSON.parse(localStorage.getItem(k)||"null");return v??f}catch(_){return f}};
+  const saveJSON=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){console.error(e)}};
+  const pageInfo=()=>{const pages=readJSON(IDEAS_KEY,[]);const i=Math.max(0,Math.min(Number(localStorage.getItem(INDEX_KEY))||0,pages.length-1));return {pages,i,page:pages[i]||null}};
+  const allDraw=()=>readJSON(DRAW_KEY,{});
+  const strokes=()=>{const p=pageInfo().page;if(!p)return[];return allDraw()[p.id]||[]};
+  const setStrokes=list=>{const p=pageInfo().page;if(!p)return;const all=allDraw();all[p.id]=list;saveJSON(DRAW_KEY,all)};
+  const pushHistory=()=>{history.push(clone(strokes()));future=[]};
+  function boot(){
+    const screen=document.getElementById("ideasScreen"),wrap=document.getElementById("ideaPageWrap"),textarea=document.getElementById("ideaTextarea");
+    const addBtn=document.getElementById("ideasAdd"),delBtn=document.getElementById("ideasDelete"),prev=document.getElementById("ideaPrevious"),next=document.getElementById("ideaNext");
+    if(!screen||!wrap||!textarea)return;
+    const style=document.createElement("style");style.textContent=`
+      .ideas-header .ideas-add,.ideas-header .ideas-delete{display:none!important}
+      .idea-draw-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:auto;touch-action:none}
+      .idea-sticker-layer{z-index:3!important}
+      .idea-final-tools{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));z-index:880;display:flex;align-items:center;gap:1px;padding:6px 7px 6px 22px;border:1.25px solid #c9bce4;border-radius:17px;background:#f0ebfa;box-shadow:0 5px 14px rgba(70,55,90,.13);touch-action:none;user-select:none;-webkit-user-select:none}
+      .idea-final-grip{position:absolute;left:5px;top:50%;transform:translateY(-50%);width:16px;height:29px;display:grid;place-items:center;color:#8d80ad;font-weight:900;font-size:14px;cursor:grab;touch-action:none}
+      .idea-final-tools button{appearance:none;border:0;width:34px;height:34px;border-radius:9px;background:transparent;color:#4c4274;font-size:17px;font-weight:800;cursor:pointer}.idea-final-tools button.active{background:white;box-shadow:0 2px 7px rgba(45,50,60,.09)}
+      .idea-final-menu{position:fixed;z-index:910;display:none;min-width:190px;padding:8px;border:1px solid #d8cdea;border-radius:17px;background:#fffaf7;box-shadow:0 10px 30px rgba(35,45,60,.20)}.idea-final-menu.aperto{display:block}.idea-final-menu button{appearance:none;border:0;width:100%;padding:11px 13px;border-radius:11px;background:transparent;color:#4c4274;text-align:left;font-size:15px;font-weight:750}.idea-final-menu .danger{color:#94515d}
+      .idea-final-file{display:none}
+      @media(max-width:760px){.idea-final-tools{left:10px;bottom:10px}}
+    `;document.head.appendChild(style);
+    const canvas=document.createElement("canvas");canvas.className="idea-draw-canvas";wrap.appendChild(canvas);
+    const tools=document.createElement("div");tools.className="idea-final-tools";tools.innerHTML=`<span class="idea-final-grip" title="Sposta toolbar">≡</span><button data-t="pencil" class="active" title="Penna">✎</button><button data-t="eraser" title="Gomma">⌫</button><button data-t="plus" title="Aggiungi">＋</button><button data-t="undo" title="Annulla">↶</button><button data-t="redo" title="Ripristina">↷</button>`;screen.appendChild(tools);
+    const menu=document.createElement("div");menu.className="idea-final-menu";menu.innerHTML=`<button data-a="page">Nuova pagina</button><button data-a="sticker">Sticker</button><button data-a="image">Immagine</button><button class="danger" data-a="delete">Elimina pagina</button>`;screen.appendChild(menu);
+    const file=document.createElement("input");file.type="file";file.accept="image/*";file.className="idea-final-file";screen.appendChild(file);
+    const ctx=canvas.getContext("2d");
+    function size(){const r=wrap.getBoundingClientRect(),d=Math.max(1,window.devicePixelRatio||1);canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);canvas.style.width=r.width+"px";canvas.style.height=r.height+"px";ctx.setTransform(d,0,0,d,0,0);render()}
+    function render(){const r=wrap.getBoundingClientRect();ctx.clearRect(0,0,r.width,r.height);ctx.lineCap="round";ctx.lineJoin="round";for(const st of strokes()){ctx.globalCompositeOperation=st.erase?"destination-out":"source-over";ctx.strokeStyle=st.color||"#4c4274";ctx.lineWidth=st.erase?18:2.4;ctx.beginPath();(st.points||[]).forEach((p,i)=>{const x=p.x*r.width,y=p.y*r.height;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}ctx.globalCompositeOperation="source-over"}
+    function setMode(m){mode=m;tools.querySelectorAll('[data-t="pencil"],[data-t="eraser"]').forEach(b=>b.classList.toggle("active",b.dataset.t===m));canvas.style.pointerEvents=(m==="pencil"||m==="eraser")?"auto":"none"}
+    canvas.addEventListener("pointerdown",e=>{if(!["pencil","eraser"].includes(mode))return;e.preventDefault();e.stopPropagation();pushHistory();const r=canvas.getBoundingClientRect();drawing={erase:mode==="eraser",color:"#4c4274",points:[{x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height}]};canvas.setPointerCapture?.(e.pointerId)} ,{passive:false});
+    canvas.addEventListener("pointermove",e=>{if(!drawing)return;e.preventDefault();const r=canvas.getBoundingClientRect();drawing.points.push({x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height});const list=strokes();setStrokes([...list,drawing]);render();setStrokes(list)}, {passive:false});
+    const end=e=>{if(!drawing)return;const list=strokes();list.push(drawing);setStrokes(list);drawing=null;try{canvas.releasePointerCapture?.(e.pointerId)}catch(_){}render()};canvas.addEventListener("pointerup",end);canvas.addEventListener("pointercancel",end);
+    function placeMenu(btn){const r=btn.getBoundingClientRect();menu.style.left=Math.max(8,Math.min(innerWidth-menu.offsetWidth-8,r.left))+"px";menu.style.top=Math.max(8,r.top-190)+"px"}
+    tools.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{const t=b.dataset.t;if(t==="pencil"||t==="eraser")return setMode(t);if(t==="plus"){placeMenu(b);menu.classList.toggle("aperto");return}if(t==="undo"&&history.length){future.push(clone(strokes()));setStrokes(history.pop());render()}if(t==="redo"&&future.length){history.push(clone(strokes()));setStrokes(future.pop());render()}}));
+    menu.addEventListener("click",e=>{const a=e.target.dataset.a;if(!a)return;menu.classList.remove("aperto");if(a==="page")addBtn?.click();if(a==="delete")delBtn?.click();if(a==="sticker"){document.getElementById("stickersScreen")?.classList.add("aperto");screen.classList.remove("aperto")}if(a==="image")file.click();setTimeout(()=>{history=[];future=[];size()},80)});
+    file.addEventListener("change",()=>{const f=file.files?.[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const {page}=pageInfo();if(!page)return;const items=readJSON(STICKER_KEY,[]);items.push({id:`idea-img-${Date.now()}-${Math.random().toString(16).slice(2)}`,file:rd.result,label:f.name,destination:"idee",destinationLabel:"Idee & Ispirazioni",pageId:page.id,x:62,y:55,width:28});saveJSON(STICKER_KEY,items);file.value="";document.getElementById("ideaNext")?.dispatchEvent(new Event("no-op"));location.hash=location.hash;setTimeout(()=>{try{window.dispatchEvent(new Event("resize"))}catch(_){}},20)};rd.readAsDataURL(f)});
+    for(const b of [prev,next,addBtn,delBtn])b?.addEventListener("click",()=>setTimeout(()=>{history=[];future=[];size()},80));
+    // Toolbar spostabile solo dal grip.
+    const grip=tools.querySelector(".idea-final-grip");let drag=null;grip.addEventListener("pointerdown",e=>{e.preventDefault();e.stopPropagation();const r=tools.getBoundingClientRect();drag={id:e.pointerId,dx:e.clientX-r.left,dy:e.clientY-r.top};grip.setPointerCapture?.(e.pointerId);tools.style.left=r.left+"px";tools.style.top=r.top+"px";tools.style.bottom="auto"},{passive:false});grip.addEventListener("pointermove",e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();const m=8,w=tools.offsetWidth,h=tools.offsetHeight;tools.style.left=Math.max(m,Math.min(innerWidth-w-m,e.clientX-drag.dx))+"px";tools.style.top=Math.max(m,Math.min(innerHeight-h-m,e.clientY-drag.dy))+"px"},{passive:false});const stop=e=>{if(!drag||e.pointerId!==drag.id)return;try{grip.releasePointerCapture?.(e.pointerId)}catch(_){}drag=null};grip.addEventListener("pointerup",stop);grip.addEventListener("pointercancel",stop);
+    new ResizeObserver(size).observe(wrap);window.addEventListener("resize",size);setTimeout(size,50);setMode("pencil");
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
+})();
+</script>
 <script src="stupidera-loader.js"></script>
 <script src="programmazione-loader.js"></script>
 <script src="da-non-dimenticare-loader.js"></script>

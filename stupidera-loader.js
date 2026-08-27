@@ -15,7 +15,7 @@
   }
 
   function paginaVuota() {
-    return { id: idNuovo(), objects: [] };
+    return { id: idNuovo(), objects: [], strokes: [] };
   }
 
   function caricaPagine() {
@@ -48,10 +48,14 @@
       .stupidera-image{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;-webkit-tap-highlight-color:transparent}
       .stupidera-image.stupidera-clickable{cursor:pointer}
       .stupidera-back{position:fixed;top:max(18px,env(safe-area-inset-top));left:max(18px,env(safe-area-inset-left));appearance:none;border:0;width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:17px;background:rgba(255,255,255,.88);color:#4c4274;box-shadow:0 5px 16px rgba(65,55,90,.14);font-size:32px;line-height:1;cursor:pointer;z-index:8}
-      .stupidera-tools{position:fixed;top:max(18px,env(safe-area-inset-top));right:max(18px,env(safe-area-inset-right));display:none;gap:9px;z-index:8}
+      .stupidera-tools{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));display:none;align-items:center;gap:1px;padding:6px 7px 6px 22px;border:1.25px solid #bfd7eb;border-radius:17px;background:#edf5fb;box-shadow:0 5px 14px rgba(65,55,90,.13);z-index:880;touch-action:none;user-select:none;-webkit-user-select:none}
       .stupidera-screen.editor .stupidera-tools{display:flex}
-      .stupidera-tool{appearance:none;border:0;min-height:46px;padding:0 15px;border-radius:15px;background:rgba(255,255,255,.9);color:#4c4274;box-shadow:0 5px 16px rgba(65,55,90,.13);font-size:14px;font-weight:700;cursor:pointer}
-      .stupidera-tool.danger{color:#94515d}
+      .stupidera-tools-grip{position:absolute;left:5px;top:50%;transform:translateY(-50%);width:16px;height:29px;display:grid;place-items:center;color:#6f8da7;font-weight:900;font-size:14px;cursor:grab;touch-action:none}
+      .stupidera-tool{appearance:none;border:0;width:34px;height:34px;border-radius:9px;background:transparent;color:#4c4274;font-size:17px;font-weight:800;cursor:pointer}
+      .stupidera-tool.active{background:white;box-shadow:0 2px 7px rgba(45,50,60,.09)}
+      .stupidera-plus-menu{position:fixed;z-index:910;display:none;min-width:190px;padding:8px;border:1px solid #c9ddea;border-radius:17px;background:#fffaf7;box-shadow:0 10px 30px rgba(35,45,60,.20)}
+      .stupidera-plus-menu.aperto{display:block}.stupidera-plus-menu button{appearance:none;border:0;width:100%;padding:11px 13px;border-radius:11px;background:transparent;color:#4c4274;text-align:left;font-size:15px;font-weight:750;cursor:pointer}.stupidera-plus-menu .danger{color:#94515d}
+      .stupidera-draw-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:1;touch-action:none;pointer-events:auto}
       .stupidera-nav{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);display:none;align-items:center;gap:8px;padding:7px 9px;border-radius:18px;background:rgba(255,255,255,.9);box-shadow:0 5px 16px rgba(65,55,90,.13);z-index:8}
       .stupidera-screen.editor .stupidera-nav{display:flex}
       .stupidera-nav button{appearance:none;border:0;width:38px;height:38px;border-radius:12px;background:#edf1fa;color:#4c4274;font-size:24px;line-height:1;cursor:pointer}
@@ -59,7 +63,7 @@
       .stupidera-counter{min-width:58px;text-align:center;color:#4c4274;font-size:14px;font-weight:700}
       .stupidera-page-layer{position:absolute;display:none;pointer-events:none;z-index:3;overflow:hidden}
       .stupidera-screen.editor .stupidera-page-layer{display:block}
-      .stupidera-object{position:absolute;pointer-events:auto;touch-action:none;border:2px solid transparent;border-radius:10px;cursor:grab;user-select:none;-webkit-user-select:none}
+      .stupidera-object{position:absolute;z-index:2;pointer-events:auto;touch-action:none;border:2px solid transparent;border-radius:10px;cursor:grab;user-select:none;-webkit-user-select:none}
       .stupidera-object.selected{border-color:rgba(76,66,116,.58);background:rgba(255,255,255,.15)}
       .stupidera-object img{display:block;width:100%;height:auto;pointer-events:none;-webkit-user-drag:none}
       .stupidera-object-remove,.stupidera-object-resize{position:absolute;display:none;align-items:center;justify-content:center;border:0;width:28px;height:28px;border-radius:50%;color:#fff;font-weight:700;box-shadow:0 3px 9px rgba(45,40,60,.22);touch-action:none}
@@ -72,7 +76,7 @@
       .stupidera-picker-head{display:flex;align-items:center;gap:12px;margin-bottom:16px}.stupidera-picker-head h2{flex:1;margin:0;color:#4c4274;font-size:22px}.stupidera-picker-close{border:0;width:40px;height:40px;border-radius:13px;background:#edf3fa;color:#4c4274;font-size:22px}
       .stupidera-picker-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px}.stupidera-picker-item{border:1px solid rgba(76,66,116,.1);border-radius:18px;background:#f8f7fb;padding:9px;color:#4c4274;font-weight:600}.stupidera-picker-item img{display:block;width:100%;aspect-ratio:1;object-fit:contain;margin-bottom:6px}
       .stupidera-file{display:none}
-      @media(max-width:700px){.stupidera-screen{padding:max(12px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}.stupidera-back{width:44px;height:44px;font-size:27px}.stupidera-tools{top:max(12px,env(safe-area-inset-top));right:max(8px,env(safe-area-inset-right));gap:5px}.stupidera-tool{min-height:40px;padding:0 9px;font-size:12px}.stupidera-nav{bottom:max(10px,env(safe-area-inset-bottom))}.stupidera-nav button{width:35px;height:35px}}
+      @media(max-width:700px){.stupidera-screen{padding:max(12px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}.stupidera-back{width:44px;height:44px;font-size:27px}.stupidera-tools{left:10px;bottom:10px}.stupidera-tool{width:34px;height:34px;font-size:16px}.stupidera-nav{bottom:max(10px,env(safe-area-inset-bottom))}.stupidera-nav button{width:35px;height:35px}}
     `;
     document.head.appendChild(style);
 
@@ -82,13 +86,22 @@
     screen.innerHTML = `
       <div class="stupidera-stage" id="stupideraStage">
         <img class="stupidera-image stupidera-clickable" id="stupideraImage" draggable="false" alt="">
-        <div class="stupidera-page-layer" id="stupideraPageLayer"></div>
+        <div class="stupidera-page-layer" id="stupideraPageLayer"><canvas class="stupidera-draw-canvas" id="stupideraCanvas"></canvas></div>
       </div>
       <button class="stupidera-back" id="stupideraBack" type="button" aria-label="Indietro">‹</button>
       <div class="stupidera-tools">
-        <button class="stupidera-tool" id="stupideraSticker" type="button">Sticker</button>
-        <button class="stupidera-tool" id="stupideraImmagine" type="button">Immagine</button>
-        <button class="stupidera-tool danger" id="stupideraElimina" type="button">Elimina</button>
+        <span class="stupidera-tools-grip" title="Sposta toolbar">≡</span>
+        <button class="stupidera-tool active" id="stupideraPenna" type="button" title="Penna">✎</button>
+        <button class="stupidera-tool" id="stupideraGomma" type="button" title="Gomma">⌫</button>
+        <button class="stupidera-tool" id="stupideraPlus" type="button" title="Aggiungi">＋</button>
+        <button class="stupidera-tool" id="stupideraUndo" type="button" title="Annulla">↶</button>
+        <button class="stupidera-tool" id="stupideraRedo" type="button" title="Ripristina">↷</button>
+      </div>
+      <div class="stupidera-plus-menu" id="stupideraPlusMenu">
+        <button data-action="page" type="button">Nuova pagina</button>
+        <button data-action="sticker" type="button">Sticker</button>
+        <button data-action="image" type="button">Immagine</button>
+        <button class="danger" data-action="delete" type="button">Elimina pagina</button>
       </div>
       <div class="stupidera-nav">
         <button id="stupideraPrev" type="button" aria-label="Pagina precedente">‹</button>
@@ -113,9 +126,15 @@
     const next = screen.querySelector("#stupideraNext");
     const add = screen.querySelector("#stupideraAdd");
     const counter = screen.querySelector("#stupideraCounter");
-    const stickerBtn = screen.querySelector("#stupideraSticker");
-    const imageBtn = screen.querySelector("#stupideraImmagine");
-    const deleteBtn = screen.querySelector("#stupideraElimina");
+    const penBtn = screen.querySelector("#stupideraPenna");
+    const eraserBtn = screen.querySelector("#stupideraGomma");
+    const plusBtn = screen.querySelector("#stupideraPlus");
+    const undoBtn = screen.querySelector("#stupideraUndo");
+    const redoBtn = screen.querySelector("#stupideraRedo");
+    const plusMenu = screen.querySelector("#stupideraPlusMenu");
+    const canvas = screen.querySelector("#stupideraCanvas");
+    const ctx = canvas.getContext("2d");
+    let modalita = "pencil", tratto = null, history = [], future = [];
     const fileInput = screen.querySelector("#stupideraFile");
     const picker = screen.querySelector("#stupideraPicker");
     const pickerGrid = screen.querySelector("#stupideraPickerGrid");
@@ -149,7 +168,7 @@
     }
 
     function renderOggetti() {
-      layer.innerHTML = "";
+      layer.querySelectorAll(".stupidera-object").forEach(el => el.remove());
       selezionato = null;
       const pagina = pagine[indicePagina];
       if (!pagina) return;
@@ -223,11 +242,33 @@
 
         remove.addEventListener("pointerdown", event => {
           event.preventDefault(); event.stopPropagation();
+          pushHistory();
           pagina.objects = pagina.objects.filter(x => x.id !== obj.id);
           salva(); renderOggetti();
         });
       });
     }
+
+    function snapshot() { return JSON.parse(JSON.stringify(pagine)); }
+    function pushHistory() { history.push(snapshot()); future = []; }
+    function paginaCorrente() { const p=pagine[indicePagina]; if(p && !Array.isArray(p.strokes)) p.strokes=[]; return p; }
+    function dimensionaCanvas() {
+      const rect=layer.getBoundingClientRect(), d=Math.max(1,window.devicePixelRatio||1);
+      if(!rect.width||!rect.height)return;
+      canvas.width=Math.round(rect.width*d); canvas.height=Math.round(rect.height*d);
+      canvas.style.width=rect.width+"px"; canvas.style.height=rect.height+"px";
+      ctx.setTransform(d,0,0,d,0,0); renderDisegno();
+    }
+    function renderDisegno() {
+      const rect=layer.getBoundingClientRect(); ctx.clearRect(0,0,rect.width,rect.height);
+      const p=paginaCorrente(); if(!p)return;
+      ctx.lineCap="round";ctx.lineJoin="round";
+      (p.strokes||[]).forEach(st=>{ctx.globalCompositeOperation=st.erase?"destination-out":"source-over";ctx.strokeStyle="#4c4274";ctx.lineWidth=st.erase?18:2.4;ctx.beginPath();(st.points||[]).forEach((pt,i)=>{const x=pt.x*rect.width,y=pt.y*rect.height;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke();});ctx.globalCompositeOperation="source-over";
+    }
+    function setModalita(m){modalita=m;penBtn.classList.toggle("active",m==="pencil");eraserBtn.classList.toggle("active",m==="eraser");canvas.style.pointerEvents="auto";}
+    canvas.addEventListener("pointerdown",e=>{if(!["pencil","eraser"].includes(modalita))return;e.preventDefault();e.stopPropagation();pushHistory();const r=canvas.getBoundingClientRect();tratto={erase:modalita==="eraser",points:[{x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height}]};canvas.setPointerCapture?.(e.pointerId);},{passive:false});
+    canvas.addEventListener("pointermove",e=>{if(!tratto)return;e.preventDefault();const r=canvas.getBoundingClientRect();tratto.points.push({x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height});const p=paginaCorrente(),old=p.strokes;p.strokes=[...old,tratto];renderDisegno();p.strokes=old;},{passive:false});
+    const fineTratto=e=>{if(!tratto)return;paginaCorrente().strokes.push(tratto);tratto=null;try{canvas.releasePointerCapture?.(e.pointerId)}catch(_){}salva();renderDisegno();};canvas.addEventListener("pointerup",fineTratto);canvas.addEventListener("pointercancel",fineTratto);
 
     function renderEditor() {
       counter.textContent = `${indicePagina + 1} / ${pagine.length}`;
@@ -235,6 +276,7 @@
       next.disabled = indicePagina === pagine.length - 1;
       aggiornaLayer();
       renderOggetti();
+      requestAnimationFrame(dimensionaCanvas);
       salva();
     }
 
@@ -245,14 +287,17 @@
       image.classList.toggle("stupidera-clickable", schermata < 2);
       screen.classList.toggle("editor", schermata === 2);
       if (schermata === 2) {
+        setModalita("pencil");
         image.onload = () => { aggiornaLayer(); renderEditor(); };
         if (image.complete) setTimeout(() => { aggiornaLayer(); renderEditor(); }, 0);
       } else {
-        layer.innerHTML = "";
+        layer.querySelectorAll(".stupidera-object").forEach(el => el.remove());
+        ctx.clearRect(0,0,canvas.width,canvas.height);
       }
     }
 
     function aggiungiOggetto(src, label, width = 18) {
+      pushHistory();
       const pagina = pagine[indicePagina];
       const n = pagina.objects.length;
       pagina.objects.push({ id:idNuovo(), src, label, x:limita(66-(n%3)*16,5,78), y:limita(62-Math.floor(n/3)*15,5,78), width });
@@ -279,17 +324,21 @@
     });
     prev.addEventListener("click", () => { if (indicePagina > 0) { indicePagina--; renderEditor(); } });
     next.addEventListener("click", () => { if (indicePagina < pagine.length - 1) { indicePagina++; renderEditor(); } });
-    add.addEventListener("click", () => { pagine.push(paginaVuota()); indicePagina = pagine.length - 1; renderEditor(); });
-    deleteBtn.addEventListener("click", () => {
+    add.addEventListener("click", () => { pushHistory(); pagine.push(paginaVuota()); indicePagina = pagine.length - 1; renderEditor(); });
+    function eliminaPagina(){
       if (!confirm(`Eliminare la pagina ${indicePagina + 1}?`)) return;
+      pushHistory();
       if (pagine.length === 1) { pagine[0] = paginaVuota(); indicePagina = 0; }
       else { pagine.splice(indicePagina,1); indicePagina = Math.min(indicePagina,pagine.length-1); }
       renderEditor();
-    });
-    stickerBtn.addEventListener("click", () => { creaPickerSticker(); picker.classList.add("aperto"); });
+    }
+    penBtn.addEventListener("click",()=>setModalita("pencil")); eraserBtn.addEventListener("click",()=>setModalita("eraser"));
+    plusBtn.addEventListener("click",()=>{const r=plusBtn.getBoundingClientRect();plusMenu.style.left=Math.max(8,Math.min(innerWidth-210,r.left))+"px";plusMenu.style.top=Math.max(8,r.top-190)+"px";plusMenu.classList.toggle("aperto");});
+    plusMenu.addEventListener("click",e=>{const a=e.target.dataset.action;if(!a)return;plusMenu.classList.remove("aperto");if(a==="page")add.click();if(a==="delete")eliminaPagina();if(a==="sticker"){creaPickerSticker();picker.classList.add("aperto");}if(a==="image")fileInput.click();});
+    undoBtn.addEventListener("click",()=>{if(!history.length)return;future.push(snapshot());pagine=history.pop();indicePagina=Math.min(indicePagina,pagine.length-1);renderEditor();});
+    redoBtn.addEventListener("click",()=>{if(!future.length)return;history.push(snapshot());pagine=future.pop();indicePagina=Math.min(indicePagina,pagine.length-1);renderEditor();});
     pickerClose.addEventListener("click", () => picker.classList.remove("aperto"));
     picker.addEventListener("click", e => { if (e.target === picker) picker.classList.remove("aperto"); });
-    imageBtn.addEventListener("click", () => fileInput.click());
     fileInput.addEventListener("change", () => {
       const file = fileInput.files && fileInput.files[0];
       if (!file) return;
@@ -297,8 +346,12 @@
       reader.onload = () => { aggiungiOggetto(reader.result, file.name, 24); fileInput.value = ""; };
       reader.readAsDataURL(file);
     });
+    const tools=screen.querySelector(".stupidera-tools"),grip=screen.querySelector(".stupidera-tools-grip"); let toolsDrag=null;
+    grip.addEventListener("pointerdown",e=>{e.preventDefault();e.stopPropagation();const r=tools.getBoundingClientRect();toolsDrag={id:e.pointerId,dx:e.clientX-r.left,dy:e.clientY-r.top};grip.setPointerCapture?.(e.pointerId);tools.style.left=r.left+"px";tools.style.top=r.top+"px";tools.style.bottom="auto";},{passive:false});
+    grip.addEventListener("pointermove",e=>{if(!toolsDrag||e.pointerId!==toolsDrag.id)return;e.preventDefault();const m=8,w=tools.offsetWidth,h=tools.offsetHeight;tools.style.left=Math.max(m,Math.min(innerWidth-w-m,e.clientX-toolsDrag.dx))+"px";tools.style.top=Math.max(m,Math.min(innerHeight-h-m,e.clientY-toolsDrag.dy))+"px";},{passive:false});
+    const stopDrag=e=>{if(!toolsDrag||e.pointerId!==toolsDrag.id)return;try{grip.releasePointerCapture?.(e.pointerId)}catch(_){}toolsDrag=null;};grip.addEventListener("pointerup",stopDrag);grip.addEventListener("pointercancel",stopDrag);
     layer.addEventListener("pointerdown", e => { if (e.target === layer) deseleziona(); });
-    window.addEventListener("resize", () => { if (screen.classList.contains("editor")) aggiornaLayer(); });
+    window.addEventListener("resize", () => { if (screen.classList.contains("editor")) { aggiornaLayer(); dimensionaCanvas(); } });
 
     const notebookHotspot = document.querySelector('.hotspot[data-target="overlayNotebook"]');
     if (!notebookHotspot) { console.error("Stupidera: hotspot non trovato."); return; }
