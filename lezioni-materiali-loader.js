@@ -746,16 +746,20 @@
       textDelete.className="lm-text-delete";
       textDelete.setAttribute("aria-label","Elimina casella di testo");
       textDelete.textContent="×";
-      textDelete.addEventListener("pointerdown",e=>{e.preventDefault();e.stopPropagation();});
+      textDelete.addEventListener("pointerdown",e=>{
+        e.preventDefault();
+        e.stopPropagation();
+      });
       textDelete.addEventListener("click",async e=>{
-        e.preventDefault();e.stopPropagation();
-        snapshotNotebook();
-        const page=currentPage();
+        e.preventDefault();
+        e.stopPropagation();
+        pushHistory();
+        const page=currentNotebookPage();
+        if(!page)return;
         page.objects=(page.objects||[]).filter(o=>o.id!==obj.id);
         selectedObjectId=null;
-        textEditingId=null;
-        await salvaQuaderno(classeCorrente.id,materiaCorrente,quadernoCorrente);
-        renderQuaderno();
+        await persistNotebook();
+        renderNotebookPage();
       });
       el.appendChild(textDelete);
       el.appendChild(ta);
