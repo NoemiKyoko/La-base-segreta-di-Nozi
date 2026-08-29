@@ -1,0 +1,5 @@
+Questa patch presuppone che sul repository esista già:
+assets/Andika-Regular.woff2
+
+Configurazione Andika-Nozi:
+ss13=1, ss14=0, cv10=0, cv01=1, cv04=1, cv06=1, cv07=1, cv09=1
