@@ -365,14 +365,6 @@
         opacity:1!important;
       }
 
-      /* NoziZoom Quaderno — 100/125/150/175/200, pan col dito. */
-      .lm-notebook-shell{overflow:hidden!important;display:block!important;padding:0!important;touch-action:none!important}
-      .lm-page{position:absolute!important;transform-origin:0 0!important;will-change:transform,left,top}
-      .lm-notebook-zoom{position:fixed;right:max(18px,env(safe-area-inset-right));top:max(96px,calc(env(safe-area-inset-top) + 78px));z-index:985;display:flex;gap:4px;padding:6px;border:1.25px solid color-mix(in srgb,var(--lm-color) 62%,white);border-radius:17px;background:color-mix(in srgb,var(--lm-soft) 88%,white);box-shadow:0 5px 16px rgba(65,55,90,.13);touch-action:manipulation}
-      .lm-notebook-zoom button{appearance:none;border:0;min-width:48px;height:34px;padding:0 8px;border-radius:10px;background:transparent;color:var(--lm-dark);font-size:13px;font-weight:800}
-      .lm-notebook-zoom button.active{background:#fff;box-shadow:0 2px 7px rgba(45,50,60,.09)}
-      @media(max-width:760px){.lm-notebook-zoom{right:10px;top:82px;gap:2px;padding:5px}.lm-notebook-zoom button{min-width:42px;padding:0 5px;font-size:12px}}
-
 `;
     document.head.appendChild(style);
 
@@ -423,8 +415,6 @@
     let lassoPoints = [];
     let notebookHistory = [];
     let notebookFuture = [];
-    // NoziZoom Quaderno — stessa logica certificata dell’Agenda.
-    let notebookZoom = 1, notebookPanX = 0, notebookPanY = 0, notebookTouchPan = null;
 
     function liberaObjectUrls() {
       objectUrls.forEach(url => URL.revokeObjectURL(url));
@@ -856,26 +846,22 @@
     }
 
     function renderCanvas(canvas, page) {
-      // Il CSS scala visivamente la pagina: il canvas continua a disegnare
-      // nelle coordinate logiche della pagina, con più pixel solo per nitidezza.
-      const logicalW = canvas.clientWidth || canvas.parentElement?.clientWidth || 1;
-      const logicalH = canvas.clientHeight || canvas.parentElement?.clientHeight || 1;
+      const rect = canvas.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
-      const q = dpr * notebookZoom;
-      canvas.width = Math.max(1, Math.round(logicalW * q));
-      canvas.height = Math.max(1, Math.round(logicalH * q));
+      canvas.width = Math.max(1, Math.round(rect.width * dpr));
+      canvas.height = Math.max(1, Math.round(rect.height * dpr));
       const ctx = canvas.getContext("2d");
-      ctx.setTransform(q,0,0,q,0,0);
-      ctx.clearRect(0,0,logicalW,logicalH);
+      ctx.setTransform(dpr,0,0,dpr,0,0);
+      ctx.clearRect(0,0,rect.width,rect.height);
       (page.strokes || []).forEach((stroke,idx) => {
         if (!stroke.points?.length) return;
         ctx.beginPath();ctx.lineCap="round";ctx.lineJoin="round";
         ctx.strokeStyle = selectedStrokeIndexes.has(idx) ? "#2b90d9" : (stroke.color || "#111111");
         ctx.lineWidth = selectedStrokeIndexes.has(idx) ? (stroke.width||3)+1.5 : (stroke.width || 3);
-        stroke.points.forEach((pt,i)=>{const x=pt.x*logicalW,y=pt.y*logicalH;if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();
+        stroke.points.forEach((pt,i)=>{const x=pt.x*rect.width,y=pt.y*rect.height;if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();
       });
       if(lassoPoints.length>1){
-        ctx.save();ctx.setLineDash([7,6]);ctx.strokeStyle="#2b90d9";ctx.lineWidth=1.7;ctx.beginPath();lassoPoints.forEach((pt,i)=>{const x=pt.x*logicalW,y=pt.y*logicalH;if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();ctx.restore();
+        ctx.save();ctx.setLineDash([7,6]);ctx.strokeStyle="#2b90d9";ctx.lineWidth=1.7;ctx.beginPath();lassoPoints.forEach((pt,i)=>{const x=pt.x*rect.width,y=pt.y*rect.height;if(!i)ctx.moveTo(x,y);else ctx.lineTo(x,y);});ctx.stroke();ctx.restore();
       }
     }
 
@@ -974,47 +960,6 @@
       }
     }
 
-    function notebookViewportRect(){
-      const shell=panel.querySelector(".lm-notebook-shell");
-      return shell?.getBoundingClientRect() || null;
-    }
-
-    function layoutNotebookZoom(){
-      const shell=panel.querySelector(".lm-notebook-shell"), pageEl=panel.querySelector(".lm-page");
-      if(!shell||!pageEl)return;
-      const vw=shell.clientWidth, vh=shell.clientHeight;
-      const baseW=pageEl.offsetWidth, baseH=pageEl.offsetHeight;
-      if(!vw||!vh||!baseW||!baseH)return;
-      const scaledW=baseW*notebookZoom, scaledH=baseH*notebookZoom;
-      const maxX=Math.max(0,(scaledW-vw)/2), maxY=Math.max(0,(scaledH-vh)/2);
-      notebookPanX=Math.max(-maxX,Math.min(maxX,notebookPanX));
-      notebookPanY=Math.max(-maxY,Math.min(maxY,notebookPanY));
-      pageEl.style.left=((vw-scaledW)/2+notebookPanX)+"px";
-      pageEl.style.top=((vh-scaledH)/2+notebookPanY)+"px";
-      pageEl.style.transform=`scale(${notebookZoom})`;
-    }
-
-    function setNotebookZoom(next){
-      notebookZoom=Math.max(1,Math.min(2,Number(next)||1));
-      notebookPanX=0;notebookPanY=0;resetSelection();
-      panel.querySelectorAll(".lm-notebook-zoom button[data-z]").forEach(b=>b.classList.toggle("active",Number(b.dataset.z)===Math.round(notebookZoom*100)));
-      layoutNotebookZoom();
-      const canvas=panel.querySelector(".lm-draw-canvas"), page=currentNotebookPage();
-      if(canvas&&page)requestAnimationFrame(()=>renderCanvas(canvas,page));
-    }
-
-    function placeNotebookBottomControls(){
-      if(schermata!=="quaderno")return;
-      const tools=panel.querySelector(".lm-notebook-tools"), nav=panel.querySelector(".lm-page-nav");
-      if(!tools||!nav)return;
-      const vv=window.visualViewport, visibleTop=vv?vv.offsetTop:0, visibleH=vv?vv.height:innerHeight, margin=18;
-      // Se la toolbar è stata spostata a mano, non le cambiamo posizione.
-      if(tools.dataset.userMoved!=="1"){
-        tools.style.bottom="auto";tools.style.top=Math.max(margin,visibleTop+visibleH-margin-(tools.offsetHeight||48))+"px";
-      }
-      nav.style.bottom="auto";nav.style.top=Math.max(margin,visibleTop+visibleH-margin-(nav.offsetHeight||54))+"px";
-    }
-
     function renderNotebookPage() {
       // v3A.19.2.1 — data garantita su ogni pagina/classe, inclusa la 5ª.
       const __pageForDate=currentNotebookPage();
@@ -1042,8 +987,6 @@
       screen.dataset.notebookTool=notebookMode;
       const hint=screen.querySelector(".lm-lasso-hint");if(hint)hint.classList.toggle("aperto",selectedStrokeIndexes.size>0);
       updateTextbar();
-      layoutNotebookZoom();
-      placeNotebookBottomControls();
     }
 
     async function addBlobObject(blob, name, type) {
@@ -1208,8 +1151,7 @@
       liberaObjectUrls();setBinderMode(false);setNotebookMode(true);screen.classList.add("notebook-preparing");schermata="quaderno";temaClasse(classeCorrente);title.textContent=`${materiaCorrente.toUpperCase()} — QUADERNO`;
       quadernoCorrente=await leggiQuaderno(classeCorrente.id,materiaCorrente);notebookHistory=[];notebookFuture=[];resetSelection();notebookMode="pencil";
       (quadernoCorrente.pages||[]).forEach(ensureDateObject);
-      panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-zoom" aria-label="Zoom Quaderno">${[100,125,150,175,200].map((z,i)=>`<button data-z="${z}" class="${i===0?"active":""}" type="button">${z}%</button>`).join("")}</div><div class="lm-notebook-tools"><span class="lm-tools-grip" title="Sposta toolbar">≡</span><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="text" type="button" title="Testo">T</button><button class="lm-tool-eraser" data-tool="eraser" type="button" title="Gomma" aria-label="Gomma"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7.2 20.8 17.9 7.5a3 3 0 0 1 4.2-.4l3.4 2.8a3 3 0 0 1 .4 4.2L15.2 27.4H8.8l-2.4-2a3.1 3.1 0 0 1 .8-4.6Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="m13 25.8-5.5-4.5M15.3 27.3h10.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-scroll-rail" aria-label="Scorri la pagina"><div class="lm-scroll-track"><div class="lm-scroll-thumb"></div></div></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div>`;
-      notebookZoom=1;notebookPanX=0;notebookPanY=0;notebookTouchPan=null;
+      panel.innerHTML=`<div class="lm-notebook-shell"><div class="lm-page"><div class="lm-page-paper"></div><canvas class="lm-draw-canvas"></canvas><div class="lm-object-layer"></div></div></div><div class="lm-notebook-tools"><span class="lm-tools-grip" title="Sposta toolbar">≡</span><button data-tool="pencil" type="button" title="Penna">✎</button><button data-tool="text" type="button" title="Testo">T</button><button class="lm-tool-eraser" data-tool="eraser" type="button" title="Gomma" aria-label="Gomma"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7.2 20.8 17.9 7.5a3 3 0 0 1 4.2-.4l3.4 2.8a3 3 0 0 1 .4 4.2L15.2 27.4H8.8l-2.4-2a3.1 3.1 0 0 1 .8-4.6Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="m13 25.8-5.5-4.5M15.3 27.3h10.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><button data-tool="plus" type="button" title="Aggiungi">＋</button><button data-tool="undo" type="button" title="Annulla">↶</button><button data-tool="redo" type="button" title="Ripristina">↷</button></div><div class="lm-scroll-rail" aria-label="Scorri la pagina"><div class="lm-scroll-track"><div class="lm-scroll-thumb"></div></div></div><div class="lm-page-nav"><button class="lm-nav-prev" type="button">‹</button><span class="lm-page-counter">1 / 1</span><button class="lm-nav-next" type="button">›</button></div>`;
       const restoreNotebookUI=()=>{
         const t=panel.querySelector(".lm-notebook-tools");
         const n=panel.querySelector(".lm-page-nav");
@@ -1223,25 +1165,6 @@
       await chooseNotebookPaperIfNeeded();
 
       const canvas=panel.querySelector(".lm-draw-canvas");installDrawing(canvas);
-      const zoomBar=panel.querySelector(".lm-notebook-zoom");
-      zoomBar.addEventListener("click",e=>{const b=e.target.closest("button[data-z]");if(b)setNotebookZoom(Number(b.dataset.z)/100);});
-      const zoomShell=panel.querySelector(".lm-notebook-shell");
-      zoomShell.addEventListener("pointerdown",e=>{
-        if(e.pointerType!=="touch"||notebookZoom<=1)return;
-        if(e.target.closest?.(".lm-page-object,.lm-object-delete,.lm-object-resize,.lm-text-move-handle,.lm-native-text-editor"))return;
-        notebookTouchPan={id:e.pointerId,startX:e.clientX,startY:e.clientY,baseX:notebookPanX,baseY:notebookPanY};
-        try{zoomShell.setPointerCapture(e.pointerId)}catch(_){}
-        e.preventDefault();e.stopPropagation();
-      },{capture:true,passive:false});
-      zoomShell.addEventListener("pointermove",e=>{
-        if(!notebookTouchPan||e.pointerId!==notebookTouchPan.id)return;
-        notebookPanX=notebookTouchPan.baseX+(e.clientX-notebookTouchPan.startX);
-        notebookPanY=notebookTouchPan.baseY+(e.clientY-notebookTouchPan.startY);
-        layoutNotebookZoom();e.preventDefault();e.stopPropagation();
-      },{capture:true,passive:false});
-      const endNotebookPan=e=>{if(!notebookTouchPan||e.pointerId!==notebookTouchPan.id)return;try{zoomShell.releasePointerCapture(e.pointerId)}catch(_){}notebookTouchPan=null;e.preventDefault();e.stopPropagation();};
-      zoomShell.addEventListener("pointerup",endNotebookPan,{capture:true,passive:false});
-      zoomShell.addEventListener("pointercancel",endNotebookPan,{capture:true,passive:false});
       const pageForNativeBlock=panel.querySelector(".lm-page");
       pageForNativeBlock.addEventListener("contextmenu",e=>{e.preventDefault();e.stopPropagation();},{capture:true});
       pageForNativeBlock.addEventListener("selectstart",e=>{if(notebookMode!=="text"){e.preventDefault();e.stopPropagation();}},{capture:true});
@@ -1259,7 +1182,7 @@
           // Passa da bottom a coordinate top/left senza far saltare la toolbar.
           tools.style.left=`${r.left}px`;
           tools.style.top=`${r.top}px`;
-          tools.style.bottom="auto";tools.dataset.userMoved="1";
+          tools.style.bottom="auto";
         },{passive:false});
         toolsGrip.addEventListener("pointermove",e=>{
           if(!toolsDrag||e.pointerId!==toolsDrag.id)return;
@@ -1344,7 +1267,6 @@
       panel.querySelector(".lm-nav-prev").addEventListener("click",async()=>{if(quadernoCorrente.currentPage>0){quadernoCorrente.currentPage--;resetSelection();await persistNotebook();renderNotebookPage();}});
       panel.querySelector(".lm-nav-next").addEventListener("click",async()=>{if(quadernoCorrente.currentPage<quadernoCorrente.pages.length-1){quadernoCorrente.currentPage++;}else{const lesson=currentLesson();if(!lesson)return;pushHistory();const p=paginaNuova(lesson.id,false);ensureDateObject(p);quadernoCorrente.pages.push(p);quadernoCorrente.currentPage=quadernoCorrente.pages.length-1;}resetSelection();await persistNotebook();renderNotebookPage();});
       await persistNotebook();renderNotebookPage();
-      requestAnimationFrame(()=>{layoutNotebookZoom();placeNotebookBottomControls();});
     }
 
     function creaCardScheda(record, refresh) {
@@ -1543,12 +1465,6 @@
       if (!plusMenu.contains(event.target)) plusMenu.classList.remove("aperto");
       if (event.target !== more && !moreMenu.contains(event.target)) moreMenu.classList.remove("aperto");
     });
-
-    window.addEventListener("resize",()=>{if(schermata==="quaderno"){notebookPanX=0;notebookPanY=0;layoutNotebookZoom();placeNotebookBottomControls();}});
-    if(window.visualViewport){
-      visualViewport.addEventListener("resize",()=>{if(schermata==="quaderno")placeNotebookBottomControls();});
-      visualViewport.addEventListener("scroll",()=>{if(schermata==="quaderno")placeNotebookBottomControls();});
-    }
 
     hotspot.removeAttribute("data-target");
     hotspot.addEventListener("click", event => {
