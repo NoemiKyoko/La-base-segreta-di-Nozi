@@ -36,12 +36,12 @@
       const scaledW=baseW*zoom,scaledH=baseH*zoom;
       const maxX=Math.max(0,(scaledW-vw)/2),maxY=Math.max(0,(scaledH-vh)/2);
       panX=clamp(panX,-maxX,maxX);panY=clamp(panY,-maxY,maxY);
-      stage.style.left=((vw-scaledW)/2+panX)+'px';stage.style.top=((vh-scaledH)/2+panY)+'px';stage.style.transform=`scale(${zoom})`;
+      stage.style.left=((vw-baseW)/2+panX)+'px';stage.style.top=((vh-baseH)/2+panY)+'px';stage.style.transform=`scale(${zoom})`;
     }
     function size(){layoutStage();const w=layer.clientWidth,h=layer.clientHeight,d=Math.max(1,devicePixelRatio||1),q=d*zoom;canvas.width=Math.round(w*q);canvas.height=Math.round(h*q);canvas.style.width=w+'px';canvas.style.height=h+'px';ctx.setTransform(q,0,0,q,0,0);draw()}
     function draw(){const w=layer.clientWidth,h=layer.clientHeight;ctx.clearRect(0,0,w,h);ctx.lineCap='round';ctx.lineJoin='round';for(const st of current().strokes||[]){ctx.globalCompositeOperation=st.erase?'destination-out':'source-over';ctx.strokeStyle='#315d91';ctx.lineWidth=st.erase?18:2.4;ctx.beginPath();(st.points||[]).forEach((p,i)=>{const x=p.x*w,y=p.y*h;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}ctx.globalCompositeOperation='source-over'}
     function deselect(){selected=null;layer.querySelectorAll('.selected').forEach(x=>x.classList.remove('selected'))}
-    function objects(){layer.querySelectorAll('.agenda-obj').forEach(x=>x.remove());for(const o of current().objects||[]){const box=document.createElement('div');box.className='agenda-obj';box.style.cssText=`left:${o.x}%;top:${o.y}%;width:${o.width}%`;box.innerHTML=`<img src="${o.src}" alt=""><button class="agenda-remove">×</button><button class="agenda-resize">↘</button>`;layer.appendChild(box);const rm=box.querySelector('.agenda-remove'),rs=box.querySelector('.agenda-resize');box.addEventListener('pointerdown',e=>{if(e.target===rm||e.target===rs)return;e.preventDefault();e.stopPropagation();deselect();box.classList.add('selected');selected=o.id;const r=layer.getBoundingClientRect(),br=box.getBoundingClientRect(),ox=e.clientX-br.left,oy=e.clientY-br.top;box.setPointerCapture(e.pointerId);const mv=q=>{o.x=clamp((q.clientX-r.left-ox)/r.width*100,0,100-o.width);o.y=clamp((q.clientY-r.top-oy)/r.height*100,0,92);box.style.left=o.x+'%';box.style.top=o.y+'%'};const up=q=>{box.removeEventListener('pointermove',mv);box.removeEventListener('pointerup',up);save()};box.addEventListener('pointermove',mv);box.addEventListener('pointerup',up)});rs.addEventListener('pointerdown',e=>{e.stopPropagation();e.preventDefault();deselect();box.classList.add('selected');const r=layer.getBoundingClientRect(),br=box.getBoundingClientRect(),left=br.left-r.left;rs.setPointerCapture(e.pointerId);const mv=q=>{o.width=clamp((q.clientX-r.left-left)/r.width*100,6,55);box.style.width=o.width+'%'};const up=()=>{rs.removeEventListener('pointermove',mv);rs.removeEventListener('pointerup',up);save()};rs.addEventListener('pointermove',mv);rs.addEventListener('pointerup',up)});rm.addEventListener('pointerdown',e=>{e.stopPropagation();push();current().objects=current().objects.filter(x=>x.id!==o.id);save();objects()})}}
+    function objects(){layer.querySelectorAll('.agenda-obj').forEach(x=>x.remove());for(const o of current().objects||[]){const box=document.createElement('div');box.className='agenda-obj';box.style.cssText=`left:${o.x}%;top:${o.y}%;width:${o.width}%`;box.innerHTML=`<img src="${o.src}" alt=""><button class="agenda-remove">×</button><button class="agenda-resize">↘</button>`;layer.appendChild(box);const rm=box.querySelector('.agenda-remove'),rs=box.querySelector('.agenda-resize');box.addEventListener('pointerdown',e=>{if((e.pointerType==='touch'&&zoom>1)||e.target===rm||e.target===rs)return;e.preventDefault();deselect();box.classList.add('selected');selected=o.id;const r=layer.getBoundingClientRect(),br=box.getBoundingClientRect(),ox=e.clientX-br.left,oy=e.clientY-br.top;box.setPointerCapture(e.pointerId);const mv=q=>{o.x=clamp((q.clientX-r.left-ox)/r.width*100,0,100-o.width);o.y=clamp((q.clientY-r.top-oy)/r.height*100,0,92);box.style.left=o.x+'%';box.style.top=o.y+'%'};const up=q=>{box.removeEventListener('pointermove',mv);box.removeEventListener('pointerup',up);save()};box.addEventListener('pointermove',mv);box.addEventListener('pointerup',up)});rs.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'&&zoom>1)return;e.stopPropagation();e.preventDefault();deselect();box.classList.add('selected');const r=layer.getBoundingClientRect(),br=box.getBoundingClientRect(),left=br.left-r.left;rs.setPointerCapture(e.pointerId);const mv=q=>{o.width=clamp((q.clientX-r.left-left)/r.width*100,6,55);box.style.width=o.width+'%'};const up=()=>{rs.removeEventListener('pointermove',mv);rs.removeEventListener('pointerup',up);save()};rs.addEventListener('pointermove',mv);rs.addEventListener('pointerup',up)});rm.addEventListener('pointerdown',e=>{if(e.pointerType==='touch'&&zoom>1)return;e.stopPropagation();push();current().objects=current().objects.filter(x=>x.id!==o.id);save();objects()})}}
     function render(){s.querySelector('.agenda-count').textContent=`${pagina+1} / ${mesi[mese].length}`;s.querySelectorAll('.agenda-month').forEach((b,i)=>b.classList.toggle('active',i===mese));objects();requestAnimationFrame(size);save()}
     function addObj(src,label,w=18){push();current().objects.push({id:id(),src,label,x:60,y:50,width:w});save();objects()}
     // Pencil Agenda: stesso comportamento collaudato del Quaderno.
@@ -59,7 +59,6 @@
     zoomBar.addEventListener('click',e=>{const b=e.target.closest('button[data-z]');if(b)setZoom(Number(b.dataset.z)/100)});
     viewport.addEventListener('pointerdown',e=>{
       if(!isTouch(e)||zoom<=1)return;
-      if(e.target.closest?.('.agenda-obj,.agenda-remove,.agenda-resize,.agenda-month'))return;
       touchPan={id:e.pointerId,startX:e.clientX,startY:e.clientY,baseX:panX,baseY:panY,moved:false};
       try{viewport.setPointerCapture(e.pointerId)}catch(_){}
       e.preventDefault();
@@ -84,11 +83,11 @@
     canvas.addEventListener('pointerdown',e=>{
       if(!['pencil','eraser'].includes(mode) || e.pointerType!=='pen')return;
       e.preventDefault();e.stopPropagation();push();
+      const r=canvas.getBoundingClientRect();
       stroke={erase:mode==='eraser',points:[]};
       canvas.setPointerCapture(e.pointerId);
       const add=ev=>{
-        const r=canvas.getBoundingClientRect();
-        const p={x:clamp((ev.clientX-r.left)/r.width,0,1),y:clamp((ev.clientY-r.top)/r.height,0,1)};
+        const p={x:(ev.clientX-r.left)/r.width,y:(ev.clientY-r.top)/r.height};
         const last=stroke?.points?.[stroke.points.length-1];
         if(stroke && (!last||Math.abs(p.x-last.x)>0.00001||Math.abs(p.y-last.y)>0.00001))stroke.points.push(p);
       };
