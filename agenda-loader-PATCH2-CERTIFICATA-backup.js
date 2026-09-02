@@ -13,7 +13,7 @@
   function boot(){
     if(document.getElementById("agendaScreen"))return;
     const st=document.createElement("style");st.textContent=`
-      .agenda-screen{position:fixed;inset:0;z-index:990;display:none;background:linear-gradient(180deg,#eaf3fb,#f7f2fb);overflow:hidden}.agenda-screen.aperto{display:block}.agenda-screen.agenda-preparing{visibility:hidden}
+      .agenda-screen{position:fixed;inset:0;z-index:990;display:none;background:linear-gradient(180deg,#eaf3fb,#f7f2fb);overflow:hidden}.agenda-screen.aperto{display:block}
       .agenda-viewport{position:absolute;inset:0;overflow:hidden;touch-action:none}.agenda-stage{position:absolute;aspect-ratio:1536/1024;transform-origin:0 0;will-change:transform,left,top;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}.agenda-bg{display:block;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-drag:none}.agenda-layer{position:absolute;inset:0;overflow:hidden;pointer-events:none}.agenda-canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:auto;touch-action:none;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
       .agenda-back{position:fixed;left:max(18px,env(safe-area-inset-left));top:max(18px,env(safe-area-inset-top));z-index:1002;width:52px;height:52px;border:0;border-radius:17px;background:rgba(255,255,255,.9);color:#315d91;font-size:31px;box-shadow:0 5px 16px rgba(65,55,90,.14)}
       .agenda-tools{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));z-index:1003;display:flex;align-items:center;gap:1px;padding:6px 7px 6px 22px;border:1.25px solid #b8d8ec;border-radius:17px;background:#edf6fb;box-shadow:0 5px 14px rgba(65,55,90,.13);touch-action:none}.agenda-grip{position:absolute;left:5px;top:50%;transform:translateY(-50%);width:16px;height:29px;display:grid;place-items:center;color:#6f8da7;font-weight:900;cursor:grab}.agenda-tool{border:0;width:34px;height:34px;border-radius:9px;background:transparent;color:#315d91;font-size:17px;font-weight:800}.agenda-tool.active{background:#fff;box-shadow:0 2px 7px rgba(45,50,60,.09)}.agenda-eraser{display:grid;place-items:center}.agenda-eraser svg{width:19px;height:19px;display:block;overflow:visible}
@@ -131,16 +131,7 @@
     stage.addEventListener('dragstart',e=>e.preventDefault());
     stage.addEventListener('selectstart',e=>e.preventDefault());
     window.addEventListener('resize',()=>{panX=0;panY=0;size()});
-    window.apriAgenda=()=>{
-      // Apertura atomica: la schermata viene resa, dimensionata e poi mostrata
-      // nello stesso ciclo JS, senza attendere resize/load/rAF esterni.
-      s.classList.add('agenda-preparing','aperto');
-      panX=0;panY=0;
-      render();
-      size();
-      void s.offsetWidth; // forza il layout con tutti i controlli gia presenti
-      s.classList.remove('agenda-preparing');
-    };
+    window.apriAgenda=()=>{s.classList.add('aperto');panX=0;panY=0;render()};
     const hotspot=document.querySelector('.hotspot[data-agenda="agendaScreen"]');if(hotspot){hotspot.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();window.apriAgenda()},true)}
     render();
   }
