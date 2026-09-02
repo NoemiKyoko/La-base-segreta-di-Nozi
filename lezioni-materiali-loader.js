@@ -1225,21 +1225,6 @@
       const canvas=panel.querySelector(".lm-draw-canvas");installDrawing(canvas);
       const zoomBar=panel.querySelector(".lm-notebook-zoom");
       zoomBar.addEventListener("click",e=>{const b=e.target.closest("button[data-z]");if(b)setNotebookZoom(Number(b.dataset.z)/100);});
-
-      // DIAGNOSTICA TEMPORANEA NoziZoom Quaderno: misura il controllo zoom reale su Safari/iPad.
-      const zoomDiag=document.createElement("div");
-      zoomDiag.id="lmZoomDiagnostic";
-      zoomDiag.style.cssText="position:fixed;left:14px;top:96px;z-index:200000;max-width:min(760px,calc(100vw - 28px));padding:10px 12px;border:2px solid #c65b5b;border-radius:14px;background:rgba(255,255,255,.96);color:#24384d;font:12px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;box-shadow:0 8px 24px rgba(0,0,0,.18);pointer-events:none";
-      screen.appendChild(zoomDiag);
-      const updateZoomDiag=()=>{
-        if(!zoomDiag.isConnected)return;
-        const z=panel.querySelector(".lm-notebook-zoom"), pr=panel.getBoundingClientRect(), wr=screen.querySelector(".lm-workspace")?.getBoundingClientRect(), sr=screen.getBoundingClientRect();
-        const vv=window.visualViewport;
-        const info=(el)=>{if(!el)return "MISSING";const r=el.getBoundingClientRect(),c=getComputedStyle(el);return `connected=${el.isConnected} rect x=${r.x.toFixed(1)} y=${r.y.toFixed(1)} w=${r.width.toFixed(1)} h=${r.height.toFixed(1)} right=${r.right.toFixed(1)} bottom=${r.bottom.toFixed(1)} display=${c.display} visibility=${c.visibility} opacity=${c.opacity} position=${c.position} z=${c.zIndex} top=${c.top} right=${c.right} transform=${c.transform}`};
-        zoomDiag.textContent=`DIAGNOSTICA ZOOM QUADERNO\ntime=${new Date().toLocaleTimeString()}\nwindow inner=${innerWidth}x${innerHeight} scroll=${scrollX},${scrollY} dpr=${devicePixelRatio||1}\nvisualViewport=${vv?`${vv.width.toFixed(1)}x${vv.height.toFixed(1)} off=${vv.offsetLeft.toFixed(1)},${vv.offsetTop.toFixed(1)} scale=${vv.scale}`:"none"}\nscreen class=${screen.className} rect=${sr.x.toFixed(1)},${sr.y.toFixed(1)} ${sr.width.toFixed(1)}x${sr.height.toFixed(1)}\nworkspace rect=${wr?`${wr.x.toFixed(1)},${wr.y.toFixed(1)} ${wr.width.toFixed(1)}x${wr.height.toFixed(1)}`:"missing"} overflow=${screen.querySelector(".lm-workspace")?getComputedStyle(screen.querySelector(".lm-workspace")).overflow:"?"}\npanel rect=${pr.x.toFixed(1)},${pr.y.toFixed(1)} ${pr.width.toFixed(1)}x${pr.height.toFixed(1)} visibility=${getComputedStyle(panel).visibility}\nZOOM: ${info(z)}\nbuttons=${z?.querySelectorAll("button[data-z]").length||0}`;
-        if(z){z.style.outline="4px solid #22a05a";z.style.outlineOffset="2px";}
-      };
-      updateZoomDiag();requestAnimationFrame(updateZoomDiag);setTimeout(updateZoomDiag,250);setTimeout(updateZoomDiag,1500);
       const zoomShell=panel.querySelector(".lm-notebook-shell");
       zoomShell.addEventListener("pointerdown",e=>{
         if(e.pointerType!=="touch"||notebookZoom<=1)return;
@@ -1360,7 +1345,10 @@
       panel.querySelector(".lm-nav-next").addEventListener("click",async()=>{if(quadernoCorrente.currentPage<quadernoCorrente.pages.length-1){quadernoCorrente.currentPage++;}else{const lesson=currentLesson();if(!lesson)return;pushHistory();const p=paginaNuova(lesson.id,false);ensureDateObject(p);quadernoCorrente.pages.push(p);quadernoCorrente.currentPage=quadernoCorrente.pages.length-1;}resetSelection();await persistNotebook();renderNotebookPage();});
       await persistNotebook();renderNotebookPage();
       requestAnimationFrame(()=>{layoutNotebookZoom();placeNotebookBottomControls();});
-    }
+    
+      // Quaderno Zoom Patch 2 — fine preparazione: rende visibile anche lo zoom.
+      screen.classList.remove("notebook-preparing");
+}
 
     function creaCardScheda(record, refresh) {
       const card = document.createElement("article");
