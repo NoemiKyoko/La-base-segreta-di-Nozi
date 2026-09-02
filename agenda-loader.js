@@ -22,48 +22,22 @@
       .agenda-nav{position:fixed;left:50%;bottom:max(18px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:1003;display:flex;align-items:center;gap:7px;padding:7px 9px;border:1.25px solid #b8d8ec;border-radius:18px;background:#edf6fb;box-shadow:0 5px 16px rgba(65,55,90,.13)}.agenda-nav button{border:0;width:38px;height:38px;border-radius:12px;background:transparent;color:#315d91;font-size:24px}.agenda-nav .agenda-add{background:white;font-size:22px}.agenda-count{min-width:58px;text-align:center;color:#315d91;font-weight:800}
       .agenda-obj{position:absolute;z-index:3;pointer-events:auto;touch-action:none;border:2px solid transparent;border-radius:10px;cursor:grab}.agenda-obj.selected{border-color:rgba(49,93,145,.6);background:rgba(255,255,255,.16)}.agenda-obj img{display:block;width:100%;height:auto;pointer-events:none}.agenda-remove,.agenda-resize{position:absolute;display:none;align-items:center;justify-content:center;border:0;width:28px;height:28px;border-radius:50%;color:white;font-weight:800;box-shadow:0 3px 9px rgba(45,40,60,.22)}.agenda-obj.selected .agenda-remove,.agenda-obj.selected .agenda-resize{display:flex}.agenda-remove{top:-14px;right:-14px;background:#9f5964;font-size:19px}.agenda-resize{right:-14px;bottom:-14px;background:#5277a5}
       .agenda-month{position:absolute;right:1.4%;width:8.3%;height:6.3%;z-index:5;border:0;background:transparent;cursor:pointer}.agenda-month.active{outline:0}.agenda-file{display:none}.agenda-picker{position:fixed;inset:0;z-index:1020;display:none;place-items:center;padding:24px;background:rgba(38,46,67,.55);backdrop-filter:blur(5px)}.agenda-picker.aperto{display:grid}.agenda-picker-card{width:min(760px,92vw);max-height:82vh;overflow:auto;padding:22px;border-radius:26px;background:#fffaf7}.agenda-picker-head{display:flex;align-items:center}.agenda-picker-head h2{flex:1;color:#315d91}.agenda-picker-close{border:0;width:40px;height:40px;border-radius:13px;background:#edf3fa;color:#315d91;font-size:22px}.agenda-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:12px}.agenda-item{border:1px solid rgba(49,93,145,.12);border-radius:18px;background:#f8f7fb;padding:9px;color:#315d91;font-weight:700}.agenda-item img{display:block;width:100%;aspect-ratio:1;object-fit:contain}
-      .agenda-debug{position:fixed;left:max(12px,env(safe-area-inset-left));top:82px;z-index:5000;width:min(520px,calc(100vw - 24px));max-height:42vh;overflow:auto;padding:10px 12px;border:2px solid #d46565;border-radius:14px;background:rgba(255,255,255,.96);box-shadow:0 8px 24px rgba(30,40,60,.25);color:#24364a;font:12px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;pointer-events:auto}.agenda-debug strong{font-family:system-ui,sans-serif}.agenda-debug button{margin-top:8px;border:0;border-radius:9px;padding:7px 10px;background:#edf6fb;color:#315d91;font-weight:800}
       @media(max-width:700px){.agenda-back{width:44px;height:44px}.agenda-tools{left:10px;bottom:10px}.agenda-nav{bottom:10px}.agenda-zoom{right:10px;top:10px;gap:2px;padding:5px}.agenda-zoom button{min-width:42px;padding:0 5px;font-size:12px}}
     `;document.head.appendChild(st);
-    const s=document.createElement("section");s.id="agendaScreen";s.className="agenda-screen";s.innerHTML=`<div class="agenda-viewport"><div class="agenda-stage"><img class="agenda-bg" src="${ASSET}" alt="Agenda"><div class="agenda-layer"><canvas class="agenda-canvas"></canvas></div>${MESI.map((m,i)=>`<button class="agenda-month" data-m="${i}" aria-label="${m}"></button>`).join("")}</div></div><button class="agenda-back">‹</button><div class="agenda-zoom" aria-label="Zoom Agenda">${[100,125,150,175,200].map((z,i)=>`<button data-z="${z}" class="${i===0?"active":""}">${z}%</button>`).join("")}</div><div class="agenda-tools"><span class="agenda-grip">≡</span><button class="agenda-tool active" data-t="pencil">✎</button><button class="agenda-tool agenda-eraser" data-t="eraser" title="Gomma" aria-label="Gomma"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7.2 20.8 17.9 7.5a3 3 0 0 1 4.2-.4l3.4 2.8a3 3 0 0 1 .4 4.2L15.2 27.4H8.8l-2.4-2a3.1 3.1 0 0 1 .8-4.6Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="m13 25.8-5.5-4.5M15.3 27.3h10.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><button class="agenda-tool" data-t="plus">＋</button><button class="agenda-tool" data-t="undo">↶</button><button class="agenda-tool" data-t="redo">↷</button></div><div class="agenda-menu"><button data-a="sticker">Sticker</button><button data-a="image">Foto / immagine</button><button class="danger" data-a="delete">Elimina pagina</button></div><div class="agenda-nav"><button data-n="prev">‹</button><span class="agenda-count">1 / 1</span><button data-n="next">›</button><button class="agenda-add" data-n="add">+</button></div><div class="agenda-debug"><strong>DIAGNOSTICA TOOLBAR / PAGINE</strong><div class="agenda-debug-text">in attesa…</div><button type="button" class="agenda-debug-copy">Copia diagnosi</button></div><input class="agenda-file" type="file" accept="image/*"><div class="agenda-picker"><div class="agenda-picker-card"><div class="agenda-picker-head"><h2>Sticker di Nozi</h2><button class="agenda-picker-close">×</button></div><div class="agenda-grid"></div></div></div>`;document.body.appendChild(s);
-    const viewport=s.querySelector('.agenda-viewport'),stage=s.querySelector('.agenda-stage'), layer=s.querySelector('.agenda-layer'), canvas=s.querySelector('canvas'),ctx=canvas.getContext('2d'),tools=s.querySelector('.agenda-tools'),menu=s.querySelector('.agenda-menu'),file=s.querySelector('.agenda-file'),picker=s.querySelector('.agenda-picker'),grid=s.querySelector('.agenda-grid'),zoomBar=s.querySelector('.agenda-zoom'),debugText=s.querySelector('.agenda-debug-text'),debugCopy=s.querySelector('.agenda-debug-copy');
-    const dbgN=v=>Number.isFinite(v)?Math.round(v*10)/10:v;
-    function elementReport(name,el){
-      if(!el)return `${name}: NON TROVATO`;
-      const cs=getComputedStyle(el),r=el.getBoundingClientRect();
-      const inView=r.width>0&&r.height>0&&r.right>0&&r.bottom>0&&r.left<innerWidth&&r.top<innerHeight;
-      return `${name}: connected=${el.isConnected} inViewport=${inView}\n`+
-        `rect x=${dbgN(r.x)} y=${dbgN(r.y)} w=${dbgN(r.width)} h=${dbgN(r.height)} right=${dbgN(r.right)} bottom=${dbgN(r.bottom)}\n`+
-        `display=${cs.display} visibility=${cs.visibility} opacity=${cs.opacity} position=${cs.position} z=${cs.zIndex}\n`+
-        `css top=${cs.top} right=${cs.right} bottom=${cs.bottom} left=${cs.left} transform=${cs.transform}\n`+
-        `offsetTop=${el.offsetTop} offsetLeft=${el.offsetLeft} offsetW=${el.offsetWidth} offsetH=${el.offsetHeight} offsetParent=${el.offsetParent?.className||el.offsetParent?.tagName||'null'}`;
+    const s=document.createElement("section");s.id="agendaScreen";s.className="agenda-screen";s.innerHTML=`<div class="agenda-viewport"><div class="agenda-stage"><img class="agenda-bg" src="${ASSET}" alt="Agenda"><div class="agenda-layer"><canvas class="agenda-canvas"></canvas></div>${MESI.map((m,i)=>`<button class="agenda-month" data-m="${i}" aria-label="${m}"></button>`).join("")}</div></div><button class="agenda-back">‹</button><div class="agenda-zoom" aria-label="Zoom Agenda">${[100,125,150,175,200].map((z,i)=>`<button data-z="${z}" class="${i===0?"active":""}">${z}%</button>`).join("")}</div><div class="agenda-tools"><span class="agenda-grip">≡</span><button class="agenda-tool active" data-t="pencil">✎</button><button class="agenda-tool agenda-eraser" data-t="eraser" title="Gomma" aria-label="Gomma"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7.2 20.8 17.9 7.5a3 3 0 0 1 4.2-.4l3.4 2.8a3 3 0 0 1 .4 4.2L15.2 27.4H8.8l-2.4-2a3.1 3.1 0 0 1 .8-4.6Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="m13 25.8-5.5-4.5M15.3 27.3h10.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><button class="agenda-tool" data-t="plus">＋</button><button class="agenda-tool" data-t="undo">↶</button><button class="agenda-tool" data-t="redo">↷</button></div><div class="agenda-menu"><button data-a="sticker">Sticker</button><button data-a="image">Foto / immagine</button><button class="danger" data-a="delete">Elimina pagina</button></div><div class="agenda-nav"><button data-n="prev">‹</button><span class="agenda-count">1 / 1</span><button data-n="next">›</button><button class="agenda-add" data-n="add">+</button></div><input class="agenda-file" type="file" accept="image/*"><div class="agenda-picker"><div class="agenda-picker-card"><div class="agenda-picker-head"><h2>Sticker di Nozi</h2><button class="agenda-picker-close">×</button></div><div class="agenda-grid"></div></div></div>`;document.body.appendChild(s);
+    const viewport=s.querySelector('.agenda-viewport'),stage=s.querySelector('.agenda-stage'), layer=s.querySelector('.agenda-layer'), canvas=s.querySelector('canvas'),ctx=canvas.getContext('2d'),tools=s.querySelector('.agenda-tools'),nav=s.querySelector('.agenda-nav'),menu=s.querySelector('.agenda-menu'),file=s.querySelector('.agenda-file'),picker=s.querySelector('.agenda-picker'),grid=s.querySelector('.agenda-grid'),zoomBar=s.querySelector('.agenda-zoom');
+    // iPad/Safari can expose a layout viewport taller than the actually visible viewport.
+    // Anchor the two bottom controls to visualViewport using TOP coordinates, not CSS bottom.
+    function placeBottomControls(){
+      const vv=window.visualViewport;
+      const visibleTop=vv?vv.offsetTop:0, visibleH=vv?vv.height:innerHeight;
+      const margin=18;
+      const th=tools.offsetHeight||48, nh=nav.offsetHeight||54;
+      tools.style.bottom='auto';
+      tools.style.top=Math.max(margin,visibleTop+visibleH-margin-th)+'px';
+      nav.style.bottom='auto';
+      nav.style.top=Math.max(margin,visibleTop+visibleH-margin-nh)+'px';
     }
-    function debugReport(reason='live'){
-      if(!debugText)return '';
-      const vv=window.visualViewport,stageR=stage.getBoundingClientRect(),nav=s.querySelector('.agenda-nav'),sr=s.getBoundingClientRect();
-      const report=`reason=${reason} ${new Date().toLocaleTimeString()}\n`+
-        `window inner=${innerWidth}x${innerHeight} scroll=${scrollX},${scrollY} dpr=${devicePixelRatio}\n`+
-        `visualViewport=${vv?`${dbgN(vv.width)}x${dbgN(vv.height)} off=${dbgN(vv.offsetLeft)},${dbgN(vv.offsetTop)} scale=${vv.scale}`:'n/a'}\n`+
-        `screen=${screen.width}x${screen.height} avail=${screen.availWidth}x${screen.availHeight}\n`+
-        `agenda class=${s.className} rect x=${dbgN(sr.x)} y=${dbgN(sr.y)} w=${dbgN(sr.width)} h=${dbgN(sr.height)}\n`+
-        `stage rect x=${dbgN(stageR.x)} y=${dbgN(stageR.y)} w=${dbgN(stageR.width)} h=${dbgN(stageR.height)} zoom=${zoom}\n\n`+
-        elementReport('TOOLS',tools)+`\n\n`+elementReport('NAV',nav)+`\n\n`+elementReport('ZOOM',zoomBar);
-      debugText.textContent=report;
-      tools.style.outline='3px solid rgba(220,60,60,.85)';
-      if(nav)nav.style.outline='3px solid rgba(220,60,60,.85)';
-      zoomBar.style.outline='3px solid rgba(40,150,80,.75)';
-      return report;
-    }
-    debugCopy?.addEventListener('click',async()=>{const t=debugReport('copy');try{await navigator.clipboard.writeText(t);debugCopy.textContent='Copiato ✓';setTimeout(()=>debugCopy.textContent='Copia diagnosi',1200)}catch(_){debugCopy.textContent='Fai screenshot';}});
-    let debugTimer=null;
-    function startDebug(){
-      debugReport('open');
-      requestAnimationFrame(()=>debugReport('raf-1'));
-      requestAnimationFrame(()=>requestAnimationFrame(()=>debugReport('raf-2')));
-      setTimeout(()=>debugReport('1s'),1000);
-      clearInterval(debugTimer);debugTimer=setInterval(()=>{if(s.classList.contains('aperto'))debugReport('live')},1500);
-    }
-
     // tabs positions calibrated to the approved 1536x1024 image
     s.querySelectorAll('.agenda-month').forEach((b,i)=>{b.style.top=(6.5+i*6.45)+'%';b.addEventListener('click',e=>{e.stopPropagation();mese=i;pagina=0;history=[];future=[];render();save()})});
     function snap(){return clone(mesi)} function push(){history.push(snap());future=[]}
@@ -168,8 +142,12 @@
     stage.addEventListener('contextmenu',e=>e.preventDefault());
     stage.addEventListener('dragstart',e=>e.preventDefault());
     stage.addEventListener('selectstart',e=>e.preventDefault());
-    window.addEventListener('resize',()=>{panX=0;panY=0;size();if(s.classList.contains('aperto'))debugReport('window-resize')});if(window.visualViewport)visualViewport.addEventListener('resize',()=>{if(s.classList.contains('aperto'))debugReport('visualViewport-resize')});
-    window.apriAgenda=()=>{s.classList.add('aperto');panX=0;panY=0;render();startDebug()};
+    window.addEventListener('resize',()=>{panX=0;panY=0;size();if(s.classList.contains('aperto'))placeBottomControls()});
+    if(window.visualViewport){
+      visualViewport.addEventListener('resize',()=>{if(s.classList.contains('aperto'))placeBottomControls()});
+      visualViewport.addEventListener('scroll',()=>{if(s.classList.contains('aperto'))placeBottomControls()});
+    }
+    window.apriAgenda=()=>{s.classList.add('aperto');panX=0;panY=0;render();placeBottomControls();requestAnimationFrame(placeBottomControls)};
     const hotspot=document.querySelector('.hotspot[data-agenda="agendaScreen"]');if(hotspot){hotspot.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();window.apriAgenda()},true)}
     render();
   }
