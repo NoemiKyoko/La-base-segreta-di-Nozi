@@ -1,0 +1,5281 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>La Base Segreta di Nozi</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #e8e8f2;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+
+    /* =========================
+       BASE
+    ========================== */
+
+    .base-stage {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .base-wrapper {
+      position: relative;
+      width: min(100vw, 150vh);
+      aspect-ratio: 3 / 2;
+    }
+
+    .base-image {
+      display: block;
+      width: 100%;
+      height: 100%;
+
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .hotspot-layer {
+      position: absolute;
+      inset: 0;
+
+      width: 100%;
+      height: 100%;
+
+      z-index: 10;
+    }
+
+    .hotspot {
+      fill: transparent;
+      cursor: pointer;
+      pointer-events: all;
+    }
+
+
+
+
+    /* =========================
+       ORARIO SCOLASTICO
+    ========================== */
+
+    .schedule-screen { position: fixed; inset: 0; display: none; flex-direction: column; z-index: 230; overflow: hidden; background: #edf5ff; }
+    .schedule-screen.aperto { display: flex; }
+    .schedule-header { display:flex; align-items:center; gap:14px; padding:max(16px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) 12px max(18px, env(safe-area-inset-left)); background:#dcecf8; border-bottom:1px solid rgba(23,63,122,.10); }
+    .schedule-back, .schedule-clear { appearance:none; border:0; height:48px; border-radius:16px; background:rgba(255,255,255,.78); color:#173f7a; cursor:pointer; box-shadow:0 5px 14px rgba(50,65,80,.10); }
+    .schedule-back { width:48px; flex:0 0 48px; font-size:30px; line-height:1; }
+    .schedule-clear { padding:0 16px; font-size:15px; font-weight:700; }
+    .schedule-title { flex:1; margin:0; color:#173f7a; font-size:clamp(24px,3.5vw,38px); font-weight:700; }
+    .schedule-workspace { flex:1; min-height:0; display:flex; align-items:center; justify-content:center; padding:12px; overflow:auto; }
+    .schedule-board { position:relative; width:min(1200px,96vw); aspect-ratio:1535 / 1024; flex:0 0 auto; }
+    .schedule-image { display:block; width:100%; height:100%; object-fit:contain; user-select:none; -webkit-user-select:none; -webkit-user-drag:none; }
+    /* La parte bassa dell'orario viene ridisegnata via CSS: in questo modo
+       le 8 fasce orarie restano perfettamente allineate anche se il PNG
+       originale contiene una riga in meno. */
+    .schedule-input-grid {
+      position:absolute;
+      left:2.63%;
+      right:3.00%;
+      top:30.00%;
+      bottom:12.05%;
+      display:grid;
+      grid-template-columns:16.30% 16.37% 16.58% 17.50% 17.01% 16.24%;
+      grid-template-rows:repeat(8,1fr);
+      overflow:hidden;
+      background:#fffaf0;
+      border-left:1px solid rgba(23,63,122,.78);
+      border-right:1px solid rgba(23,63,122,.78);
+      border-bottom:1px solid rgba(23,63,122,.78);
+      border-radius:0 0 12px 12px;
+    }
+    .schedule-time-label,
+    .schedule-cell {
+      min-width:0;
+      min-height:0;
+      border:0;
+      border-right:1px solid rgba(23,63,122,.78);
+      border-bottom:1px solid rgba(23,63,122,.78);
+      color:#173f7a;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+      font-size:clamp(9px,1.18vw,16px);
+      font-weight:600;
+      line-height:1.15;
+      text-align:center;
+    }
+    .schedule-time-label {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:4px 6px;
+      user-select:none;
+      -webkit-user-select:none;
+    }
+    .schedule-cell {
+      width:100%;
+      height:100%;
+      resize:none;
+      overflow:hidden;
+      outline:0;
+      background:transparent;
+      padding:4px 6px;
+      display:block;
+    }
+    .schedule-input-grid > :nth-child(6n) { border-right:0; }
+    .schedule-input-grid > :nth-last-child(-n+6) { border-bottom:0; }
+    .schedule-cell:focus { background:rgba(255,255,255,.30); box-shadow:none; border-radius:0; outline:none; }
+    @media (max-width:700px) { .schedule-header{gap:8px}.schedule-clear{padding:0 10px}.schedule-workspace{padding:5px}.schedule-board{width:100vw}.schedule-cell{padding:2px;font-size:8px}.schedule-title{font-size:21px} }
+
+
+    /* =========================
+       PANNELLI TEST
+    ========================== */
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      background: rgba(245, 235, 230, 0.68);
+
+      backdrop-filter: blur(2px);
+      -webkit-backdrop-filter: blur(2px);
+
+      z-index: 100;
+    }
+
+    .overlay.aperto {
+      display: flex;
+    }
+
+    .panel {
+      width: min(520px, 82vw);
+      padding: 32px;
+
+      background: #fff8f3;
+      border: 2px solid #e8b59b;
+      border-radius: 28px;
+
+      box-shadow: 0 18px 50px rgba(70, 55, 80, 0.18);
+
+      text-align: center;
+    }
+
+    .panel h1 {
+      margin: 0 0 24px;
+
+      color: #173f7a;
+
+      font-size: clamp(28px, 4vw, 42px);
+    }
+
+    .close-button {
+      appearance: none;
+      border: 0;
+      border-radius: 18px;
+
+      padding: 14px 24px;
+
+      background: #f3c2aa;
+      color: #173f7a;
+
+      font-size: 18px;
+      font-weight: 600;
+
+      cursor: pointer;
+    }
+
+
+    /* =========================
+       ARCHIVI
+    ========================== */
+
+    .archive-screen {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      flex-direction: column;
+
+      z-index: 200;
+
+      overflow: hidden;
+    }
+
+    .archive-screen.aperto {
+      display: flex;
+    }
+
+    .archive-screen.documents {
+      background: #eaf6fb;
+    }
+
+    .archive-screen.projects {
+      background: #eef8ef;
+    }
+
+    .archive-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+
+      padding:
+        max(20px, env(safe-area-inset-top))
+        26px
+        18px;
+
+      border-bottom: 1px solid rgba(23, 63, 122, 0.10);
+    }
+
+    .archive-screen.documents .archive-header {
+      background: #d8eef7;
+    }
+
+    .archive-screen.projects .archive-header {
+      background: #dcefdc;
+    }
+
+    .archive-back,
+    .archive-add {
+      appearance: none;
+      border: 0;
+
+      width: 50px;
+      height: 50px;
+
+      border-radius: 16px;
+
+      background: rgba(255, 255, 255, 0.72);
+      color: #173f7a;
+
+      font-size: 30px;
+      line-height: 1;
+
+      cursor: pointer;
+
+      box-shadow: 0 5px 14px rgba(50, 65, 80, 0.10);
+    }
+
+    .archive-title {
+      flex: 1;
+
+      margin: 0;
+
+      color: #173f7a;
+
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+    }
+
+    .archive-content {
+      flex: 1;
+      overflow-y: auto;
+
+      padding: 30px;
+    }
+
+    .archive-empty {
+      min-height: 60%;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      color: rgba(23, 63, 122, 0.58);
+
+      font-size: 18px;
+      text-align: center;
+    }
+
+    .archive-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(auto-fill, minmax(190px, 1fr));
+
+      gap: 22px;
+    }
+
+
+    /* =========================
+       CARD ARCHIVI
+    ========================== */
+
+    .archive-card {
+      position: relative;
+
+      border: 1px solid rgba(23, 63, 122, 0.10);
+      border-radius: 22px;
+
+      padding: 14px;
+
+      background: rgba(255, 255, 255, 0.78);
+
+      box-shadow:
+        0 8px 20px rgba(58, 70, 90, 0.10);
+    }
+
+    .archive-open {
+      appearance: none;
+      border: 0;
+
+      width: 100%;
+      padding: 0;
+
+      background: transparent;
+
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .archive-preview {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-bottom: 12px;
+
+      border-radius: 16px;
+
+      background: rgba(255, 255, 255, 0.95);
+
+      overflow: hidden;
+
+      color: #173f7a;
+      font-size: 42px;
+    }
+
+    .archive-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .archive-name {
+      display: block;
+
+      padding-right: 38px;
+
+      color: #173f7a;
+
+      font-size: 16px;
+      font-weight: 600;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .card-menu-button {
+      position: absolute;
+      right: 10px;
+      bottom: 8px;
+
+      appearance: none;
+      border: 0;
+
+      width: 36px;
+      height: 36px;
+
+      border-radius: 12px;
+
+      background: transparent;
+      color: #173f7a;
+
+      font-size: 24px;
+
+      cursor: pointer;
+    }
+
+    .card-menu {
+      position: absolute;
+
+      right: 10px;
+      bottom: 48px;
+
+      display: none;
+
+      min-width: 120px;
+
+      padding: 7px;
+
+      border: 1px solid rgba(23, 63, 122, 0.10);
+      border-radius: 14px;
+
+      background: #fffaf6;
+
+      box-shadow:
+        0 8px 22px rgba(50, 60, 75, 0.17);
+
+      z-index: 5;
+    }
+
+    .card-menu.aperto {
+      display: block;
+    }
+
+    .delete-button {
+      appearance: none;
+      border: 0;
+
+      width: 100%;
+
+      padding: 10px 14px;
+
+      border-radius: 10px;
+
+      background: transparent;
+      color: #8f3d3d;
+
+      font-size: 15px;
+      font-weight: 600;
+
+      text-align: left;
+
+      cursor: pointer;
+    }
+
+    .file-input {
+      display: none;
+    }
+
+
+    /* =========================
+       IDEE & ISPIRAZIONI
+    ========================== */
+
+    .ideas-screen {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      flex-direction: column;
+
+      z-index: 240;
+
+      overflow: hidden;
+
+      background:
+        linear-gradient(
+          180deg,
+          #eee9f8 0%,
+          #f7f3fb 100%
+        );
+    }
+
+    .ideas-screen.aperto {
+      display: flex;
+    }
+
+    .ideas-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      padding:
+        max(18px, env(safe-area-inset-top))
+        max(22px, env(safe-area-inset-right))
+        16px
+        max(22px, env(safe-area-inset-left));
+
+      background: #e2daf2;
+
+      border-bottom:
+        1px solid rgba(73, 57, 112, 0.10);
+    }
+
+    .ideas-back,
+    .ideas-add,
+    .ideas-delete {
+      appearance: none;
+      border: 0;
+
+      width: 48px;
+      height: 48px;
+
+      flex: 0 0 48px;
+
+      border-radius: 16px;
+
+      background: rgba(255, 255, 255, 0.72);
+      color: #4c4274;
+
+      font-size: 28px;
+      line-height: 1;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 5px 14px rgba(65, 55, 90, 0.10);
+    }
+
+    .ideas-delete {
+      font-size: 21px;
+    }
+
+    .ideas-title {
+      flex: 1;
+
+      margin: 0;
+
+      color: #4c4274;
+
+      font-size: clamp(25px, 4vw, 40px);
+      font-weight: 700;
+    }
+
+    .ideas-workspace {
+      flex: 1;
+      min-height: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 22px;
+
+      overflow: hidden;
+    }
+
+    .notebook {
+      width: min(900px, 94vw);
+      height: min(690px, calc(100vh - 150px));
+
+      min-height: 300px;
+
+      display: flex;
+      flex-direction: column;
+
+      overflow: hidden;
+
+      border:
+        1px solid rgba(80, 65, 120, 0.12);
+
+      border-radius: 28px;
+
+      background: #faf8fd;
+
+      box-shadow:
+        0 18px 45px rgba(67, 57, 95, 0.16);
+    }
+
+    .notebook-top {
+      min-height: 58px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 10px 18px;
+
+      background: #d9cfed;
+
+      border-bottom:
+        1px solid rgba(80, 65, 120, 0.10);
+    }
+
+    .page-navigation {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      gap: 14px;
+    }
+
+    .page-arrow {
+      appearance: none;
+      border: 0;
+
+      width: 38px;
+      height: 38px;
+
+      border-radius: 12px;
+
+      background: rgba(255, 255, 255, 0.72);
+      color: #4c4274;
+
+      font-size: 25px;
+      line-height: 1;
+
+      cursor: pointer;
+    }
+
+    .page-arrow:disabled {
+      opacity: 0.30;
+      cursor: default;
+    }
+
+    .page-counter {
+      min-width: 70px;
+
+      color: #4c4274;
+
+      font-size: 15px;
+      font-weight: 700;
+
+      text-align: center;
+    }
+
+    .idea-page-wrap {
+      position: relative;
+
+      flex: 1;
+      min-height: 0;
+
+      overflow: hidden;
+
+      background-color: #fffdfd;
+
+      background-image:
+        radial-gradient(
+          circle,
+          rgba(111, 93, 150, 0.22) 1.2px,
+          transparent 1.3px
+        );
+
+      background-size:
+        24px 24px;
+
+      background-position:
+        12px 12px;
+    }
+
+    .idea-textarea {
+      position: absolute;
+      inset: 0;
+
+      z-index: 1;
+
+      width: 100%;
+      height: 100%;
+
+      resize: none;
+
+      border: 0;
+      outline: 0;
+
+      padding: 34px 38px;
+
+      background: transparent;
+
+      color: #3e3852;
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+      font-size: 19px;
+      line-height: 1.75;
+
+      caret-color: #66568c;
+    }
+
+    .idea-textarea::placeholder {
+      color: rgba(76, 66, 116, 0.36);
+    }
+
+
+    /* =========================
+       STICKER SULLA PAGINA
+    ========================== */
+
+    .idea-sticker-layer {
+      position: absolute;
+      inset: 0;
+
+      z-index: 2;
+
+      pointer-events: none;
+    }
+
+    .idea-sticker-object {
+      position: absolute;
+
+      pointer-events: auto;
+
+      touch-action: none;
+
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+
+      cursor: grab;
+
+      border:
+        2px solid transparent;
+
+      border-radius: 14px;
+    }
+
+    .idea-sticker-object:active {
+      cursor: grabbing;
+    }
+
+    .idea-sticker-object.selected {
+      border-color:
+        rgba(76, 66, 116, 0.60);
+
+      background:
+        rgba(255, 255, 255, 0.18);
+    }
+
+    .idea-page-sticker {
+      display: block;
+
+      width: 100%;
+      height: auto;
+
+      pointer-events: none;
+
+      filter:
+        drop-shadow(
+          0 4px 5px
+          rgba(60, 50, 80, 0.12)
+        );
+
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .idea-sticker-remove,
+    .idea-sticker-resize {
+      position: absolute;
+
+      display: none;
+
+      align-items: center;
+      justify-content: center;
+
+      appearance: none;
+      border: 0;
+
+      width: 28px;
+      height: 28px;
+
+      border-radius: 50%;
+
+      color: white;
+
+      font-size: 19px;
+      font-weight: 700;
+      line-height: 1;
+
+      box-shadow:
+        0 3px 9px
+        rgba(45, 40, 60, 0.22);
+
+      pointer-events: auto;
+
+      touch-action: none;
+    }
+
+    .idea-sticker-object.selected
+    .idea-sticker-remove,
+
+    .idea-sticker-object.selected
+    .idea-sticker-resize {
+      display: flex;
+    }
+
+    .idea-sticker-remove {
+      top: -14px;
+      right: -14px;
+
+      background: #9f5964;
+
+      cursor: pointer;
+    }
+
+    .idea-sticker-resize {
+      right: -14px;
+      bottom: -14px;
+
+      background: #66568c;
+
+      cursor: nwse-resize;
+
+      font-size: 16px;
+    }
+
+
+    /* =========================
+       GALLERIA STICKER
+    ========================== */
+
+    .stickers-screen {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      flex-direction: column;
+
+      z-index: 250;
+
+      overflow: hidden;
+
+      background:
+        linear-gradient(
+          180deg,
+          #e7f3fb 0%,
+          #f4f0fb 100%
+        );
+    }
+
+    .stickers-screen.aperto {
+      display: flex;
+    }
+
+    .stickers-header {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+
+      padding:
+        max(20px, env(safe-area-inset-top))
+        26px
+        18px;
+
+      background: #dcecf8;
+
+      border-bottom:
+        1px solid rgba(23, 63, 122, 0.10);
+    }
+
+    .stickers-back {
+      appearance: none;
+      border: 0;
+
+      width: 50px;
+      height: 50px;
+
+      flex: 0 0 50px;
+
+      border-radius: 16px;
+
+      background: rgba(255, 255, 255, 0.76);
+      color: #173f7a;
+
+      font-size: 30px;
+      line-height: 1;
+
+      cursor: pointer;
+
+      box-shadow:
+        0 5px 14px rgba(50, 65, 80, 0.10);
+    }
+
+    .stickers-heading {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .stickers-title {
+      margin: 0;
+
+      color: #173f7a;
+
+      font-size: clamp(25px, 4vw, 40px);
+      font-weight: 700;
+    }
+
+    .stickers-subtitle {
+      margin: 5px 0 0;
+
+      color: rgba(23, 63, 122, 0.62);
+
+      font-size: 14px;
+    }
+
+    .stickers-content {
+      flex: 1;
+
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+
+      padding:
+        28px
+        max(22px, env(safe-area-inset-right))
+        max(30px, env(safe-area-inset-bottom))
+        max(22px, env(safe-area-inset-left));
+    }
+
+    .stickers-grid {
+      display: grid;
+
+      grid-template-columns:
+        repeat(auto-fill, minmax(150px, 1fr));
+
+      gap: 20px;
+
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .sticker-card {
+      appearance: none;
+      border:
+        1px solid rgba(23, 63, 122, 0.10);
+
+      width: 100%;
+
+      padding: 12px;
+
+      border-radius: 24px;
+
+      background: rgba(255, 255, 255, 0.76);
+
+      box-shadow:
+        0 8px 20px rgba(58, 70, 90, 0.09);
+
+      cursor: pointer;
+
+      text-align: center;
+    }
+
+    .sticker-card:active {
+      transform: scale(0.98);
+    }
+
+    .sticker-image-box {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 8px;
+
+      border-radius: 18px;
+
+      background: rgba(255, 255, 255, 0.64);
+
+      overflow: hidden;
+    }
+
+    .sticker-image {
+      display: block;
+
+      max-width: 100%;
+      max-height: 100%;
+
+      object-fit: contain;
+
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .sticker-label {
+      display: block;
+
+      margin-top: 10px;
+
+      color: #173f7a;
+
+      font-size: 14px;
+      font-weight: 600;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+
+    /* =========================
+       ANTEPRIMA STICKER
+    ========================== */
+
+    .sticker-viewer {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      padding: 24px;
+
+      background: rgba(38, 46, 67, 0.58);
+
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+
+      z-index: 400;
+    }
+
+    .sticker-viewer.aperto {
+      display: flex;
+    }
+
+    .sticker-viewer-card {
+      position: relative;
+
+      width: min(560px, 92vw);
+      max-height: 90vh;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      padding: 24px;
+
+      border-radius: 30px;
+
+      background: #fffaf7;
+
+      box-shadow:
+        0 22px 60px rgba(30, 35, 55, 0.28);
+    }
+
+    .sticker-viewer-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+
+      appearance: none;
+      border: 0;
+
+      width: 42px;
+      height: 42px;
+
+      border-radius: 14px;
+
+      background: #edf3fa;
+      color: #173f7a;
+
+      font-size: 24px;
+
+      cursor: pointer;
+    }
+
+    .sticker-viewer-image-box {
+      width: min(380px, 70vw);
+      height: min(380px, 55vh);
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-top: 18px;
+    }
+
+    .sticker-viewer-image {
+      display: block;
+
+      max-width: 100%;
+      max-height: 100%;
+
+      object-fit: contain;
+    }
+
+    .sticker-viewer-name {
+      margin: 14px 0 18px;
+
+      color: #173f7a;
+
+      font-size: 18px;
+      font-weight: 700;
+
+      text-align: center;
+    }
+
+    .sticker-actions {
+      width: 100%;
+
+      display: flex;
+      justify-content: center;
+
+      gap: 12px;
+    }
+
+    .sticker-action {
+      appearance: none;
+      border: 0;
+
+      min-width: 120px;
+
+      padding: 13px 22px;
+
+      border-radius: 15px;
+
+      background: #dcecf8;
+      color: #173f7a;
+
+      font-size: 16px;
+      font-weight: 600;
+
+      cursor: pointer;
+    }
+
+    .sticker-action.secondary {
+      background: #f3ddd2;
+    }
+
+
+    /* =========================
+       DESTINAZIONE STICKER
+    ========================== */
+
+    .destination-overlay {
+      position: fixed;
+      inset: 0;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      padding: 24px;
+
+      background: rgba(38, 46, 67, 0.62);
+
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+
+      z-index: 500;
+    }
+
+    .destination-overlay.aperto {
+      display: flex;
+    }
+
+    .destination-card {
+      position: relative;
+
+      width: min(500px, 92vw);
+
+      padding: 30px;
+
+      border-radius: 28px;
+
+      background: #fffaf7;
+
+      box-shadow:
+        0 22px 60px rgba(30, 35, 55, 0.30);
+    }
+
+    .destination-close {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+
+      appearance: none;
+      border: 0;
+
+      width: 42px;
+      height: 42px;
+
+      border-radius: 14px;
+
+      background: #edf3fa;
+      color: #173f7a;
+
+      font-size: 24px;
+
+      cursor: pointer;
+    }
+
+    .destination-title {
+      margin: 4px 45px 24px 0;
+
+      color: #173f7a;
+
+      font-size: 23px;
+      line-height: 1.25;
+    }
+
+    .destination-list {
+      display: flex;
+      flex-direction: column;
+
+      gap: 10px;
+    }
+
+    .destination-button {
+      appearance: none;
+      border:
+        1px solid rgba(23, 63, 122, 0.10);
+
+      width: 100%;
+
+      padding: 15px 17px;
+
+      border-radius: 15px;
+
+      background: #f4f7fb;
+      color: #173f7a;
+
+      font-size: 16px;
+      font-weight: 600;
+
+      text-align: left;
+
+      cursor: pointer;
+    }
+
+
+    /* =========================
+       TOAST
+    ========================== */
+
+    .toast {
+      position: fixed;
+
+      left: 50%;
+      bottom:
+        max(28px, env(safe-area-inset-bottom));
+
+      transform:
+        translateX(-50%)
+        translateY(20px);
+
+      max-width: min(520px, 88vw);
+
+      padding: 13px 20px;
+
+      border-radius: 16px;
+
+      background: #173f7a;
+      color: white;
+
+      font-size: 15px;
+      font-weight: 600;
+
+      text-align: center;
+
+      opacity: 0;
+      pointer-events: none;
+
+      transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+
+      z-index: 600;
+    }
+
+    .toast.visibile {
+      opacity: 1;
+
+      transform:
+        translateX(-50%)
+        translateY(0);
+    }
+
+
+    /* =========================
+       SCHERMI STRETTI
+    ========================== */
+
+    @media (max-width: 700px) {
+
+      .stickers-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+
+        gap: 14px;
+      }
+
+      .stickers-content {
+        padding: 18px;
+      }
+
+      .sticker-actions {
+        flex-direction: column;
+      }
+
+      .sticker-action {
+        width: 100%;
+      }
+
+      .ideas-header {
+        gap: 9px;
+      }
+
+      .ideas-back,
+      .ideas-add,
+      .ideas-delete {
+        width: 43px;
+        height: 43px;
+        flex-basis: 43px;
+      }
+
+      .ideas-title {
+        font-size: 22px;
+      }
+
+      .ideas-workspace {
+        padding: 12px;
+      }
+
+      .notebook {
+        width: 100%;
+        height: calc(100vh - 125px);
+
+        border-radius: 22px;
+      }
+
+      .idea-textarea {
+        padding: 27px 25px;
+
+        font-size: 18px;
+      }
+
+      .idea-sticker-remove,
+      .idea-sticker-resize {
+        width: 30px;
+        height: 30px;
+      }
+
+    }
+
+  </style>
+
+  <link rel="icon" type="image/png" href="assets/icona-nozi.png">
+  <link rel="apple-touch-icon" href="assets/icona-nozi.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="La Base Segreta di Nozi">
+
+</head>
+
+<body>
+
+  <!-- =========================
+       BASE
+  ========================== -->
+
+  <main class="base-stage">
+
+    <div class="base-wrapper">
+
+      <img
+        class="base-image"
+        src="assets/base-segreta-nozi.png"
+        alt="La Base Segreta di Nozi"
+      >
+
+      <svg
+        class="hotspot-layer"
+        viewBox="0 0 1536 1024"
+        preserveAspectRatio="none"
+      >
+
+        <rect
+          class="hotspot"
+          data-target="overlayLessons"
+          x="1235"
+          y="170"
+          width="270"
+          height="155"
+        />
+
+        <rect
+          class="hotspot"
+          data-archive="documentsScreen"
+          x="1235"
+          y="335"
+          width="270"
+          height="155"
+        />
+
+        <rect
+          class="hotspot"
+          data-archive="projectsScreen"
+          x="1235"
+          y="500"
+          width="270"
+          height="155"
+        />
+
+        <rect
+          class="hotspot"
+          data-ideas="ideasScreen"
+          x="1235"
+          y="665"
+          width="270"
+          height="145"
+        />
+
+        <rect
+          class="hotspot"
+          data-stickers="stickersScreen"
+          x="1235"
+          y="810"
+          width="270"
+          height="170"
+        />
+
+        <rect
+          class="hotspot"
+          data-target="overlayPlanning"
+          x="425"
+          y="290"
+          width="235"
+          height="195"
+        />
+
+        <rect
+          class="hotspot"
+          data-schedule="scheduleScreen"
+          x="670"
+          y="290"
+          width="230"
+          height="195"
+        />
+
+        <rect
+          class="hotspot"
+          data-target="overlayRemember"
+          x="915"
+          y="290"
+          width="235"
+          height="195"
+        />
+
+        <rect
+          class="hotspot"
+          data-target="overlayNotebook"
+          x="790"
+          y="580"
+          width="330"
+          height="245"
+        />
+
+        <rect
+          class="hotspot"
+          data-agenda="agendaScreen"
+          x="330"
+          y="690"
+          width="205"
+          height="145"
+        />
+
+        <rect
+          class="hotspot"
+          data-url="https://nuvola.madisoft.it/login"
+          x="535"
+          y="690"
+          width="230"
+          height="175"
+        />
+
+      </svg>
+
+    </div>
+
+  </main>
+
+
+  <!-- =========================
+       PANNELLI TEST
+  ========================== -->
+
+  <div class="overlay" id="overlayLessons">
+    <section class="panel">
+      <h1>Lezioni &amp; Materiali</h1>
+      <button class="close-button">Chiudi</button>
+    </section>
+  </div>
+
+  <!-- =========================
+       ORARIO SCOLASTICO
+  ========================== -->
+
+  <section class="schedule-screen" id="scheduleScreen">
+    <header class="schedule-header">
+      <button class="schedule-back" id="scheduleBack" aria-label="Torna alla Base">‹</button>
+      <h1 class="schedule-title">Orario scolastico</h1>
+      <button class="schedule-clear" id="scheduleClear" type="button">Svuota</button>
+    </header>
+    <div class="schedule-workspace">
+      <div class="schedule-board">
+        <img class="schedule-image" src="assets/orario-scolastico.png" alt="Orario scolastico">
+        <div class="schedule-input-grid" id="scheduleInputGrid"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="overlay" id="overlayRemember">
+    <section class="panel">
+      <h1>Da non dimenticare</h1>
+      <button class="close-button">Chiudi</button>
+    </section>
+  </div>
+
+
+  <!-- =========================
+       DOCUMENTI IMPORTANTI
+  ========================== -->
+
+  <section
+    class="archive-screen documents"
+    id="documentsScreen"
+  >
+
+    <header class="archive-header">
+
+      <button
+        class="archive-back"
+        data-close-archive
+        aria-label="Torna alla Base"
+      >
+        ‹
+      </button>
+
+      <h1 class="archive-title">
+        Documenti importanti
+      </h1>
+
+      <button
+        class="archive-add"
+        data-file-picker="documentsInput"
+        aria-label="Aggiungi documento"
+      >
+        +
+      </button>
+
+    </header>
+
+    <div class="archive-content">
+
+      <div
+        class="archive-empty"
+        id="documentsEmpty"
+      >
+        Nessun documento ancora.
+      </div>
+
+      <div
+        class="archive-grid"
+        id="documentsGrid"
+      ></div>
+
+    </div>
+
+    <input
+      class="file-input"
+      id="documentsInput"
+      type="file"
+      multiple
+    >
+
+  </section>
+
+
+  <!-- =========================
+       ATTIVITÀ & PROGETTI
+  ========================== -->
+
+  <section
+    class="archive-screen projects"
+    id="projectsScreen"
+  >
+
+    <header class="archive-header">
+
+      <button
+        class="archive-back"
+        data-close-archive
+        aria-label="Torna alla Base"
+      >
+        ‹
+      </button>
+
+      <h1 class="archive-title">
+        Attività &amp; Progetti
+      </h1>
+
+      <button
+        class="archive-add"
+        data-file-picker="projectsInput"
+        aria-label="Aggiungi attività o progetto"
+      >
+        +
+      </button>
+
+    </header>
+
+    <div class="archive-content">
+
+      <div
+        class="archive-empty"
+        id="projectsEmpty"
+      >
+        Nessuna attività o progetto ancora.
+      </div>
+
+      <div
+        class="archive-grid"
+        id="projectsGrid"
+      ></div>
+
+    </div>
+
+    <input
+      class="file-input"
+      id="projectsInput"
+      type="file"
+      multiple
+    >
+
+  </section>
+
+
+  <!-- =========================
+       IDEE & ISPIRAZIONI
+  ========================== -->
+
+  <section
+    class="ideas-screen"
+    id="ideasScreen"
+  >
+
+    <header class="ideas-header">
+
+      <button
+        class="ideas-back"
+        id="ideasBack"
+        aria-label="Torna alla Base"
+      >
+        ‹
+      </button>
+
+      <h1 class="ideas-title">
+        Idee &amp; Ispirazioni
+      </h1>
+
+      <button
+        class="ideas-delete"
+        id="ideasDelete"
+        aria-label="Elimina pagina"
+        title="Elimina pagina"
+      >
+        ⌫
+      </button>
+
+      <button
+        class="ideas-add"
+        id="ideasAdd"
+        aria-label="Nuova pagina"
+        title="Nuova pagina"
+      >
+        +
+      </button>
+
+    </header>
+
+
+    <div class="ideas-workspace">
+
+      <section class="notebook">
+
+        <div class="notebook-top">
+
+          <div class="page-navigation">
+
+            <button
+              class="page-arrow"
+              id="ideaPrevious"
+              aria-label="Pagina precedente"
+            >
+              ‹
+            </button>
+
+            <div
+              class="page-counter"
+              id="ideaCounter"
+            >
+              1 / 1
+            </div>
+
+            <button
+              class="page-arrow"
+              id="ideaNext"
+              aria-label="Pagina successiva"
+            >
+              ›
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="idea-page-wrap"
+          id="ideaPageWrap"
+        >
+
+          <textarea
+            class="idea-textarea"
+            id="ideaTextarea"
+            placeholder="Scrivi qui..."
+            spellcheck="true"
+          ></textarea>
+
+          <div
+            class="idea-sticker-layer"
+            id="ideaStickerLayer"
+          ></div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       GALLERIA STICKER
+  ========================== -->
+
+  <section
+    class="stickers-screen"
+    id="stickersScreen"
+  >
+
+    <header class="stickers-header">
+
+      <button
+        class="stickers-back"
+        id="stickersBack"
+        aria-label="Torna alla Base"
+      >
+        ‹
+      </button>
+
+      <div class="stickers-heading">
+
+        <h1 class="stickers-title">
+          Sticker di Nozi
+        </h1>
+
+        <p class="stickers-subtitle">
+          Feedback positivi, correzioni e altre emergenze scolastiche
+        </p>
+
+      </div>
+
+    </header>
+
+
+    <div class="stickers-content">
+
+      <div
+        class="stickers-grid"
+        id="stickersGrid"
+      ></div>
+
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       ANTEPRIMA STICKER
+  ========================== -->
+
+  <div
+    class="sticker-viewer"
+    id="stickerViewer"
+  >
+
+    <section
+      class="sticker-viewer-card"
+      id="stickerViewerCard"
+    >
+
+      <button
+        class="sticker-viewer-close"
+        id="stickerViewerClose"
+        aria-label="Chiudi"
+      >
+        ×
+      </button>
+
+
+      <div class="sticker-viewer-image-box">
+
+        <img
+          class="sticker-viewer-image"
+          id="stickerViewerImage"
+          src=""
+          alt=""
+        >
+
+      </div>
+
+
+      <div
+        class="sticker-viewer-name"
+        id="stickerViewerName"
+      ></div>
+
+
+      <div class="sticker-actions">
+
+        <button
+          class="sticker-action"
+          id="printStickerButton"
+        >
+          Stampa
+        </button>
+
+        <button
+          class="sticker-action secondary"
+          id="insertStickerButton"
+        >
+          Inserisci
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <!-- =========================
+       DESTINAZIONE STICKER
+  ========================== -->
+
+  <div
+    class="destination-overlay"
+    id="destinationOverlay"
+  >
+
+    <section
+      class="destination-card"
+      id="destinationCard"
+    >
+
+      <button
+        class="destination-close"
+        id="destinationClose"
+        aria-label="Chiudi"
+      >
+        ×
+      </button>
+
+      <h2 class="destination-title">
+        Dove vuoi inserire questo sticker?
+      </h2>
+
+      <div class="destination-list">
+
+        <button
+          class="destination-button"
+          data-destination="programmazione"
+          data-destination-label="Programmazione"
+        >
+          Programmazione
+        </button>
+
+        <button
+          class="destination-button"
+          data-destination="quaderno"
+          data-destination-label="Quaderno delle cose buffe"
+        >
+          Quaderno delle cose buffe
+        </button>
+
+        <button
+          class="destination-button"
+          data-destination="lezioni"
+          data-destination-label="Lezioni & Materiali"
+        >
+          Lezioni &amp; Materiali
+        </button>
+
+        <button
+          class="destination-button"
+          data-destination="progetti"
+          data-destination-label="Attività & Progetti"
+        >
+          Attività &amp; Progetti
+        </button>
+
+        <button
+          class="destination-button"
+          data-destination="idee"
+          data-destination-label="Idee & Ispirazioni"
+        >
+          Idee &amp; Ispirazioni
+        </button>
+
+      </div>
+
+    </section>
+
+  </div>
+
+
+  <div
+    class="toast"
+    id="toast"
+  ></div>
+
+
+  <script>
+
+    /* =========================
+       MEMORIA
+    ========================== */
+
+    const DB_NAME =
+      "BaseSegretaNoziDB";
+
+    const DB_VERSION =
+      1;
+
+    const STORE_DOCUMENTS =
+      "documents";
+
+    const STORE_PROJECTS =
+      "projects";
+
+    const STICKER_STORAGE_KEY =
+      "BaseSegretaNoziStickerInseriti";
+
+    const IDEAS_STORAGE_KEY =
+      "BaseSegretaNoziIdee";
+
+    const IDEAS_INDEX_KEY =
+      "BaseSegretaNoziIdeePagina";
+
+
+    /* =========================
+       INDEXEDDB
+    ========================== */
+
+    function apriDatabase() {
+
+      return new Promise((resolve, reject) => {
+
+        const request =
+          indexedDB.open(
+            DB_NAME,
+            DB_VERSION
+          );
+
+
+        request.onupgradeneeded = () => {
+
+          const db =
+            request.result;
+
+
+          if (
+            !db.objectStoreNames.contains(
+              STORE_DOCUMENTS
+            )
+          ) {
+
+            db.createObjectStore(
+              STORE_DOCUMENTS,
+              {
+                keyPath: "id",
+                autoIncrement: true
+              }
+            );
+
+          }
+
+
+          if (
+            !db.objectStoreNames.contains(
+              STORE_PROJECTS
+            )
+          ) {
+
+            db.createObjectStore(
+              STORE_PROJECTS,
+              {
+                keyPath: "id",
+                autoIncrement: true
+              }
+            );
+
+          }
+
+        };
+
+
+        request.onsuccess = () => {
+          resolve(request.result);
+        };
+
+
+        request.onerror = () => {
+          reject(request.error);
+        };
+
+      });
+
+    }
+
+
+    async function salvaFile(
+      storeName,
+      file
+    ) {
+
+      const db =
+        await apriDatabase();
+
+
+      return new Promise((resolve, reject) => {
+
+        const transaction =
+          db.transaction(
+            storeName,
+            "readwrite"
+          );
+
+        const store =
+          transaction.objectStore(
+            storeName
+          );
+
+
+        const record = {
+          name: file.name,
+          type: file.type,
+          blob: file,
+          createdAt: Date.now()
+        };
+
+
+        const request =
+          store.add(record);
+
+
+        request.onsuccess = () => {
+          resolve(request.result);
+        };
+
+
+        request.onerror = () => {
+          reject(request.error);
+        };
+
+      });
+
+    }
+
+
+    async function leggiTutti(
+      storeName
+    ) {
+
+      const db =
+        await apriDatabase();
+
+
+      return new Promise((resolve, reject) => {
+
+        const transaction =
+          db.transaction(
+            storeName,
+            "readonly"
+          );
+
+        const store =
+          transaction.objectStore(
+            storeName
+          );
+
+
+        const request =
+          store.getAll();
+
+
+        request.onsuccess = () => {
+          resolve(request.result);
+        };
+
+
+        request.onerror = () => {
+          reject(request.error);
+        };
+
+      });
+
+    }
+
+
+    async function eliminaFile(
+      storeName,
+      id
+    ) {
+
+      const db =
+        await apriDatabase();
+
+
+      return new Promise((resolve, reject) => {
+
+        const transaction =
+          db.transaction(
+            storeName,
+            "readwrite"
+          );
+
+        const store =
+          transaction.objectStore(
+            storeName
+          );
+
+
+        const request =
+          store.delete(id);
+
+
+        request.onsuccess = () => {
+          resolve();
+        };
+
+
+        request.onerror = () => {
+          reject(request.error);
+        };
+
+      });
+
+    }
+
+
+    /* =========================
+       IDEE - DATI
+    ========================== */
+
+    function nuovaIdeaVuota() {
+
+      return {
+        id:
+          `${Date.now()}-${Math.random()
+            .toString(16)
+            .slice(2)}`,
+
+        text: "",
+
+        createdAt:
+          Date.now(),
+
+        updatedAt:
+          Date.now()
+      };
+
+    }
+
+
+    function caricaIdeaPages() {
+
+      try {
+
+        const salvate =
+          localStorage.getItem(
+            IDEAS_STORAGE_KEY
+          );
+
+
+        if (salvate) {
+
+          const parsed =
+            JSON.parse(
+              salvate
+            );
+
+
+          if (
+            Array.isArray(parsed) &&
+            parsed.length > 0
+          ) {
+
+            return parsed.map(
+              (pagina) => {
+
+                if (!pagina.id) {
+
+                  pagina.id =
+                    `${Date.now()}-${Math.random()
+                      .toString(16)
+                      .slice(2)}`;
+
+                }
+
+                return pagina;
+
+              }
+            );
+
+          }
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Errore nel caricamento delle idee:",
+          error
+        );
+
+      }
+
+
+      return [
+        nuovaIdeaVuota()
+      ];
+
+    }
+
+
+    let ideaPages =
+      caricaIdeaPages();
+
+
+    function caricaIdeaIndex() {
+
+      try {
+
+        const salvato =
+          Number(
+            localStorage.getItem(
+              IDEAS_INDEX_KEY
+            )
+          );
+
+
+        if (
+          Number.isInteger(salvato) &&
+          salvato >= 0
+        ) {
+
+          return Math.min(
+            salvato,
+            ideaPages.length - 1
+          );
+
+        }
+
+      } catch (error) {
+
+        console.error(
+          "Errore nel caricamento della pagina:",
+          error
+        );
+
+      }
+
+
+      return 0;
+
+    }
+
+
+    let ideaIndex =
+      caricaIdeaIndex();
+
+
+    function salvaIdeaPages() {
+
+      try {
+
+        localStorage.setItem(
+          IDEAS_STORAGE_KEY,
+          JSON.stringify(
+            ideaPages
+          )
+        );
+
+        localStorage.setItem(
+          IDEAS_INDEX_KEY,
+          String(ideaIndex)
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Errore nel salvataggio delle idee:",
+          error
+        );
+
+      }
+
+    }
+
+
+    /* =========================
+       STICKER - DATI
+    ========================== */
+
+    function leggiInserimentiSticker() {
+
+      try {
+
+        const salvati =
+          localStorage.getItem(
+            STICKER_STORAGE_KEY
+          );
+
+
+        if (!salvati) {
+          return [];
+        }
+
+
+        const parsed =
+          JSON.parse(
+            salvati
+          );
+
+
+        return Array.isArray(parsed)
+          ? parsed
+          : [];
+
+      } catch (error) {
+
+        console.error(
+          "Impossibile leggere gli sticker inseriti:",
+          error
+        );
+
+        return [];
+
+      }
+
+    }
+
+
+    function scriviInserimentiSticker(
+      inserimenti
+    ) {
+
+      try {
+
+        localStorage.setItem(
+          STICKER_STORAGE_KEY,
+          JSON.stringify(
+            inserimenti
+          )
+        );
+
+      } catch (error) {
+
+        console.error(
+          "Impossibile salvare gli sticker:",
+          error
+        );
+
+      }
+
+    }
+
+
+    /*
+      Migrazione dei vecchi sticker:
+      - assegna pageId se manca
+      - assegna posizione/dimensione se mancano
+    */
+
+    function migraVecchiStickerIdee() {
+
+      const inserimenti =
+        leggiInserimentiSticker();
+
+
+      let modificato =
+        false;
+
+      let numeroIdee =
+        0;
+
+
+      inserimenti.forEach(
+        (item) => {
+
+          if (
+            item.destination ===
+            "idee"
+          ) {
+
+            if (!item.pageId) {
+
+              item.pageId =
+                ideaPages[ideaIndex].id;
+
+              modificato =
+                true;
+
+            }
+
+
+            if (
+              typeof item.x !==
+              "number"
+            ) {
+
+              item.x =
+                Math.max(
+                  8,
+                  70 -
+                  (
+                    numeroIdee % 3
+                  ) * 18
+                );
+
+              modificato =
+                true;
+
+            }
+
+
+            if (
+              typeof item.y !==
+              "number"
+            ) {
+
+              item.y =
+                Math.max(
+                  8,
+                  68 -
+                  Math.floor(
+                    numeroIdee / 3
+                  ) * 20
+                );
+
+              modificato =
+                true;
+
+            }
+
+
+            if (
+              typeof item.width !==
+              "number"
+            ) {
+
+              item.width =
+                18;
+
+              modificato =
+                true;
+
+            }
+
+
+            numeroIdee++;
+
+          }
+
+        }
+      );
+
+
+      if (modificato) {
+
+        scriviInserimentiSticker(
+          inserimenti
+        );
+
+      }
+
+    }
+
+
+    migraVecchiStickerIdee();
+
+
+    /* =========================
+       ELEMENTI IDEE
+    ========================== */
+
+    const ideasScreen =
+      document.getElementById(
+        "ideasScreen"
+      );
+
+    const ideasBack =
+      document.getElementById(
+        "ideasBack"
+      );
+
+    const ideasAdd =
+      document.getElementById(
+        "ideasAdd"
+      );
+
+    const ideasDelete =
+      document.getElementById(
+        "ideasDelete"
+      );
+
+    const ideaPrevious =
+      document.getElementById(
+        "ideaPrevious"
+      );
+
+    const ideaNext =
+      document.getElementById(
+        "ideaNext"
+      );
+
+    const ideaCounter =
+      document.getElementById(
+        "ideaCounter"
+      );
+
+    const ideaTextarea =
+      document.getElementById(
+        "ideaTextarea"
+      );
+
+    const ideaStickerLayer =
+      document.getElementById(
+        "ideaStickerLayer"
+      );
+
+    const ideaPageWrap =
+      document.getElementById(
+        "ideaPageWrap"
+      );
+
+
+    let stickerIdeaSelezionato =
+      null;
+
+
+    function salvaTestoPaginaCorrente() {
+
+      if (
+        !ideaPages[ideaIndex]
+      ) {
+        return;
+      }
+
+
+      ideaPages[ideaIndex].text =
+        ideaTextarea.value;
+
+      ideaPages[ideaIndex].updatedAt =
+        Date.now();
+
+
+      salvaIdeaPages();
+
+    }
+
+
+    function aggiornaInserimentoSticker(
+      id,
+      modifiche
+    ) {
+
+      const inserimenti =
+        leggiInserimentiSticker();
+
+
+      const item =
+        inserimenti.find(
+          (elemento) =>
+            elemento.id === id
+        );
+
+
+      if (!item) {
+        return;
+      }
+
+
+      Object.assign(
+        item,
+        modifiche
+      );
+
+
+      scriviInserimentiSticker(
+        inserimenti
+      );
+
+    }
+
+
+    function rimuoviInserimentoSticker(
+      id
+    ) {
+
+      const inserimenti =
+        leggiInserimentiSticker();
+
+
+      const filtrati =
+        inserimenti.filter(
+          (elemento) =>
+            elemento.id !== id
+        );
+
+
+      scriviInserimentiSticker(
+        filtrati
+      );
+
+    }
+
+
+    function deselezionaStickerIdea() {
+
+      stickerIdeaSelezionato =
+        null;
+
+
+      document
+        .querySelectorAll(
+          ".idea-sticker-object.selected"
+        )
+        .forEach(
+          (elemento) => {
+
+            elemento.classList
+              .remove("selected");
+
+          }
+        );
+
+    }
+
+
+    function selezionaStickerIdea(
+      elemento,
+      id
+    ) {
+
+      deselezionaStickerIdea();
+
+
+      elemento.classList
+        .add("selected");
+
+
+      stickerIdeaSelezionato =
+        id;
+
+    }
+
+
+    function limita(
+      numero,
+      minimo,
+      massimo
+    ) {
+
+      return Math.min(
+        massimo,
+        Math.max(
+          minimo,
+          numero
+        )
+      );
+
+    }
+
+
+    function renderIdeaStickers() {
+
+      ideaStickerLayer.innerHTML =
+        "";
+
+
+      stickerIdeaSelezionato =
+        null;
+
+
+      const paginaCorrente =
+        ideaPages[ideaIndex];
+
+
+      if (!paginaCorrente) {
+        return;
+      }
+
+
+      const inserimenti =
+        leggiInserimentiSticker();
+
+
+      const stickerPagina =
+        inserimenti.filter(
+          (item) =>
+
+            item.destination ===
+              "idee" &&
+
+            item.pageId ===
+              paginaCorrente.id
+        );
+
+
+      stickerPagina.forEach(
+        (item, index) => {
+
+          /*
+            Sicurezza per eventuali vecchi dati.
+          */
+
+          if (
+            typeof item.x !==
+            "number"
+          ) {
+
+            item.x =
+              70 -
+              (index % 3) * 18;
+
+          }
+
+
+          if (
+            typeof item.y !==
+            "number"
+          ) {
+
+            item.y =
+              68 -
+              Math.floor(
+                index / 3
+              ) * 20;
+
+          }
+
+
+          if (
+            typeof item.width !==
+            "number"
+          ) {
+
+            item.width =
+              18;
+
+          }
+
+
+          const object =
+            document.createElement(
+              "div"
+            );
+
+
+          object.className =
+            "idea-sticker-object";
+
+
+          object.dataset.id =
+            item.id;
+
+
+          object.style.left =
+            `${item.x}%`;
+
+          object.style.top =
+            `${item.y}%`;
+
+          object.style.width =
+            `${item.width}%`;
+
+
+          const image =
+            document.createElement(
+              "img"
+            );
+
+
+          image.className =
+            "idea-page-sticker";
+
+
+          image.src =
+            String(item.file || "").startsWith("data:")
+              ? item.file
+              : `assets/${item.file}`;
+
+
+          image.alt =
+            item.label || "";
+
+
+          const removeButton =
+            document.createElement(
+              "button"
+            );
+
+
+          removeButton.className =
+            "idea-sticker-remove";
+
+
+          removeButton.type =
+            "button";
+
+
+          removeButton.textContent =
+            "×";
+
+
+          removeButton.setAttribute(
+            "aria-label",
+            "Rimuovi sticker"
+          );
+
+
+          const resizeHandle =
+            document.createElement(
+              "button"
+            );
+
+
+          resizeHandle.className =
+            "idea-sticker-resize";
+
+
+          resizeHandle.type =
+            "button";
+
+
+          resizeHandle.textContent =
+            "↘";
+
+
+          resizeHandle.setAttribute(
+            "aria-label",
+            "Ridimensiona sticker"
+          );
+
+
+          object.appendChild(
+            image
+          );
+
+          object.appendChild(
+            removeButton
+          );
+
+          object.appendChild(
+            resizeHandle
+          );
+
+
+          /*
+            SELEZIONE
+          */
+
+          object.addEventListener(
+            "pointerdown",
+            (event) => {
+
+              if (
+                event.target ===
+                removeButton ||
+                event.target ===
+                resizeHandle
+              ) {
+
+                return;
+
+              }
+
+
+              event.preventDefault();
+              event.stopPropagation();
+
+
+              selezionaStickerIdea(
+                object,
+                item.id
+              );
+
+
+              const pageRect =
+                ideaPageWrap
+                  .getBoundingClientRect();
+
+
+              const objectRect =
+                object
+                  .getBoundingClientRect();
+
+
+              const offsetX =
+                event.clientX -
+                objectRect.left;
+
+
+              const offsetY =
+                event.clientY -
+                objectRect.top;
+
+
+              object.setPointerCapture(
+                event.pointerId
+              );
+
+
+              function muovi(
+                moveEvent
+              ) {
+
+                let leftPx =
+                  moveEvent.clientX -
+                  pageRect.left -
+                  offsetX;
+
+
+                let topPx =
+                  moveEvent.clientY -
+                  pageRect.top -
+                  offsetY;
+
+
+                const widthPx =
+                  object.offsetWidth;
+
+
+                const heightPx =
+                  object.offsetHeight;
+
+
+                leftPx =
+                  limita(
+                    leftPx,
+                    0,
+                    Math.max(
+                      0,
+                      pageRect.width -
+                      widthPx
+                    )
+                  );
+
+
+                topPx =
+                  limita(
+                    topPx,
+                    0,
+                    Math.max(
+                      0,
+                      pageRect.height -
+                      heightPx
+                    )
+                  );
+
+
+                const xPercent =
+                  (
+                    leftPx /
+                    pageRect.width
+                  ) * 100;
+
+
+                const yPercent =
+                  (
+                    topPx /
+                    pageRect.height
+                  ) * 100;
+
+
+                object.style.left =
+                  `${xPercent}%`;
+
+
+                object.style.top =
+                  `${yPercent}%`;
+
+
+                item.x =
+                  xPercent;
+
+
+                item.y =
+                  yPercent;
+
+              }
+
+
+              function fine(
+                endEvent
+              ) {
+
+                try {
+
+                  object.releasePointerCapture(
+                    endEvent.pointerId
+                  );
+
+                } catch (error) {
+                }
+
+
+                object.removeEventListener(
+                  "pointermove",
+                  muovi
+                );
+
+
+                object.removeEventListener(
+                  "pointerup",
+                  fine
+                );
+
+
+                object.removeEventListener(
+                  "pointercancel",
+                  fine
+                );
+
+
+                aggiornaInserimentoSticker(
+                  item.id,
+                  {
+                    x:
+                      item.x,
+
+                    y:
+                      item.y
+                  }
+                );
+
+              }
+
+
+              object.addEventListener(
+                "pointermove",
+                muovi
+              );
+
+
+              object.addEventListener(
+                "pointerup",
+                fine
+              );
+
+
+              object.addEventListener(
+                "pointercancel",
+                fine
+              );
+
+            }
+          );
+
+
+          /*
+            RIDIMENSIONAMENTO
+          */
+
+          resizeHandle.addEventListener(
+            "pointerdown",
+            (event) => {
+
+              event.preventDefault();
+              event.stopPropagation();
+
+
+              selezionaStickerIdea(
+                object,
+                item.id
+              );
+
+
+              const pageRect =
+                ideaPageWrap
+                  .getBoundingClientRect();
+
+
+              const objectRect =
+                object
+                  .getBoundingClientRect();
+
+
+              const left =
+                objectRect.left -
+                pageRect.left;
+
+
+              resizeHandle
+                .setPointerCapture(
+                  event.pointerId
+                );
+
+
+              function ridimensiona(
+                moveEvent
+              ) {
+
+                let nuovaWidthPx =
+                  moveEvent.clientX -
+                  pageRect.left -
+                  left;
+
+
+                const minimoPx =
+                  pageRect.width *
+                  0.08;
+
+
+                const massimoPx =
+                  pageRect.width *
+                  0.45;
+
+
+                nuovaWidthPx =
+                  limita(
+                    nuovaWidthPx,
+                    minimoPx,
+                    massimoPx
+                  );
+
+
+                const widthPercent =
+                  (
+                    nuovaWidthPx /
+                    pageRect.width
+                  ) * 100;
+
+
+                object.style.width =
+                  `${widthPercent}%`;
+
+
+                item.width =
+                  widthPercent;
+
+
+                /*
+                  Se la nuova larghezza supera
+                  il bordo destro, riporta dentro
+                  lo sticker.
+                */
+
+                const currentX =
+                  item.x;
+
+
+                if (
+                  currentX +
+                  widthPercent >
+                  100
+                ) {
+
+                  item.x =
+                    Math.max(
+                      0,
+                      100 -
+                      widthPercent
+                    );
+
+
+                  object.style.left =
+                    `${item.x}%`;
+
+                }
+
+              }
+
+
+              function fineResize(
+                endEvent
+              ) {
+
+                try {
+
+                  resizeHandle
+                    .releasePointerCapture(
+                      endEvent.pointerId
+                    );
+
+                } catch (error) {
+                }
+
+
+                resizeHandle
+                  .removeEventListener(
+                    "pointermove",
+                    ridimensiona
+                  );
+
+
+                resizeHandle
+                  .removeEventListener(
+                    "pointerup",
+                    fineResize
+                  );
+
+
+                resizeHandle
+                  .removeEventListener(
+                    "pointercancel",
+                    fineResize
+                  );
+
+
+                aggiornaInserimentoSticker(
+                  item.id,
+                  {
+                    x:
+                      item.x,
+
+                    y:
+                      item.y,
+
+                    width:
+                      item.width
+                  }
+                );
+
+              }
+
+
+              resizeHandle
+                .addEventListener(
+                  "pointermove",
+                  ridimensiona
+                );
+
+
+              resizeHandle
+                .addEventListener(
+                  "pointerup",
+                  fineResize
+                );
+
+
+              resizeHandle
+                .addEventListener(
+                  "pointercancel",
+                  fineResize
+                );
+
+            }
+          );
+
+
+          /*
+            RIMOZIONE DALLA PAGINA
+          */
+
+          removeButton.addEventListener(
+            "pointerdown",
+            (event) => {
+
+              event.preventDefault();
+              event.stopPropagation();
+
+
+              rimuoviInserimentoSticker(
+                item.id
+              );
+
+
+              renderIdeaStickers();
+
+            }
+          );
+
+
+          ideaStickerLayer
+            .appendChild(
+              object
+            );
+
+        }
+      );
+
+    }
+
+
+    function renderIdeaPage() {
+
+      if (
+        ideaPages.length === 0
+      ) {
+
+        ideaPages =
+          [
+            nuovaIdeaVuota()
+          ];
+
+        ideaIndex =
+          0;
+
+      }
+
+
+      if (
+        ideaIndex < 0
+      ) {
+        ideaIndex = 0;
+      }
+
+
+      if (
+        ideaIndex >
+        ideaPages.length - 1
+      ) {
+
+        ideaIndex =
+          ideaPages.length - 1;
+
+      }
+
+
+      const page =
+        ideaPages[ideaIndex];
+
+
+      ideaTextarea.value =
+        page.text || "";
+
+
+      ideaCounter.textContent =
+        `${ideaIndex + 1} / ${ideaPages.length}`;
+
+
+      ideaPrevious.disabled =
+        ideaIndex === 0;
+
+
+      ideaNext.disabled =
+        ideaIndex ===
+        ideaPages.length - 1;
+
+
+      renderIdeaStickers();
+
+      salvaIdeaPages();
+
+    }
+
+
+    function eliminaStickerDellaPagina(
+      pageId
+    ) {
+
+      const inserimenti =
+        leggiInserimentiSticker();
+
+
+      const filtrati =
+        inserimenti.filter(
+          (item) =>
+
+            !(
+              item.destination ===
+                "idee" &&
+
+              item.pageId ===
+                pageId
+            )
+        );
+
+
+      scriviInserimentiSticker(
+        filtrati
+      );
+
+    }
+
+
+    ideaTextarea.addEventListener(
+      "pointerdown",
+      () => {
+
+        deselezionaStickerIdea();
+
+      }
+    );
+
+
+    ideaTextarea.addEventListener(
+      "input",
+      salvaTestoPaginaCorrente
+    );
+
+
+    ideaPrevious.addEventListener(
+      "click",
+      () => {
+
+        salvaTestoPaginaCorrente();
+
+
+        if (
+          ideaIndex > 0
+        ) {
+
+          ideaIndex--;
+
+          renderIdeaPage();
+
+        }
+
+      }
+    );
+
+
+    ideaNext.addEventListener(
+      "click",
+      () => {
+
+        salvaTestoPaginaCorrente();
+
+
+        if (
+          ideaIndex <
+          ideaPages.length - 1
+        ) {
+
+          ideaIndex++;
+
+          renderIdeaPage();
+
+        }
+
+      }
+    );
+
+
+    ideasAdd.addEventListener(
+      "click",
+      () => {
+
+        salvaTestoPaginaCorrente();
+
+
+        ideaPages.push(
+          nuovaIdeaVuota()
+        );
+
+
+        ideaIndex =
+          ideaPages.length - 1;
+
+
+        salvaIdeaPages();
+
+        renderIdeaPage();
+
+
+        window.setTimeout(
+          () => {
+
+            ideaTextarea.focus();
+
+          },
+          100
+        );
+
+      }
+    );
+
+
+    ideasDelete.addEventListener(
+      "click",
+      () => {
+
+        const paginaNumero =
+          ideaIndex + 1;
+
+
+        const conferma =
+          window.confirm(
+            `Eliminare la pagina ${paginaNumero}?`
+          );
+
+
+        if (!conferma) {
+          return;
+        }
+
+
+        const pageIdEliminata =
+          ideaPages[ideaIndex].id;
+
+
+        eliminaStickerDellaPagina(
+          pageIdEliminata
+        );
+
+
+        if (
+          ideaPages.length === 1
+        ) {
+
+          ideaPages[0] =
+            nuovaIdeaVuota();
+
+          ideaIndex =
+            0;
+
+        } else {
+
+          ideaPages.splice(
+            ideaIndex,
+            1
+          );
+
+
+          if (
+            ideaIndex >
+            ideaPages.length - 1
+          ) {
+
+            ideaIndex =
+              ideaPages.length - 1;
+
+          }
+
+        }
+
+
+        salvaIdeaPages();
+
+        renderIdeaPage();
+
+      }
+    );
+
+
+    ideasBack.addEventListener(
+      "click",
+      () => {
+
+        salvaTestoPaginaCorrente();
+
+        deselezionaStickerIdea();
+
+
+        ideasScreen
+          .classList
+          .remove(
+            "aperto"
+          );
+
+      }
+    );
+
+
+    window.addEventListener(
+      "pagehide",
+      salvaTestoPaginaCorrente
+    );
+
+
+    window.addEventListener(
+      "resize",
+      () => {
+
+        /*
+          Poiché posizione e larghezza sono
+          percentuali, basta ridisegnare.
+        */
+
+        if (
+          ideasScreen.classList
+            .contains("aperto")
+        ) {
+
+          renderIdeaStickers();
+
+        }
+
+      }
+    );
+
+
+    renderIdeaPage();
+
+
+
+
+    /* =========================
+       ORARIO SCOLASTICO
+    ========================== */
+
+    const SCHEDULE_STORAGE_KEY = "BaseSegretaNoziOrario";
+    const scheduleScreen = document.getElementById("scheduleScreen");
+    const scheduleBack = document.getElementById("scheduleBack");
+    const scheduleClear = document.getElementById("scheduleClear");
+    const scheduleInputGrid = document.getElementById("scheduleInputGrid");
+
+    function leggiOrario() {
+      try {
+        const dati = JSON.parse(localStorage.getItem(SCHEDULE_STORAGE_KEY) || "[]");
+        return Array.isArray(dati) ? dati : [];
+      } catch (error) {
+        console.error("Errore nel caricamento dell'orario:", error);
+        return [];
+      }
+    }
+
+    function salvaOrario() {
+      const dati = Array.from(scheduleInputGrid.querySelectorAll(".schedule-cell")).map((campo) => campo.value);
+      try { localStorage.setItem(SCHEDULE_STORAGE_KEY, JSON.stringify(dati)); }
+      catch (error) { console.error("Errore nel salvataggio dell'orario:", error); }
+    }
+
+    function creaGrigliaOrario() {
+      const datiSalvati = leggiOrario();
+      scheduleInputGrid.innerHTML = "";
+
+      const giorni = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì"];
+      const fasce = [
+        "8:15 - 9:15",
+        "9:15 - 10:15",
+        "10:15 - 11:15",
+        "11:15 - 12:15",
+        "12:15 - 13:15",
+        "13:15 - 14:15",
+        "14:15 - 15:15",
+        "15:15 - 16:15"
+      ];
+
+      /* Compatibilità con la vecchia griglia 6 colonne x 9 righe:
+         se trova quel formato, conserva solo i dati dei giorni. */
+      let dati = datiSalvati;
+      if (datiSalvati.length >= 48 && datiSalvati.length % 6 === 0) {
+        dati = [];
+        for (let riga = 0; riga < 8; riga++) {
+          for (let colonna = 1; colonna < 6; colonna++) {
+            dati.push(datiSalvati[riga * 6 + colonna] || "");
+          }
+        }
+      }
+
+      for (let riga = 0; riga < 8; riga++) {
+        const etichetta = document.createElement("div");
+        etichetta.className = "schedule-time-label";
+        etichetta.textContent = fasce[riga];
+        scheduleInputGrid.appendChild(etichetta);
+
+        for (let colonna = 0; colonna < 5; colonna++) {
+          const campo = document.createElement("textarea");
+          campo.className = "schedule-cell";
+          campo.rows = 2;
+          campo.value = dati[riga * 5 + colonna] || "";
+          campo.setAttribute("aria-label", `${giorni[colonna]}, ${fasce[riga]}`);
+          campo.addEventListener("input", salvaOrario);
+          scheduleInputGrid.appendChild(campo);
+        }
+      }
+    }
+
+    scheduleBack.addEventListener("click", () => scheduleScreen.classList.remove("aperto"));
+    scheduleClear.addEventListener("click", () => {
+      if (!window.confirm("Vuoi svuotare tutto l'orario?")) return;
+      localStorage.removeItem(SCHEDULE_STORAGE_KEY);
+      creaGrigliaOrario();
+    });
+    creaGrigliaOrario();
+
+
+    /* =========================
+       BASE
+    ========================== */
+
+    const hotspots =
+      document.querySelectorAll(
+        ".hotspot"
+      );
+
+    const overlays =
+      document.querySelectorAll(
+        ".overlay"
+      );
+
+    const closeButtons =
+      document.querySelectorAll(
+        ".close-button"
+      );
+
+
+    hotspots.forEach(
+      (hotspot) => {
+
+        hotspot.addEventListener(
+          "click",
+          () => {
+
+            const url =
+              hotspot.dataset.url;
+
+
+            if (url) {
+
+              window.open(
+                url,
+                "_blank",
+                "noopener,noreferrer"
+              );
+
+              return;
+
+            }
+
+
+            const scheduleId =
+              hotspot.dataset.schedule;
+
+
+            if (scheduleId) {
+
+              document
+                .getElementById(scheduleId)
+                .classList
+                .add("aperto");
+
+              return;
+
+            }
+
+
+            const ideasId =
+              hotspot.dataset.ideas;
+
+
+            if (ideasId) {
+
+              document
+                .getElementById(
+                  ideasId
+                )
+                .classList
+                .add("aperto");
+
+
+              renderIdeaPage();
+
+              return;
+
+            }
+
+
+            const stickersId =
+              hotspot.dataset.stickers;
+
+
+            if (stickersId) {
+
+              document
+                .getElementById(
+                  stickersId
+                )
+                .classList
+                .add("aperto");
+
+              return;
+
+            }
+
+
+            const archiveId =
+              hotspot.dataset.archive;
+
+
+            if (archiveId) {
+
+              document
+                .getElementById(
+                  archiveId
+                )
+                .classList
+                .add("aperto");
+
+              return;
+
+            }
+
+
+            const targetId =
+              hotspot.dataset.target;
+
+
+            const targetOverlay =
+              document.getElementById(
+                targetId
+              );
+
+
+            if (targetOverlay) {
+
+              targetOverlay
+                .classList
+                .add("aperto");
+
+            }
+
+          }
+        );
+
+      }
+    );
+
+
+    /* =========================
+       PANNELLI TEST
+    ========================== */
+
+    closeButtons.forEach(
+      (button) => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            button
+              .closest(".overlay")
+              .classList
+              .remove("aperto");
+
+          }
+        );
+
+      }
+    );
+
+
+    overlays.forEach(
+      (overlay) => {
+
+        overlay.addEventListener(
+          "click",
+          (event) => {
+
+            if (
+              event.target ===
+              overlay
+            ) {
+
+              overlay
+                .classList
+                .remove("aperto");
+
+            }
+
+          }
+        );
+
+      }
+    );
+
+
+    /* =========================
+       ARCHIVI
+    ========================== */
+
+    const archiveBackButtons =
+      document.querySelectorAll(
+        "[data-close-archive]"
+      );
+
+
+    archiveBackButtons.forEach(
+      (button) => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            button
+              .closest(
+                ".archive-screen"
+              )
+              .classList
+              .remove("aperto");
+
+          }
+        );
+
+      }
+    );
+
+
+    const addButtons =
+      document.querySelectorAll(
+        "[data-file-picker]"
+      );
+
+
+    addButtons.forEach(
+      (button) => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            document
+              .getElementById(
+                button.dataset
+                  .filePicker
+              )
+              .click();
+
+          }
+        );
+
+      }
+    );
+
+
+    /* =========================
+       CARD ARCHIVI
+    ========================== */
+
+    function creaCard(
+      record,
+      storeName,
+      refreshFunction
+    ) {
+
+      const card =
+        document.createElement(
+          "article"
+        );
+
+      card.className =
+        "archive-card";
+
+
+      const openButton =
+        document.createElement(
+          "button"
+        );
+
+      openButton.className =
+        "archive-open";
+
+
+      const preview =
+        document.createElement(
+          "div"
+        );
+
+      preview.className =
+        "archive-preview";
+
+
+      const name =
+        document.createElement(
+          "span"
+        );
+
+      name.className =
+        "archive-name";
+
+      name.textContent =
+        record.name;
+
+
+      const objectUrl =
+        URL.createObjectURL(
+          record.blob
+        );
+
+
+      if (
+        record.type &&
+        record.type.startsWith(
+          "image/"
+        )
+      ) {
+
+        const image =
+          document.createElement(
+            "img"
+          );
+
+        image.src =
+          objectUrl;
+
+        image.alt =
+          "";
+
+        preview.appendChild(
+          image
+        );
+
+      } else {
+
+        preview.textContent =
+          "📄";
+
+      }
+
+
+      openButton.appendChild(
+        preview
+      );
+
+      openButton.appendChild(
+        name
+      );
+
+
+      openButton.addEventListener(
+        "click",
+        () => {
+
+          window.open(
+            objectUrl,
+            "_blank"
+          );
+
+        }
+      );
+
+
+      const menuButton =
+        document.createElement(
+          "button"
+        );
+
+      menuButton.className =
+        "card-menu-button";
+
+      menuButton.textContent =
+        "⋯";
+
+      menuButton.setAttribute(
+        "aria-label",
+        "Azioni"
+      );
+
+
+      const menu =
+        document.createElement(
+          "div"
+        );
+
+      menu.className =
+        "card-menu";
+
+
+      const deleteButton =
+        document.createElement(
+          "button"
+        );
+
+      deleteButton.className =
+        "delete-button";
+
+      deleteButton.textContent =
+        "Elimina";
+
+
+      menu.appendChild(
+        deleteButton
+      );
+
+
+      menuButton.addEventListener(
+        "click",
+        (event) => {
+
+          event.stopPropagation();
+
+
+          document
+            .querySelectorAll(
+              ".card-menu.aperto"
+            )
+            .forEach(
+              (otherMenu) => {
+
+                if (
+                  otherMenu !==
+                  menu
+                ) {
+
+                  otherMenu
+                    .classList
+                    .remove(
+                      "aperto"
+                    );
+
+                }
+
+              }
+            );
+
+
+          menu
+            .classList
+            .toggle("aperto");
+
+        }
+      );
+
+
+      deleteButton.addEventListener(
+        "click",
+        async (event) => {
+
+          event.stopPropagation();
+
+
+          const conferma =
+            window.confirm(
+              `Eliminare "${record.name}"?`
+            );
+
+
+          if (!conferma) {
+            return;
+          }
+
+
+          await eliminaFile(
+            storeName,
+            record.id
+          );
+
+
+          await refreshFunction();
+
+        }
+      );
+
+
+      card.appendChild(
+        openButton
+      );
+
+      card.appendChild(
+        menuButton
+      );
+
+      card.appendChild(
+        menu
+      );
+
+
+      return card;
+
+    }
+
+
+    /* =========================
+       MOTORE ARCHIVIO
+    ========================== */
+
+    function collegaArchivio(
+      options
+    ) {
+
+      const {
+        storeName,
+        inputId,
+        gridId,
+        emptyId
+      } = options;
+
+
+      const input =
+        document.getElementById(
+          inputId
+        );
+
+      const grid =
+        document.getElementById(
+          gridId
+        );
+
+      const empty =
+        document.getElementById(
+          emptyId
+        );
+
+
+      async function refresh() {
+
+        const records =
+          await leggiTutti(
+            storeName
+          );
+
+
+        grid.innerHTML =
+          "";
+
+
+        if (
+          records.length === 0
+        ) {
+
+          empty.style.display =
+            "flex";
+
+          return;
+
+        }
+
+
+        empty.style.display =
+          "none";
+
+
+        records
+          .sort(
+            (a, b) =>
+              b.createdAt -
+              a.createdAt
+          )
+          .forEach(
+            (record) => {
+
+              const card =
+                creaCard(
+                  record,
+                  storeName,
+                  refresh
+                );
+
+
+              grid.appendChild(
+                card
+              );
+
+            }
+          );
+
+      }
+
+
+      input.addEventListener(
+        "change",
+        async () => {
+
+          const files =
+            Array.from(
+              input.files
+            );
+
+
+          for (
+            const file of files
+          ) {
+
+            await salvaFile(
+              storeName,
+              file
+            );
+
+          }
+
+
+          input.value =
+            "";
+
+
+          await refresh();
+
+        }
+      );
+
+
+      refresh();
+
+    }
+
+
+    collegaArchivio({
+
+      storeName:
+        STORE_DOCUMENTS,
+
+      inputId:
+        "documentsInput",
+
+      gridId:
+        "documentsGrid",
+
+      emptyId:
+        "documentsEmpty"
+
+    });
+
+
+    collegaArchivio({
+
+      storeName:
+        STORE_PROJECTS,
+
+      inputId:
+        "projectsInput",
+
+      gridId:
+        "projectsGrid",
+
+      emptyId:
+        "projectsEmpty"
+
+    });
+
+
+    /* =========================
+       STICKER
+    ========================== */
+
+    const STICKERS = [
+
+      {
+        file:
+          "nozi-calcolatrice.png",
+        label:
+          "Calcolatrice"
+      },
+
+      {
+        file:
+          "nozi-collegio.png",
+        label:
+          "Collegio"
+      },
+
+      {
+        file:
+          "nozi-colloquio.png",
+        label:
+          "Colloquio"
+      },
+
+      {
+        file:
+          "nozi-depressa.png",
+        label:
+          "Depressa"
+      },
+
+      {
+        file:
+          "nozi-documenti.png",
+        label:
+          "Documenti"
+      },
+
+      {
+        file:
+          "nozi-ferie.png",
+        label:
+          "Ferie"
+      },
+
+      {
+        file:
+          "nozi-fine-scuola.png",
+        label:
+          "Fine scuola"
+      },
+
+      {
+        file:
+          "nozi-formazione.png",
+        label:
+          "Formazione"
+      },
+
+      {
+        file:
+          "nozi-gita.png",
+        label:
+          "Gita"
+      },
+
+      {
+        file:
+          "nozi-incitamento.png",
+        label:
+          "Incitamento"
+      },
+
+      {
+        file:
+          "nozi-lavoro.png",
+        label:
+          "Lavoro"
+      },
+
+      {
+        file:
+          "nozi-neutra.png",
+        label:
+          "Neutra"
+      },
+
+      {
+        file:
+          "nozi-orgogliosa.png",
+        label:
+          "Orgogliosa"
+      },
+
+      {
+        file:
+          "nozi-panico.png",
+        label:
+          "Panico"
+      },
+
+      {
+        file:
+          "nozi-perplessa.png",
+        label:
+          "Perplessa"
+      },
+
+      {
+        file:
+          "nozi-programmazione.png",
+        label:
+          "Programmazione"
+      },
+
+      {
+        file:
+          "nozi-sailor.png",
+        label:
+          "Sailor Nozi"
+      },
+
+      {
+        file:
+          "nozi-scadenze.png",
+        label:
+          "Scadenze"
+      },
+
+      {
+        file:
+          "nozi-tristina.png",
+        label:
+          "Tristina"
+      },
+
+      {
+        file:
+          "baozzi-milord.png",
+        label:
+          "Baozzi Milord"
+      }
+
+    ];
+
+
+    const stickersScreen =
+      document.getElementById(
+        "stickersScreen"
+      );
+
+    const stickersBack =
+      document.getElementById(
+        "stickersBack"
+      );
+
+    const stickersGrid =
+      document.getElementById(
+        "stickersGrid"
+      );
+
+
+    const stickerViewer =
+      document.getElementById(
+        "stickerViewer"
+      );
+
+    const stickerViewerCard =
+      document.getElementById(
+        "stickerViewerCard"
+      );
+
+    const stickerViewerClose =
+      document.getElementById(
+        "stickerViewerClose"
+      );
+
+    const stickerViewerImage =
+      document.getElementById(
+        "stickerViewerImage"
+      );
+
+    const stickerViewerName =
+      document.getElementById(
+        "stickerViewerName"
+      );
+
+    const printStickerButton =
+      document.getElementById(
+        "printStickerButton"
+      );
+
+    const insertStickerButton =
+      document.getElementById(
+        "insertStickerButton"
+      );
+
+
+    const destinationOverlay =
+      document.getElementById(
+        "destinationOverlay"
+      );
+
+    const destinationCard =
+      document.getElementById(
+        "destinationCard"
+      );
+
+    const destinationClose =
+      document.getElementById(
+        "destinationClose"
+      );
+
+    const destinationButtons =
+      document.querySelectorAll(
+        ".destination-button"
+      );
+
+
+    const toast =
+      document.getElementById(
+        "toast"
+      );
+
+
+    let stickerSelezionato =
+      null;
+
+    let toastTimer =
+      null;
+
+
+    function creaGalleriaSticker() {
+
+      stickersGrid.innerHTML =
+        "";
+
+
+      STICKERS.forEach(
+        (sticker) => {
+
+          const card =
+            document.createElement(
+              "button"
+            );
+
+          card.className =
+            "sticker-card";
+
+
+          const imageBox =
+            document.createElement(
+              "div"
+            );
+
+          imageBox.className =
+            "sticker-image-box";
+
+
+          const image =
+            document.createElement(
+              "img"
+            );
+
+          image.className =
+            "sticker-image";
+
+          image.src =
+            `assets/${sticker.file}`;
+
+          image.alt =
+            sticker.label;
+
+
+          const label =
+            document.createElement(
+              "span"
+            );
+
+          label.className =
+            "sticker-label";
+
+          label.textContent =
+            sticker.label;
+
+
+          imageBox.appendChild(
+            image
+          );
+
+          card.appendChild(
+            imageBox
+          );
+
+          card.appendChild(
+            label
+          );
+
+
+          card.addEventListener(
+            "click",
+            () => {
+
+              apriSticker(
+                sticker
+              );
+
+            }
+          );
+
+
+          stickersGrid.appendChild(
+            card
+          );
+
+        }
+      );
+
+    }
+
+
+
+    /* v3A.19.3.3 — ponte Quaderno <-> raccolta sticker Nozi */
+    window.addEventListener("nozi:open-stickers", (event) => {
+      const d = event.detail || {};
+      if (d.destination !== "lezioni-materiali") return;
+      stickersScreen.classList.add("aperto");
+    });
+
+    function apriSticker(
+      sticker
+    ) {
+
+      stickerSelezionato =
+        sticker;
+
+
+      stickerViewerImage.src =
+        `assets/${sticker.file}`;
+
+      stickerViewerImage.alt =
+        sticker.label;
+
+      stickerViewerName.textContent =
+        sticker.label;
+
+
+      stickerViewer
+        .classList
+        .add("aperto");
+
+    }
+
+
+    function chiudiSticker() {
+
+      stickerViewer
+        .classList
+        .remove("aperto");
+
+      destinationOverlay
+        .classList
+        .remove("aperto");
+
+      stickerSelezionato =
+        null;
+
+    }
+
+
+    function mostraToast(
+      messaggio
+    ) {
+
+      window.clearTimeout(
+        toastTimer
+      );
+
+
+      toast.textContent =
+        messaggio;
+
+
+      toast
+        .classList
+        .add("visibile");
+
+
+      toastTimer =
+        window.setTimeout(
+          () => {
+
+            toast
+              .classList
+              .remove(
+                "visibile"
+              );
+
+          },
+          2400
+        );
+
+    }
+
+
+    function salvaInserimentoSticker(
+      sticker,
+      destination,
+      destinationLabel
+    ) {
+
+      const inserimenti =
+        leggiInserimentiSticker();
+
+
+      const nuovo = {
+
+        id:
+          `${Date.now()}-${Math.random()
+            .toString(16)
+            .slice(2)}`,
+
+        file:
+          sticker.file,
+
+        label:
+          sticker.label,
+
+        destination:
+          destination,
+
+        destinationLabel:
+          destinationLabel,
+
+        createdAt:
+          Date.now()
+
+      };
+
+
+      if (
+        destination ===
+        "idee"
+      ) {
+
+        const stickerEsistenti =
+          inserimenti.filter(
+            (item) =>
+              item.destination ===
+                "idee" &&
+              item.pageId ===
+                ideaPages[ideaIndex].id
+          );
+
+
+        const numero =
+          stickerEsistenti.length;
+
+
+        nuovo.pageId =
+          ideaPages[ideaIndex].id;
+
+
+        nuovo.width =
+          18;
+
+
+        nuovo.x =
+          Math.max(
+            6,
+            72 -
+            (
+              numero % 3
+            ) * 20
+          );
+
+
+        nuovo.y =
+          Math.max(
+            6,
+            68 -
+            Math.floor(
+              numero / 3
+            ) * 20
+          );
+
+      }
+
+
+      inserimenti.push(
+        nuovo
+      );
+
+
+      scriviInserimentiSticker(
+        inserimenti
+      );
+
+    }
+
+
+    /* =========================
+       NAVIGAZIONE STICKER
+    ========================== */
+
+    stickersBack.addEventListener(
+      "click",
+      () => {
+
+        stickersScreen
+          .classList
+          .remove("aperto");
+
+      }
+    );
+
+
+    stickerViewerClose.addEventListener(
+      "click",
+      chiudiSticker
+    );
+
+
+    stickerViewer.addEventListener(
+      "click",
+      (event) => {
+
+        if (
+          event.target ===
+          stickerViewer
+        ) {
+
+          chiudiSticker();
+
+        }
+
+      }
+    );
+
+
+    stickerViewerCard.addEventListener(
+      "click",
+      (event) => {
+
+        event.stopPropagation();
+
+      }
+    );
+
+
+    /* =========================
+       STAMPA
+    ========================== */
+
+    printStickerButton.addEventListener(
+      "click",
+      () => {
+
+        if (
+          !stickerSelezionato
+        ) {
+          return;
+        }
+
+
+        const src =
+          `assets/${stickerSelezionato.file}`;
+
+
+        const printWindow =
+          window.open(
+            "",
+            "_blank"
+          );
+
+
+        if (!printWindow) {
+
+          window.open(
+            src,
+            "_blank",
+            "noopener,noreferrer"
+          );
+
+          return;
+
+        }
+
+
+        const titolo =
+          stickerSelezionato.label;
+
+
+        printWindow.document.write(`
+          <!DOCTYPE html>
+          <html lang="it">
+
+          <head>
+            <meta charset="UTF-8">
+
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1.0"
+            >
+
+            <title>${titolo}</title>
+
+            <style>
+              html,
+              body {
+                margin: 0;
+                min-height: 100%;
+                background: white;
+              }
+
+              body {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                padding: 24px;
+              }
+
+              img {
+                display: block;
+                max-width: 80vw;
+                max-height: 80vh;
+                object-fit: contain;
+              }
+
+              @media print {
+
+                body {
+                  padding: 0;
+                }
+
+                img {
+                  max-width: 90%;
+                  max-height: 90vh;
+                }
+
+              }
+            </style>
+          </head>
+
+          <body>
+
+            <img
+              src="${src}"
+              alt="${titolo}"
+              onload="window.print();"
+            >
+
+          </body>
+
+          </html>
+        `);
+
+
+        printWindow.document.close();
+
+      }
+    );
+
+
+    /* =========================
+       INSERISCI
+    ========================== */
+
+    insertStickerButton.addEventListener(
+      "click",
+      () => {
+
+        if (
+          !stickerSelezionato
+        ) {
+          return;
+        }
+
+
+        let ritornoQuaderno = null;
+        try {
+          ritornoQuaderno = JSON.parse(sessionStorage.getItem("noziStickerReturn") || "null");
+        } catch (_) {}
+
+        if (ritornoQuaderno?.area === "lezioni-materiali") {
+          window.dispatchEvent(new CustomEvent("nozi:insert-sticker", {
+            detail: {
+              url: `assets/${stickerSelezionato.file}`,
+              name: stickerSelezionato.label
+            }
+          }));
+          try { sessionStorage.removeItem("noziStickerReturn"); } catch (_) {}
+          stickerViewer.classList.remove("aperto");
+          stickersScreen.classList.remove("aperto");
+          stickerSelezionato = null;
+          return;
+        }
+
+        destinationOverlay
+          .classList
+          .add("aperto");
+
+      }
+    );
+
+
+    destinationClose.addEventListener(
+      "click",
+      () => {
+
+        destinationOverlay
+          .classList
+          .remove("aperto");
+
+      }
+    );
+
+
+    destinationOverlay.addEventListener(
+      "click",
+      (event) => {
+
+        if (
+          event.target ===
+          destinationOverlay
+        ) {
+
+          destinationOverlay
+            .classList
+            .remove("aperto");
+
+        }
+
+      }
+    );
+
+
+    destinationCard.addEventListener(
+      "click",
+      (event) => {
+
+        event.stopPropagation();
+
+      }
+    );
+
+
+    destinationButtons.forEach(
+      (button) => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            if (
+              !stickerSelezionato
+            ) {
+              return;
+            }
+
+
+            const destination =
+              button.dataset
+                .destination;
+
+
+            const destinationLabel =
+              button.dataset
+                .destinationLabel;
+
+
+            const nomeSticker =
+              stickerSelezionato.label;
+
+
+            salvaInserimentoSticker(
+              stickerSelezionato,
+              destination,
+              destinationLabel
+            );
+
+
+            destinationOverlay
+              .classList
+              .remove("aperto");
+
+
+            stickerViewer
+              .classList
+              .remove("aperto");
+
+
+            if (
+              destination ===
+              "idee"
+            ) {
+
+              stickersScreen
+                .classList
+                .remove("aperto");
+
+
+              ideasScreen
+                .classList
+                .add("aperto");
+
+
+              renderIdeaPage();
+
+
+              mostraToast(
+                `${nomeSticker} inserito in Idee & Ispirazioni`
+              );
+
+            } else {
+
+              mostraToast(
+                `${nomeSticker} inserito in ${destinationLabel}`
+              );
+
+            }
+
+
+            stickerSelezionato =
+              null;
+
+          }
+        );
+
+      }
+    );
+
+
+    creaGalleriaSticker();
+
+
+    /* =========================
+       CHIUDI MENU ⋯
+    ========================== */
+
+    document.addEventListener(
+      "click",
+      () => {
+
+        document
+          .querySelectorAll(
+            ".card-menu.aperto"
+          )
+          .forEach(
+            (menu) => {
+
+              menu
+                .classList
+                .remove("aperto");
+
+            }
+          );
+
+      }
+    );
+
+  </script>
+<script>
+/* vFINAL — Idee & Ispirazioni: toolbar fluttuante senza T + scrittura a mano */
+(() => {
+  "use strict";
+  const DRAW_KEY="BaseSegretaNoziIdeeDisegniV1";
+  const IDEAS_KEY="BaseSegretaNoziIdee";
+  const INDEX_KEY="BaseSegretaNoziIdeePagina";
+  const STICKER_KEY="BaseSegretaNoziStickerInseriti";
+  let mode="pencil", history=[], future=[], drawing=null;
+  const clone=v=>JSON.parse(JSON.stringify(v));
+  const readJSON=(k,f)=>{try{const v=JSON.parse(localStorage.getItem(k)||"null");return v??f}catch(_){return f}};
+  const saveJSON=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){console.error(e)}};
+  const pageInfo=()=>{const pages=readJSON(IDEAS_KEY,[]);const i=Math.max(0,Math.min(Number(localStorage.getItem(INDEX_KEY))||0,pages.length-1));return {pages,i,page:pages[i]||null}};
+  const allDraw=()=>readJSON(DRAW_KEY,{});
+  const strokes=()=>{const p=pageInfo().page;if(!p)return[];return allDraw()[p.id]||[]};
+  const setStrokes=list=>{const p=pageInfo().page;if(!p)return;const all=allDraw();all[p.id]=list;saveJSON(DRAW_KEY,all)};
+  const pushHistory=()=>{history.push(clone(strokes()));future=[]};
+  function boot(){
+    const screen=document.getElementById("ideasScreen"),wrap=document.getElementById("ideaPageWrap"),textarea=document.getElementById("ideaTextarea");
+    const addBtn=document.getElementById("ideasAdd"),delBtn=document.getElementById("ideasDelete"),prev=document.getElementById("ideaPrevious"),next=document.getElementById("ideaNext");
+    if(!screen||!wrap||!textarea)return;
+    const style=document.createElement("style");style.textContent=`
+      .ideas-header .ideas-add,.ideas-header .ideas-delete{display:none!important}
+      .idea-draw-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:2;pointer-events:auto;touch-action:none}
+      .idea-sticker-layer{z-index:3!important}
+      .idea-final-tools{position:fixed;left:max(18px,env(safe-area-inset-left));bottom:max(18px,env(safe-area-inset-bottom));z-index:880;display:flex;align-items:center;gap:1px;padding:6px 7px 6px 22px;border:1.25px solid #c9bce4;border-radius:17px;background:#f0ebfa;box-shadow:0 5px 14px rgba(70,55,90,.13);touch-action:none;user-select:none;-webkit-user-select:none}
+      .idea-final-grip{position:absolute;left:5px;top:50%;transform:translateY(-50%);width:16px;height:29px;display:grid;place-items:center;color:#8d80ad;font-weight:900;font-size:14px;cursor:grab;touch-action:none}
+      .idea-final-tools button{appearance:none;border:0;width:34px;height:34px;border-radius:9px;background:transparent;color:#4c4274;font-size:17px;font-weight:800;cursor:pointer}.idea-final-tools button.active{background:white;box-shadow:0 2px 7px rgba(45,50,60,.09)}.idea-final-tools button[data-t="eraser"]{display:grid;place-items:center}.idea-final-tools button[data-t="eraser"] svg{width:19px;height:19px;display:block;overflow:visible}
+      .idea-final-menu{position:fixed;z-index:910;display:none;min-width:190px;padding:8px;border:1px solid #d8cdea;border-radius:17px;background:#fffaf7;box-shadow:0 10px 30px rgba(35,45,60,.20)}.idea-final-menu.aperto{display:block}.idea-final-menu button{appearance:none;border:0;width:100%;padding:11px 13px;border-radius:11px;background:transparent;color:#4c4274;text-align:left;font-size:15px;font-weight:750}.idea-final-menu .danger{color:#94515d}
+      .idea-final-file{display:none}
+      @media(max-width:760px){.idea-final-tools{left:10px;bottom:10px}}
+    `;document.head.appendChild(style);
+    const canvas=document.createElement("canvas");canvas.className="idea-draw-canvas";wrap.appendChild(canvas);
+    const tools=document.createElement("div");tools.className="idea-final-tools";tools.innerHTML=`<span class="idea-final-grip" title="Sposta toolbar">≡</span><button data-t="pencil" class="active" title="Penna">✎</button><button data-t="eraser" title="Gomma" aria-label="Gomma"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7.2 20.8 17.9 7.5a3 3 0 0 1 4.2-.4l3.4 2.8a3 3 0 0 1 .4 4.2L15.2 27.4H8.8l-2.4-2a3.1 3.1 0 0 1 .8-4.6Z" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/><path d="m13 25.8-5.5-4.5M15.3 27.3h10.2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></button><button data-t="plus" title="Aggiungi">＋</button><button data-t="undo" title="Annulla">↶</button><button data-t="redo" title="Ripristina">↷</button>`;screen.appendChild(tools);
+    const menu=document.createElement("div");menu.className="idea-final-menu";menu.innerHTML=`<button data-a="page">Nuova pagina</button><button data-a="sticker">Sticker</button><button data-a="image">Immagine</button><button class="danger" data-a="delete">Elimina pagina</button>`;screen.appendChild(menu);
+    const file=document.createElement("input");file.type="file";file.accept="image/*";file.className="idea-final-file";screen.appendChild(file);
+    const ctx=canvas.getContext("2d");
+    function size(){const r=wrap.getBoundingClientRect(),d=Math.max(1,window.devicePixelRatio||1);canvas.width=Math.round(r.width*d);canvas.height=Math.round(r.height*d);canvas.style.width=r.width+"px";canvas.style.height=r.height+"px";ctx.setTransform(d,0,0,d,0,0);render()}
+    function render(){const r=wrap.getBoundingClientRect();ctx.clearRect(0,0,r.width,r.height);ctx.lineCap="round";ctx.lineJoin="round";for(const st of strokes()){ctx.globalCompositeOperation=st.erase?"destination-out":"source-over";ctx.strokeStyle=st.color||"#4c4274";ctx.lineWidth=st.erase?18:2.4;ctx.beginPath();(st.points||[]).forEach((p,i)=>{const x=p.x*r.width,y=p.y*r.height;i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()}ctx.globalCompositeOperation="source-over"}
+    function setMode(m){mode=m;tools.querySelectorAll('[data-t="pencil"],[data-t="eraser"]').forEach(b=>b.classList.toggle("active",b.dataset.t===m));canvas.style.pointerEvents=(m==="pencil"||m==="eraser")?"auto":"none"}
+    canvas.addEventListener("pointerdown",e=>{if(!["pencil","eraser"].includes(mode))return;e.preventDefault();e.stopPropagation();pushHistory();const r=canvas.getBoundingClientRect();drawing={erase:mode==="eraser",color:"#4c4274",points:[{x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height}]};canvas.setPointerCapture?.(e.pointerId)} ,{passive:false});
+    canvas.addEventListener("pointermove",e=>{if(!drawing)return;e.preventDefault();const r=canvas.getBoundingClientRect();drawing.points.push({x:(e.clientX-r.left)/r.width,y:(e.clientY-r.top)/r.height});const list=strokes();setStrokes([...list,drawing]);render();setStrokes(list)}, {passive:false});
+    const end=e=>{if(!drawing)return;const list=strokes();list.push(drawing);setStrokes(list);drawing=null;try{canvas.releasePointerCapture?.(e.pointerId)}catch(_){}render()};canvas.addEventListener("pointerup",end);canvas.addEventListener("pointercancel",end);
+    function placeMenu(btn){const r=btn.getBoundingClientRect();menu.style.left=Math.max(8,Math.min(innerWidth-menu.offsetWidth-8,r.left))+"px";menu.style.top=Math.max(8,r.top-190)+"px"}
+    tools.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{const t=b.dataset.t;if(t==="pencil"||t==="eraser")return setMode(t);if(t==="plus"){placeMenu(b);menu.classList.toggle("aperto");return}if(t==="undo"&&history.length){future.push(clone(strokes()));setStrokes(history.pop());render()}if(t==="redo"&&future.length){history.push(clone(strokes()));setStrokes(future.pop());render()}}));
+    menu.addEventListener("click",e=>{const a=e.target.dataset.a;if(!a)return;menu.classList.remove("aperto");if(a==="page")addBtn?.click();if(a==="delete")delBtn?.click();if(a==="sticker"){document.getElementById("stickersScreen")?.classList.add("aperto");screen.classList.remove("aperto")}if(a==="image")file.click();setTimeout(()=>{history=[];future=[];size()},80)});
+    file.addEventListener("change",()=>{const f=file.files?.[0];if(!f)return;const rd=new FileReader();rd.onload=()=>{const {page}=pageInfo();if(!page)return;const items=readJSON(STICKER_KEY,[]);items.push({id:`idea-img-${Date.now()}-${Math.random().toString(16).slice(2)}`,file:rd.result,label:f.name,destination:"idee",destinationLabel:"Idee & Ispirazioni",pageId:page.id,x:62,y:55,width:28});saveJSON(STICKER_KEY,items);file.value="";document.getElementById("ideaNext")?.dispatchEvent(new Event("no-op"));location.hash=location.hash;setTimeout(()=>{try{window.dispatchEvent(new Event("resize"))}catch(_){}},20)};rd.readAsDataURL(f)});
+    for(const b of [prev,next,addBtn,delBtn])b?.addEventListener("click",()=>setTimeout(()=>{history=[];future=[];size()},80));
+    // Toolbar spostabile solo dal grip.
+    const grip=tools.querySelector(".idea-final-grip");let drag=null;grip.addEventListener("pointerdown",e=>{e.preventDefault();e.stopPropagation();const r=tools.getBoundingClientRect();drag={id:e.pointerId,dx:e.clientX-r.left,dy:e.clientY-r.top};grip.setPointerCapture?.(e.pointerId);tools.style.left=r.left+"px";tools.style.top=r.top+"px";tools.style.bottom="auto"},{passive:false});grip.addEventListener("pointermove",e=>{if(!drag||e.pointerId!==drag.id)return;e.preventDefault();const m=8,w=tools.offsetWidth,h=tools.offsetHeight;tools.style.left=Math.max(m,Math.min(innerWidth-w-m,e.clientX-drag.dx))+"px";tools.style.top=Math.max(m,Math.min(innerHeight-h-m,e.clientY-drag.dy))+"px"},{passive:false});const stop=e=>{if(!drag||e.pointerId!==drag.id)return;try{grip.releasePointerCapture?.(e.pointerId)}catch(_){}drag=null};grip.addEventListener("pointerup",stop);grip.addEventListener("pointercancel",stop);
+    new ResizeObserver(size).observe(wrap);window.addEventListener("resize",size);setTimeout(size,50);setMode("pencil");
+  }
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",boot,{once:true});else boot();
+})();
+</script>
+<script src="stupidera-loader.js"></script>
+<script src="programmazione-loader.js"></script>
+<script src="agenda-loader.js"></script>
+<script src="da-non-dimenticare-loader.js"></script>
+<script src="lezioni-materiali-loader.js"></script>
+</body>
+</html>
