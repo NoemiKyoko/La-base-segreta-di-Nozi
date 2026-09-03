@@ -88,23 +88,56 @@
     .schedule-back { width:48px; flex:0 0 48px; font-size:30px; line-height:1; }
     .schedule-clear { padding:0 16px; font-size:15px; font-weight:700; }
     .schedule-title { flex:1; margin:0; color:#173f7a; font-size:clamp(24px,3.5vw,38px); font-weight:700; }
-    .schedule-workspace { flex:1; min-height:0; display:flex; align-items:center; justify-content:center; padding:12px; overflow:auto; }
-    .schedule-board { position:relative; width:min(1200px,96vw); aspect-ratio:1569 / 1042; flex:0 0 auto; }
+    .schedule-workspace { flex:1; min-height:0; display:flex; align-items:flex-start; justify-content:center; padding:14px 12px 12px; overflow:auto; }
+    .schedule-board { position:relative; width:min(1200px,96vw,calc((100vh - 110px) * 1.5)); aspect-ratio:3 / 2; flex:0 0 auto; }
     .schedule-image { display:block; width:100%; height:100%; object-fit:contain; user-select:none; -webkit-user-select:none; -webkit-user-drag:none; }
-    /* Campi editabili soltanto nelle 5 colonne dei giorni. Le fasce orarie sono già stampate nel PNG corretto. */
-    .schedule-input-grid { position:absolute; left:2.68%; right:3.28%; top:30.95%; bottom:9.37%; display:grid; grid-template-columns:229fr 230fr 233fr 246fr 239fr 227fr; grid-template-rows:repeat(8,1fr); }
-    .schedule-cell { width:100%; height:100%; resize:none; overflow:hidden; border:0; outline:0; background:transparent; padding:4px 6px; color:#173f7a; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; font-size:clamp(9px,1.18vw,16px); font-weight:600; line-height:1.15; text-align:center; display:block; }
-    .schedule-cell:focus { background:transparent; box-shadow:none; border-radius:0; outline:none; }
-    /* La prima colonna copre gli orari stampati nel PNG: gli orari visibili sono solo quelli editabili. */
-    .schedule-cell:nth-child(6n + 1) {
-      background:#fbf6e9;
-      border-left:1px solid #2a497b;
-      border-right:1px solid #2a497b;
-      border-bottom:1px solid #2a497b;
+    /* Griglia INVISIBILE: il PNG disegna tutta la tabella; questi campi servono solo per scrivere. */
+    .schedule-input-grid {
+      position:absolute;
+      left:2.34%;
+      right:2.47%;
+      top:30.86%;
+      bottom:4.39%;
+      display:grid;
+      grid-template-columns:235fr 239fr 243fr 254fr 249fr 242fr;
+      grid-template-rows:repeat(8,1fr);
+      gap:0;
+      background:transparent;
+      border:0;
+      outline:0;
+      box-shadow:none;
     }
-    .schedule-cell:nth-child(1) { border-top:1px solid #2a497b; }
-    .schedule-cell:nth-child(6n + 1):focus { background:#fbf6e9; }
-    @media (max-width:700px) { .schedule-header{gap:8px}.schedule-clear{padding:0 10px}.schedule-workspace{padding:5px}.schedule-board{width:100vw}.schedule-cell{padding:2px;font-size:8px}.schedule-title{font-size:21px} }
+    .schedule-cell {
+      appearance:none;
+      -webkit-appearance:none;
+      width:100%;
+      height:100%;
+      margin:0;
+      padding:4px 6px;
+      resize:none;
+      overflow:hidden;
+      border:0 !important;
+      border-radius:0 !important;
+      outline:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+      color:#173f7a;
+      caret-color:#173f7a;
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+      font-size:clamp(10px,1.18vw,16px);
+      font-weight:600;
+      line-height:1.15;
+      text-align:center;
+      display:block;
+    }
+    .schedule-cell:focus,
+    .schedule-cell:active {
+      border:0 !important;
+      outline:0 !important;
+      background:transparent !important;
+      box-shadow:none !important;
+    }
+    @media (max-width:700px) { .schedule-header{gap:8px}.schedule-clear{padding:0 10px}.schedule-workspace{padding:6px 4px}.schedule-board{width:min(100vw,calc((100vh - 94px) * 1.5))}.schedule-cell{padding:2px;font-size:8px}.schedule-title{font-size:21px} }
 
 
     /* =========================
