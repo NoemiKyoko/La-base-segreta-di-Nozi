@@ -89,9 +89,10 @@
     .schedule-clear { padding:0 16px; font-size:15px; font-weight:700; }
     .schedule-title { flex:1; margin:0; color:#173f7a; font-size:clamp(24px,3.5vw,38px); font-weight:700; }
     .schedule-workspace { flex:1; min-height:0; display:flex; align-items:center; justify-content:center; padding:12px; overflow:auto; }
-    .schedule-board { position:relative; width:min(1200px,96vw); aspect-ratio:1535 / 1024; flex:0 0 auto; }
+    .schedule-board { position:relative; width:min(1200px,96vw); aspect-ratio:1569 / 1042; flex:0 0 auto; }
     .schedule-image { display:block; width:100%; height:100%; object-fit:contain; user-select:none; -webkit-user-select:none; -webkit-user-drag:none; }
-    .schedule-input-grid { position:absolute; left:2.35%; right:2.67%; top:30.85%; bottom:3.90%; display:grid; grid-template-columns:repeat(6,1fr); grid-template-rows:repeat(9,1fr); }
+    /* Campi editabili soltanto nelle 5 colonne dei giorni. Le fasce orarie sono già stampate nel PNG corretto. */
+    .schedule-input-grid { position:absolute; left:2.68%; right:3.28%; top:30.95%; bottom:9.37%; display:grid; grid-template-columns:229fr 230fr 233fr 246fr 239fr 227fr; grid-template-rows:repeat(8,1fr); }
     .schedule-cell { width:100%; height:100%; resize:none; overflow:hidden; border:0; outline:0; background:transparent; padding:4px 6px; color:#173f7a; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif; font-size:clamp(9px,1.18vw,16px); font-weight:600; line-height:1.15; text-align:center; display:block; }
     .schedule-cell:focus { background:transparent; box-shadow:none; border-radius:0; outline:none; }
     @media (max-width:700px) { .schedule-header{gap:8px}.schedule-clear{padding:0 10px}.schedule-workspace{padding:5px}.schedule-board{width:100vw}.schedule-cell{padding:2px;font-size:8px}.schedule-title{font-size:21px} }
@@ -3604,10 +3605,47 @@
     }
 
     function creaGrigliaOrario() {
-      const dati = leggiOrario();
+      const datiSalvati = leggiOrario();
       scheduleInputGrid.innerHTML = "";
+
       const giorni = ["Orario", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì"];
-      for (let riga = 0; riga < 9; riga++) {
+      const fascePredefinite = [
+        "8:15 - 9:15",
+        "9:15 - 10:15",
+        "10:15 - 11:15",
+        "11:15 - 12:15",
+        "12:15 - 13:15",
+        "13:15 - 14:15",
+        "14:15 - 15:15",
+        "15:15 - 16:15"
+      ];
+
+      /* Compatibilità con la versione precedente a 5 colonne:
+         ricostruisce la colonna Orario usando le fasce predefinite. */
+      let dati = [];
+      if (datiSalvati.length === 40) {
+        for (let riga = 0; riga < 8; riga++) {
+          dati.push(fascePredefinite[riga]);
+          for (let colonna = 0; colonna < 5; colonna++) {
+            dati.push(datiSalvati[riga * 5 + colonna] || "");
+          }
+        }
+      } else if (datiSalvati.length >= 48 && datiSalvati.length % 6 === 0) {
+        /* Vecchia griglia 6 colonne: conserva le prime 8 righe. */
+        for (let riga = 0; riga < 8; riga++) {
+          for (let colonna = 0; colonna < 6; colonna++) {
+            const valore = datiSalvati[riga * 6 + colonna];
+            dati.push(valore || (colonna === 0 ? fascePredefinite[riga] : ""));
+          }
+        }
+      } else {
+        for (let riga = 0; riga < 8; riga++) {
+          dati.push(fascePredefinite[riga]);
+          for (let colonna = 1; colonna < 6; colonna++) dati.push("");
+        }
+      }
+
+      for (let riga = 0; riga < 8; riga++) {
         for (let colonna = 0; colonna < 6; colonna++) {
           const campo = document.createElement("textarea");
           campo.className = "schedule-cell";
