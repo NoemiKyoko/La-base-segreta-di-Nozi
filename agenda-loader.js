@@ -8,54 +8,9 @@
   const fresh=()=>Array.from({length:12},()=>[vuota()]);
   const load=()=>{try{const x=JSON.parse(localStorage.getItem(KEY)||"null");if(Array.isArray(x)&&x.length===12)return x}catch(_){}return fresh()};
   let mesi=load(), mese=Math.max(0,Math.min(11,Number(localStorage.getItem(MONTH_KEY))||new Date().getMonth())), pagina=0, selected=null, mode="pencil", stroke=null, history=[],future=[], zoom=1, panX=0, panY=0, touchPan=null, suppressClickUntil=0;
-  const save=()=>{
-    let json="";
-    try{
-      json=JSON.stringify(mesi);
-    }catch(e){
-      alert(
-        "DIAGNOSTICA SALVATAGGIO AGENDA\n\n"+
-        "FASE: JSON.stringify(mesi)\n"+
-        "ERRORE: "+(e?.name||"(senza nome)")+"\n"+
-        "MESSAGGIO: "+(e?.message||String(e))
-      );
-      return;
-    }
-
-    try{
-      localStorage.setItem(KEY,json);
-    }catch(e){
-      alert(
-        "DIAGNOSTICA SALVATAGGIO AGENDA\n\n"+
-        "FASE: salvataggio Agenda\n"+
-        "CHIAVE: "+KEY+"\n"+
-        "DIMENSIONE JSON: "+new Blob([json]).size+" byte\n"+
-        "ERRORE: "+(e?.name||"(senza nome)")+"\n"+
-        "MESSAGGIO: "+(e?.message||String(e))
-      );
-      return;
-    }
-
-    try{
-      localStorage.setItem(MONTH_KEY,String(mese));
-    }catch(e){
-      alert(
-        "DIAGNOSTICA SALVATAGGIO AGENDA\n\n"+
-        "FASE: salvataggio mese\n"+
-        "CHIAVE: "+MONTH_KEY+"\n"+
-        "VALORE: "+String(mese)+"\n"+
-        "ERRORE: "+(e?.name||"(senza nome)")+"\n"+
-        "MESSAGGIO: "+(e?.message||String(e))
-      );
-    }
-  };
+  const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(mesi));localStorage.setItem(MONTH_KEY,String(mese))}catch(e){alert("Non riesco a salvare: prova con immagini più piccole.")}};
   const clone=v=>JSON.parse(JSON.stringify(v)); const current=()=>mesi[mese][pagina]; const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
   function boot(){
-    const diagBadge=document.createElement("div");
-    diagBadge.textContent="DIAGNOSTICA SAVE ATTIVA";
-    diagBadge.style.cssText="position:fixed;left:50%;top:12px;transform:translateX(-50%);z-index:200001;background:#fff8f0;border:1.5px solid #b95d68;border-radius:12px;padding:7px 11px;font:800 12px/1.2 system-ui;color:#7a3340;box-shadow:0 4px 12px rgba(0,0,0,.12)";
-    document.body.appendChild(diagBadge);
-
     if(document.getElementById("agendaScreen"))return;
     const st=document.createElement("style");st.textContent=`
       .agenda-screen{position:fixed;inset:0;z-index:990;display:none;background:linear-gradient(180deg,#eaf3fb,#f7f2fb);overflow:hidden}.agenda-screen.aperto{display:block}
