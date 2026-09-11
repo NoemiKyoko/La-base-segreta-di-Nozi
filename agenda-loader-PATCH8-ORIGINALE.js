@@ -147,18 +147,7 @@
       visualViewport.addEventListener('resize',()=>{if(s.classList.contains('aperto'))placeBottomControls()});
       visualViewport.addEventListener('scroll',()=>{if(s.classList.contains('aperto'))placeBottomControls()});
     }
-    function showStorageDiag(){
-      let total=0; const rows=[];
-      for(let mi=0;mi<mesi.length;mi++){ let bytes=0,imgs=0,strokes=0,objs=0;
-        for(const pg of (mesi[mi]||[])){ for(const o of (pg.objects||[])){objs++; if(typeof o.src==="string"){bytes+=o.src.length*2; if(o.src.startsWith("data:"))imgs++;}} for(const st of (pg.strokes||[])){strokes++; bytes+=JSON.stringify(st).length*2;} }
-        total+=bytes; rows.push(`${MESI[mi]}: ~${(bytes/1024).toFixed(1)} KB | oggetti ${objs} | data-image ${imgs} | tratti ${strokes}`); }
-      const jsonBytes=JSON.stringify(mesi).length*2;
-      let ls=0; try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i)||"";const v=localStorage.getItem(k)||"";ls+=(k.length+v.length)*2}}catch(_){}
-      const old=document.getElementById("agendaStorageDiag"); if(old)old.remove();
-      const d=document.createElement("div"); d.id="agendaStorageDiag"; d.style.cssText="position:fixed;left:12px;right:12px;top:82px;z-index:10000;padding:14px 16px;border:2px solid #b85c68;border-radius:14px;background:rgba(255,250,247,.97);color:#243b55;font:14px/1.35 ui-monospace,SFMono-Regular,Menlo,monospace;box-shadow:0 8px 28px rgba(35,45,60,.22);max-height:62vh;overflow:auto";
-      d.innerHTML=`<b>DIAGNOSTICA SALVATAGGIO AGENDA</b><br>JSON Agenda: ${(jsonBytes/1024).toFixed(1)} KB (~${(jsonBytes/1024/1024).toFixed(2)} MB)<br>localStorage totale: ${(ls/1024).toFixed(1)} KB<br>stima contenuto tracciato: ${(total/1024).toFixed(1)} KB<br><br>${rows.join("<br>")}<br><br><b>NON MODIFICA O SALVA NULLA.</b><br>Chiudi la diagnostica ricaricando la pagina.`; s.appendChild(d);
-    }
-    window.apriAgenda=()=>{s.classList.add('aperto');panX=0;panY=0;render();placeBottomControls();requestAnimationFrame(placeBottomControls);setTimeout(showStorageDiag,300)};
+    window.apriAgenda=()=>{s.classList.add('aperto');panX=0;panY=0;render();placeBottomControls();requestAnimationFrame(placeBottomControls)};
     const hotspot=document.querySelector('.hotspot[data-agenda="agendaScreen"]');if(hotspot){hotspot.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();window.apriAgenda()},true)}
     render();
   }
