@@ -11,68 +11,6 @@
   const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(mesi));localStorage.setItem(MONTH_KEY,String(mese))}catch(e){alert("Non riesco a salvare: prova con immagini più piccole.")}};
   const clone=v=>JSON.parse(JSON.stringify(v)); const current=()=>mesi[mese][pagina]; const clamp=(n,a,b)=>Math.min(b,Math.max(a,n));
   function boot(){
-    // === DIAGNOSTICA STORAGE NON INVASIVA ===
-    (()=>{
-      const TEST_KEY="BaseSegretaNoziStorageDiagnosticTest";
-      const OUT_KEY="BaseSegretaNoziStorageDiagnosticOutput";
-      const rows=[];
-      const add=(k,v)=>rows.push(`${k}: ${v}`);
-      let setOK=false, readOK=false, removeOK=false, roundtrip="";
-      let errName="", errMsg="";
-      try{
-        const payload="NOZI-"+Date.now()+"-"+Math.random().toString(36).slice(2);
-        localStorage.setItem(TEST_KEY,payload);
-        setOK=true;
-        const got=localStorage.getItem(TEST_KEY);
-        readOK=(got===payload);
-        roundtrip=got||"(null)";
-        localStorage.removeItem(TEST_KEY);
-        removeOK=(localStorage.getItem(TEST_KEY)===null);
-      }catch(e){
-        errName=e?.name||"(senza nome)";
-        errMsg=e?.message||String(e);
-      }
-
-      let agendaRaw=null, agendaBytes=0, totalChars=0, keys=0;
-      try{
-        agendaRaw=localStorage.getItem(KEY);
-        agendaBytes=agendaRaw?new Blob([agendaRaw]).size:0;
-        keys=localStorage.length;
-        for(let i=0;i<localStorage.length;i++){
-          const k=localStorage.key(i)||"";
-          const v=localStorage.getItem(k)||"";
-          totalChars += k.length + v.length;
-        }
-      }catch(e){
-        if(!errName){errName=e?.name||"(senza nome)";errMsg=e?.message||String(e)}
-      }
-
-      add("setItem test", setOK?"OK":"ERRORE");
-      add("lettura immediata", readOK?"OK":"ERRORE");
-      add("removeItem", removeOK?"OK":"ERRORE");
-      add("chiavi localStorage", keys);
-      add("stima caratteri totali", totalChars);
-      add("Agenda presente", agendaRaw!==null?"SÌ":"NO");
-      add("Agenda bytes", agendaBytes);
-      if(errName) add("errore", `${errName}: ${errMsg}`);
-
-      const box=document.createElement("div");
-      box.id="agendaStorageTestDiag";
-      box.style.cssText=[
-        "position:fixed","left:18px","right:18px","top:18px","z-index:200000",
-        "background:rgba(255,250,247,.98)","border:2px solid #b95d68",
-        "border-radius:18px","padding:18px 20px","box-shadow:0 10px 30px rgba(0,0,0,.18)",
-        "font:700 16px/1.45 ui-monospace,SFMono-Regular,Menlo,monospace","color:#28374a",
-        "white-space:pre-wrap","max-height:72vh","overflow:auto"
-      ].join(";");
-      box.textContent=
-        "TEST STORAGE AGENDA\n\n"+
-        rows.join("\n")+
-        "\n\nNON TOCCA I DATI DELL'AGENDA.\n"+
-        "Usa solo una chiave temporanea separata e la rimuove subito.";
-      document.body.appendChild(box);
-    })();
-
     if(document.getElementById("agendaScreen"))return;
     const st=document.createElement("style");st.textContent=`
       .agenda-screen{position:fixed;inset:0;z-index:990;display:none;background:linear-gradient(180deg,#eaf3fb,#f7f2fb);overflow:hidden}.agenda-screen.aperto{display:block}
